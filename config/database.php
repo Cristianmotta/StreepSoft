@@ -21,5 +21,36 @@ try {
 }
 
 
+//Login conexion
+//<?php
+//session_start();
+require 'conexion.php'; // Incluir archivo de conexión
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $usuario = $_POST['usuario'];
+    $password = $_POST['password'];
+
+    // Consulta preparada para evitar SQL Injection
+    $stmt = $conn->prepare("SELECT id, password FROM usuarios WHERE usuario = ?");
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Verificar la contraseña cifrada
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['usuario'] = $usuario;
+            header("location: dashboard.php"); // Redirigir
+        } else {
+            echo "Contraseña incorrecta";
+        }
+    } else {
+        echo "Usuario no encontrado";
+    }
+    $stmt->close();
+}
+//
+
 
 
