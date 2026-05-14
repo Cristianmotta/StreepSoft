@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+
     <!-- Font Awesome - librería de íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="/streepsoft/public/css/login.css">
+
 </head>
-<body>
+
+<body class="background-login">
     <div class="page-wrapper">
         <div class="login-card">
 
-            <img src="/streepsoft/public/Image/CopColombiaInternacional.svg" alt="Logo" class="logo">
+            <img src="/streepsoft/public/Image/CopColombiaInternacional.svg" alt="Logo" class="logoLogin" draggable="false">
 
-            <h1>Login Up</h1>
+            <h1 class="h1-login">Iniciar Sesión</h1>
 
-            <form action="#"  method="_POST">
+            <form>
 
                 <div class="input-group">
-                    <label for="email">Email</label>
+                    <label for="email">Correo</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-user"></i>
                         <input type="email" id="email">
@@ -27,31 +32,30 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="password">Password</label>
+                    <label for="password">Contraseña</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" id="password">
                     </div>
                 </div>
 
-                <button type="submit">Login Now</button> <!-- redirecionar a la carpeta dashboard/index.php --->
+                <button class="buttonLogin" type="submit"><a href="/streepsoft/app/views/dashboard/index.php">Iniciar Sesión</a></button>
 
                 <div class="link">
                     <div class="link-password">
-                        <a href="#">Forget password?</a>
+                        <a class="alogin" href="/streepsoft/app/views/auth/recuperarContraseña.php">¿Olvidaste tu contraseña?</a>
                     </div>
 
                     <div class="link-password">
                         <a href="/streepsoft/public/"><img src="/streepsoft/public/Image/icon_arrow_back.svg" alt=""></a>
                     </div>
                 </div>
-               
                 
-
             </form>
         </div>
     </div>
-    <script src="/streepsoft/public/js/login.js"></script>
+
+    <script src="/streepsoft/public/css/login.js"></script>
 </body>
 
 </html>
