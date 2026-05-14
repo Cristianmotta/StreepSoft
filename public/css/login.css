@@ -4,10 +4,9 @@
     box-sizing: border-box;
 }
 
-body {
+.background-login {
     min-height: 100vh;
-    background-color: #111;
-    background-image: url('../Image/Fondo.svg');
+    background-image: url('/streepsoft/public/Image/Fondo.svg');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -25,7 +24,7 @@ body {
     position: relative;
 }
 
-.logo {
+.logoLogin {
     display: block;
     position: absolute;
     width: 250px;
@@ -33,7 +32,7 @@ body {
     right: 20px;
 }
 
-h1 {
+.h1-login {
     color: #ffffff;
     font-size: 32px;
     margin-bottom: 24px;
@@ -79,7 +78,7 @@ input {
     /* espacio para que el ícono no tape el texto */
 }
 
-button {
+.buttonLogin {
     width: 100%;
     padding: 12px;
     background-color: #f5c400;
@@ -93,15 +92,161 @@ button {
     margin-bottom: 12px;
 }
 
-button:hover {
+.buttonLogin:hover {
     background-color: #d4a900;
     cursor: pointer;
+}
+
+.alogin {
+    color: #ffffff;
+    font-size: 13px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Recuperar Contraseña */
+
+.logo-recover {
+    display: block;
+    position: absolute;
+    width: 200px;
+    top: 10px;
+    right: 20px;
+}
+
+.h1-recover {
+    color: #ffffff;
+    font-size: 27px;
+    margin-bottom: 12px;
+    margin-top: 90px;
+}
+
+.message-code {
+    color: #cccccc;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.buttonRecover {
+    width: 100%;
+    padding: 12px;
+    background-color: #f5c400;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.buttonRecover:hover {
+    background-color: #d4a900;
+    cursor: pointer;
+}
+
+.aRecover {
+    color: #000000;
+    text-decoration: none;
+}
+
+/* Verificar Codigo */
+
+.h1-verify {
+    color: #ffffff;
+    text-align: center;
+    font-size: 27px;
+    margin-bottom: 12px;
+    margin-top: 90px;
+}
+
+.pin-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.pin-input {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    background-color: #e0e0e0;
+    outline: none;
+    padding: 0;
+}
+
+.pin-input:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pin-mensaje {
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Actualizar Contraseña */
+
+.h1-Password-recovered {
+    color: #ffffff;
+    font-size: 27px;
+    margin-bottom: 12px;
+    margin-top: 90px;
+}
+
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    display: none;
+}
+
+.password-strength.visible {
+    display: flex;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 5px;
+    background-color: #444;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.4s, background-color 0.4s;
+}
+
+.strength-text {
+    font-size: 12px;
+    color: #cccccc;
+    min-width: 50px;
+}
+
+.req-msg,
+.match-msg {
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 18px;
+    transition: color 0.3s;
 }
 
 .link{
     display: flex;
     flex-direction: row;
-    gap: 199px;
+    gap: 159px;
 }
 
 a {
