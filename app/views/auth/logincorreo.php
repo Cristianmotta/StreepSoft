@@ -9,6 +9,7 @@
     <form action="" method="POST">
 
         <h1>Escriba su correo por favor</h1>
+        <p>Revise su correo</p>
         <label>Email</label>
         <input type="text" name="recuperacion" placeholder="email">
         <button class="buttonLogin" type="submit">Enviar</button>
