@@ -54,7 +54,7 @@
 
                 <div class="link">
                     <div class="link-password">
-                        <a class="alogin" href="/streepsoft/app/views/auth/recuperarContraseña.php">¿Olvidaste tu contraseña?</a>
+                        <a class="alogin" href="/streepsoft/app/views/auth/logincorreo.php">¿Olvidaste tu contraseña?</a>
                     </div>
 
                 </div>
