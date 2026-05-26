@@ -18,7 +18,8 @@ if (!$usuario) {
 }
 
 if (!password_verify($contrasenaInput, $usuario['contrasena'])) {
-    die("Contraseña incorrecta");
+    header('Location: /streepsoft/app/views/auth/login.php?error=1');
+    exit;
 }
 
 $_SESSION['usuario'] = [
