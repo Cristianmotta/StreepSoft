@@ -15,20 +15,26 @@
 
             <h1 class="h1-verify">Pin de Seguridad</h1>
 
-            <div class="pin-container">
-                <input class="pin-input" type="text" maxlength="1">
-                <input class="pin-input" type="text" maxlength="1" disabled>
-                <input class="pin-input" type="text" maxlength="1" disabled>
-                <input class="pin-input" type="text" maxlength="1" disabled>
-                <input class="pin-input" type="text" maxlength="1" disabled>
-            </div>
+            <form action="/streepsoft/app/controllers/RecuperacionController.php" method="POST" id="pinForm">
+                
+                <div class="pin-container">
+                    <input class="pin-input" type="text" maxlength="1" name="pin[]" inputmode="numeric" pattern="[0-9]*" required>
+                    <input class="pin-input" type="text" maxlength="1" name="pin[]" inputmode="numeric" pattern="[0-9]*" required>
+                    <input class="pin-input" type="text" maxlength="1" name="pin[]" inputmode="numeric" pattern="[0-9]*" required>
+                    <input class="pin-input" type="text" maxlength="1" name="pin[]" inputmode="numeric" pattern="[0-9]*" required>
+                    <input class="pin-input" type="text" maxlength="1" name="pin[]" inputmode="numeric" pattern="[0-9]*" required>
+                </div>
 
+                <input type="hidden" name="usuario" value="<?=  $_GET['usuario'] ?? ''  ?>">
 
-            <button class="buttonRecover" type="button">Verificar</button>
+                <button class="buttonRecover" type="submit" name="verificar_pin">Verificar</button>
+            </form>
+            
+            <a href="/streepsoft/app/views/auth/logincorreo.php">volver</a>
 
         </div>
     </div>
 
-    <script src="/streepsoft/public/js/login/loginverify.js"></script>
+    <script src="/streepsoft/public/js/login/verify.js"></script>
 </body>
 </html>
