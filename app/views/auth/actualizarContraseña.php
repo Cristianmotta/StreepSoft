@@ -11,8 +11,7 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet"
-          href="/streepsoft/public/css/login.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/login.css">
 </head>
 
 <body class="background-login">
@@ -34,6 +33,8 @@
 
             <form action="/streepsoft/app/controllers/RecuperacionController.php" method="POST" id="formPassword">
 
+                <input type="hidden" name="usuario" value="<?= $_SESSION['usuario_recuperacion'] ?? '' ?>">
+                
                 <div class="input-group">
                     <label>Nueva contraseña</label>
                     <div class="input-wrapper">

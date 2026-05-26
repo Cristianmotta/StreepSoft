@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
+session_start();
 
 require_once __DIR__. '/../../config/database.php';
 require_once __DIR__. '/../../vendor/autoload.php';
@@ -38,7 +37,7 @@ class RecuperacionController
 
         $expiracion = date(
             'Y-m-d H:i:s',
-            strtotime('+5 minutes')
+            strtotime('+10 minutes')
         );
 
         $guardado = $this->model->guardarPin(
@@ -161,100 +160,89 @@ class RecuperacionController
         }
     }
 
+    public function nuevaPassword(string $usuario, string $password): bool
+    {
+        $hash = password_hash($password, PASSWORD_BCRYPT);
+
+        return $this->model->actualizarPassword($usuario, $hash);
+    }
+
     public function verificarpin(string $usuario, string $pinIngresado): void
     {
         $datos = $this->model->obtenerPin($usuario);
 
-        if(!$datos){
-            die('pin no encontrado');
+        if (!$datos) {
+            die("PIN no encontrado");
         }
 
-        if(
-            strtotime($datos['expired_session']) < time()
-        ){
-            die('PIN expirado');
+        if (strtotime($datos['expired_session']) < time()) {
+            die("PIN expirado");
         }
 
-
-        if (!password_verify($pinIngresado, $datos['pin_recuperacion'])){
-            die('Pin incorrecto');
+        if (!password_verify($pinIngresado, $datos['pin_recuperacion'])) {
+            die("PIN incorrecto");
         }
+
+        $_SESSION['usuario_recuperacion'] = $usuario;
 
         header("Location: /streepsoft/app/views/auth/actualizarContraseña.php");
-    }
-
-    public function nuevaPassword(string $usuario, string $password): bool
-    {
-        $passwordHash = password_hash(
-            $password,
-            PASSWORD_DEFAULT
-        );
-
-        return $this->model->actualizarPassword(
-            $usuario,
-            $passwordHash
-        );
+        exit;
     }
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $controller = 
-    new RecuperacionController();
+    $controller = new RecuperacionController();
 
-    if (isset($_POST['verificar_pin'])) {
-
-        $usuario = trim($_POST['usuario']);
-
-        $pin = implode('', $_POST['pin']);
-
-        $controller->verificarpin(
-            $usuario,
-            $pin
-        );
-    }
-
-    if (isset($_POST['enviar_correo'])) {
+     if (isset($_POST['enviar_correo'])) {
 
         $usuario = trim($_POST['usuario']);
 
         $controller->enviarPin($usuario);
     }
 
-    if(isset($_POST['cambiar_recuperacion'])) {
+    if (isset($_POST['verificar_pin'])) {
 
-        if(!isset($_SESSION['usuario_recuperacion'])){
-            die('Sesion invalida');
+        $usuario = trim($_POST['usuario']);
+
+        $pin = implode($_POST['pin']); // hidden input
+
+        $controller->verificarPin($usuario, $pin);
+    }
+
+    if (isset($_POST['cambiar_password'])) {
+
+        $usuario = $_SESSION['usuario_recuperacion'] ?? null;
+
+        if (!$usuario) {
+            die('Sesión de recuperación expirada o inválida');
         }
 
-        $password = trim($_POST['pasword']);
-
+        $password = trim($_POST['password']);
         $confirmar = trim($_POST['confirmar_password']);
 
-        if($password !== $confirmar){
-            die(
-                'Las contraseñas no coinciden'
-            );
+
+        if ($password !== $confirmar) {
+            die('Las contraseñas no coinciden');
         }
 
-        $usuario = $_SESSION['usuario_recuperacion'];
+        $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $actualizado = $controller->nuevaPassword(
-            $usuario,
-            $password
-        );
 
-        if(!$actualizado){
+        $actualizado = $controller->nuevaPassword($usuario, $password);
+
+        if (!$actualizado) {
             die('Error actualizando contraseña');
         }
 
         unset($_SESSION['usuario_recuperacion']);
 
-        echo 'Contraseña actualizada corractamente';
+        header(
+            'Location: /streepsoft/app/views/auth/login.php?password=success'
+        );
+
+        exit;
     }
 }
-
-
-
 
 ?>

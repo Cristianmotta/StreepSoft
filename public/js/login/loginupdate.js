@@ -1,109 +1,168 @@
-const nuevaPassword     = document.getElementById('nuevaPassword');
-const confirmarPassword = document.getElementById('confirmarPassword');
-const btnActualizar     = document.getElementById('btnActualizar');
-const strengthFill      = document.getElementById('strengthFill');
-const strengthText      = document.getElementById('strengthText');
-const reqMsg            = document.getElementById('reqMsg');
-const matchMsg          = document.getElementById('matchMsg');
-const strengthContainer = document.querySelector('.password-strength');
+const nuevaPassword =
+    document.getElementById('nuevaPassword');
 
-const reglas = [
-    { regex: /^.{8,16}$/,                                    msg: 'Debe tener entre 8 y 16 caracteres' },
-    { regex: /[A-Z]/,                                         msg: 'Agrega al menos una letra mayúscula' },
-    { regex: /[a-z]/,                                         msg: 'Agrega al menos una letra minúscula' },
-    { regex: /[0-9]/,                                         msg: 'Agrega al menos un número' },
-    { regex: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,       msg: 'Agrega al menos un símbolo (!@#$...)' },
-];
+const confirmarPassword =
+    document.getElementById('confirmarPassword');
 
-// ── Eventos ──────────────────────────────────────────────
+const strengthFill =
+    document.getElementById('strengthFill');
+
+const strengthText =
+    document.getElementById('strengthText');
+
+const reqMsg =
+    document.getElementById('reqMsg');
+
+const matchMsg =
+    document.getElementById('matchMsg');
+
+const form =
+    document.getElementById('formPassword');
+
+
+// ======================================
+// FUERZA PASSWORD
+// ======================================
+
 nuevaPassword.addEventListener('input', () => {
-    if (nuevaPassword.value.length > 16) {
-        nuevaPassword.value = nuevaPassword.value.slice(0, 16);
+
+    const value =
+        nuevaPassword.value;
+
+    let fuerza = 0;
+
+    // Longitud
+    if (value.length >= 8) {
+
+        fuerza++;
     }
-    validarPassword();
-    validarMatch();
+
+    // Mayúscula
+    if (/[A-Z]/.test(value)) {
+
+        fuerza++;
+    }
+
+    // Número
+    if (/\d/.test(value)) {
+
+        fuerza++;
+    }
+
+    // Especial
+    if (/[\W]/.test(value)) {
+
+        fuerza++;
+    }
+
+    // Texto fuerza
+    switch (fuerza) {
+
+        case 1:
+
+            strengthFill.style.width = '25%';
+            strengthText.textContent = 'Débil';
+
+            break;
+
+        case 2:
+
+            strengthFill.style.width = '50%';
+            strengthText.textContent = 'Media';
+
+            break;
+
+        case 3:
+
+            strengthFill.style.width = '75%';
+            strengthText.textContent = 'Buena';
+
+            break;
+
+        case 4:
+
+            strengthFill.style.width = '100%';
+            strengthText.textContent = 'Segura';
+
+            break;
+
+        default:
+
+            strengthFill.style.width = '0%';
+            strengthText.textContent = '';
+    }
+
+    // Requisitos
+    reqMsg.textContent =
+        'Debe tener 8 caracteres, mayúscula, número y símbolo.';
 });
 
-confirmarPassword.addEventListener('input', validarMatch);
 
-btnActualizar.addEventListener('click', () => {
-    validarPassword();
-    validarMatch();
+// ======================================
+// CONFIRMAR PASSWORD
+// ======================================
 
-    if (!todoCumplido()) return;
+confirmarPassword.addEventListener('input', () => {
 
-    reqMsg.textContent  = '¡Contraseña actualizada correctamente!';
-    reqMsg.style.color  = '#4dff88';
+    if (
+        confirmarPassword.value ===
+        nuevaPassword.value
+    ) {
 
-    setTimeout(() => {
-        window.location.href = 'login.html';
-    }, 1000);
+        matchMsg.textContent =
+            'Las contraseñas coinciden';
+
+        matchMsg.style.color =
+            'green';
+
+    } else {
+
+        matchMsg.textContent =
+            'Las contraseñas no coinciden';
+
+        matchMsg.style.color =
+            'red';
+    }
 });
 
-// ── Funciones ─────────────────────────────────────────────
-function validarPassword() {
-    const val = nuevaPassword.value;
 
-    // Sin texto: limpia todo
-    if (val === '') {
-        reqMsg.textContent = '';
-        strengthFill.style.width = '0%';
-        strengthText.textContent = '';
-        strengthContainer.style.display = 'none';
+// ======================================
+// VALIDAR FORM
+// ======================================
+
+form.addEventListener('submit', (e) => {
+
+    const password =
+        nuevaPassword.value;
+
+    const confirmar =
+        confirmarPassword.value;
+
+    // Validar longitud
+    if (password.length < 8) {
+
+        e.preventDefault();
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Contraseña insegura',
+            text: 'Debe tener mínimo 8 caracteres'
+        });
+
         return;
     }
 
-    strengthContainer.style.display = 'flex';
+    // Validar coincidencia
+    if (password !== confirmar) {
 
-    // Primera regla que falla
-    const falla = reglas.find(r => !r.regex.test(val));
+        e.preventDefault();
 
-    if (falla) {
-        reqMsg.textContent = '⚠ ' + falla.msg;
-        reqMsg.style.color = '#f5c400';
-    } else {
-        reqMsg.textContent = '✓ Contraseña válida';
-        reqMsg.style.color = '#4dff88';
-    }
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Las contraseñas no coinciden'
+        });
 
-    // Barra de seguridad
-    const cumplidos  = reglas.filter(r => r.regex.test(val)).length;
-    const porcentaje = (cumplidos / reglas.length) * 100;
-    strengthFill.style.width = porcentaje + '%';
-
-    if (cumplidos <= 2) {
-        strengthFill.style.backgroundColor = '#ff4d4d';
-        strengthText.textContent            = 'Débil';
-        strengthText.style.color            = '#ff4d4d';
-    } else if (cumplidos <= 4) {
-        strengthFill.style.backgroundColor = '#f5c400';
-        strengthText.textContent            = 'Media';
-        strengthText.style.color            = '#f5c400';
-    } else {
-        strengthFill.style.backgroundColor = '#4dff88';
-        strengthText.textContent            = 'Fuerte';
-        strengthText.style.color            = '#4dff88';
-    }
-}
-
-function validarMatch() {
-    if (confirmarPassword.value === '') {
-        matchMsg.textContent = '';
         return;
     }
-    if (nuevaPassword.value === confirmarPassword.value) {
-        matchMsg.textContent = '✓ Las contraseñas coinciden';
-        matchMsg.style.color = '#4dff88';
-    } else {
-        matchMsg.textContent = '✗ Las contraseñas no coinciden';
-        matchMsg.style.color = '#ff4d4d';
-    }
-}
-
-function todoCumplido() {
-    return reglas.every(r => r.regex.test(nuevaPassword.value))
-        && nuevaPassword.value === confirmarPassword.value;
-}
-
-// Oculta la barra al inicio
-strengthContainer.style.display = 'none';
+});
