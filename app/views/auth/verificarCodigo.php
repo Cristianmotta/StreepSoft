@@ -35,6 +35,47 @@
         </div>
     </div>
 
+     <?php if (isset($_GET['pinNo'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'PIN NO ENCONTRADO',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+
+            background: '#232323',
+            color: '#ffffff',
+            iconColor: '#f5c400'
+            })
+        </script>
+
+    <?php endif; ?>
+
+    <?php if (isset($_GET['pinIN'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'PIN INCORRECTO',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+
+            background: '#232323',
+            color: '#ffffff',
+            iconColor: '#f5c400'
+            })
+        </script>
+
+    <?php endif; ?>
     <script src="/streepsoft/public/js/login/verify.js"></script>
 </body>
 </html>

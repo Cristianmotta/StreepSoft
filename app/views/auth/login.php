@@ -50,18 +50,28 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if(isset($_GET['password']) && $_GET['password'] === 'success'): ?>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Contraseña actualizada',
-                    text: 'Tu contraseña fue cambiada correctamente',
-                    confirmButtonColor: '#0f172a'
-                });
-                </script>
+                <?php if (isset($_GET['password'])): ?>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                    <script>
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Contraseña actualizada correctamente',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+
+                            background: '#232323',
+                            color: '#ffffff',
+                            iconColor: '#f5c400'
+                        })
+                    </script>
+
                 <?php endif; ?>
-                    
+
+
                 <button class="buttonLogin" type="submit">Iniciar Sesión</button>
 
                 <div class="link">
