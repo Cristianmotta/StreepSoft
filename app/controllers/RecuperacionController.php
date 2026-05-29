@@ -28,7 +28,8 @@ class RecuperacionController
         $username = $this->model->buscarUsuario($usuario);
 
         if(!$username){
-            die('Usuario no encontrado');
+            header('Location: /streepsoft/app/views/auth/logincorreo.php?user=error');
+            exit;
         }
 
         $pin = (string) random_int(10000, 99999);
@@ -37,7 +38,7 @@ class RecuperacionController
 
         $expiracion = date(
             'Y-m-d H:i:s',
-            strtotime('+10 minutes')
+            strtotime('+5 minutes')
         );
 
         $guardado = $this->model->guardarPin(
@@ -144,7 +145,7 @@ class RecuperacionController
                         margin-top: 15px; 
                         margin-bottom: 0;
                     '>
-                        ⏱ Este PIN expirará en 1 minuto.
+                        ⏱ Este PIN expirará en 5 minutos.
                     </p>
 
                 </div>
@@ -172,15 +173,18 @@ class RecuperacionController
         $datos = $this->model->obtenerPin($usuario);
 
         if (!$datos) {
-            die("PIN no encontrado");
+            header('Location: /streepsoft/app/views/auth/verificarCodigo.php?pinNo=error');
+            exit;
         }
 
         if (strtotime($datos['expired_session']) < time()) {
-            die("PIN expirado");
+            header('Location: /streepsoft/app/views/auth/logincorreo.php?pinEX=error');
+            exit;
         }
 
         if (!password_verify($pinIngresado, $datos['pin_recuperacion'])) {
-            die("PIN incorrecto");
+            header('Location: /streepsoft/app/views/auth/verificarCodigo.php?pinIN=error');
+            exit;
         }
 
         $_SESSION['usuario_recuperacion'] = $usuario;
@@ -197,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      if (isset($_POST['enviar_correo'])) {
 
         $usuario = trim($_POST['usuario']);
-
+        
         $controller->enviarPin($usuario);
     }
 
