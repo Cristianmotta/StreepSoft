@@ -40,15 +40,15 @@
         </div>
 
         <nav class="sidebar-links">
-            <a href="#">Estadísticas</a>
-            <a href="#">Gestión de alumnos</a>
+            <a href="/streepsoft/app/views/dashboard/index.php">Estadísticas</a>
+            <a href="/streepsoft/app/views/jugadores/index.php">Gestión de alumnos</a>
             <a href="#">Perfil de alumnos</a>
             <a href="#">Actualización de datos</a>
             <a href="#">Registro de deuda</a>
         </nav>
 
         <div class="sidebar-footer">
-            <button class="btn-cerrar-sesion" onclick="toggleMenu()">Cerrar</button>
+            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/login/index.php">Cerrar</a></button>
         </div>
     </div>
 
