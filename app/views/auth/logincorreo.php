@@ -43,5 +43,47 @@
             </form>
         </div>
     </div>
+
+    <?php if (isset($_GET['pinEX'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'PIN EXPIRADO',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+
+            background: '#232323',
+            color: '#ffffff',
+            iconColor: '#f5c400'
+            })
+        </script>
+
+    <?php endif; ?>
+
+    <?php if (isset($_GET['user'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'usuario no encontrado',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+
+            background: '#232323',
+            color: '#ffffff',
+            iconColor: '#f5c400'
+            })
+        </script>
+
+    <?php endif; ?>
 </body>
 </html>
