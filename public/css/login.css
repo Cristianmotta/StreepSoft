@@ -8,7 +8,7 @@
 
 .background-login {
     min-height: 100vh;
-    background-image: url('/Image/Fondo.svg');
+    background-image: url('/streepsoft/public/Image/Fondo.svg');
     background-size: cover;
     background-position: center;
     display: flex;

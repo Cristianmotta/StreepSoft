@@ -25,7 +25,7 @@
 
             <h1 class="h1-login">Iniciar Sesión</h1>
 
-            <form action="/streepsoft/app/controllers/loginController.php"  method="POST">
+            <form action="/streepsoft/app/controllers/loginControllerS.php"  method="POST">
 
                 <div class="input-group">
                     <label for="email">Correo</label>
@@ -45,11 +45,33 @@
 
                 <?php if(isset($_GET['error'])): ?>
                     <div id="mensajeError" class="alert-login-error">
-                        <p class="parrafo">Contreseña Usuario o Incorrecta</p>
+                        <p class="parrafo">Contraseña Usuario o Incorrecta</p>
                         <div class="barra-tiempo"></div>
                     </div>
                 <?php endif; ?>
-                    
+
+                <?php if (isset($_GET['password'])): ?>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                    <script>
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Contraseña actualizada correctamente',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+
+                            background: '#232323',
+                            color: '#ffffff',
+                            iconColor: '#f5c400'
+                        })
+                    </script>
+
+                <?php endif; ?>
+
+
                 <button class="buttonLogin" type="submit">Iniciar Sesión</button>
 
                 <div class="link">
