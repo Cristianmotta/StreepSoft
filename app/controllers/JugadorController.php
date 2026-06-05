@@ -24,13 +24,14 @@ class JugadorController {
     }
 
     // MUESTRA EL FORMULARIO PARA LOS NUEVOS JUGADORES //
-        public function create () {
-            $instructores = $this->getInstructores();
-            require_once 'app/views/jugadores/create.php';
-        }
+        // ─── MOSTRAR FORMULARIO NUEVO JUGADOR ───
+    public function create() {
+        $instructores = $this->getInstructores();
+        require_once 'app/views/jugadores/create.php';
+    }
 
-    // GUARDAR NUEVO JUGADOR //
-        public function store() {
+    // ─── GUARDAR NUEVO JUGADOR ───
+    public function store() {
         $apellido          = trim($_POST['apellido'] ?? '');
         $nombre            = trim($_POST['nombre'] ?? '');
         $talla             = trim($_POST['talla'] ?? '');
@@ -46,28 +47,28 @@ class JugadorController {
         $tipo_beca         = trim($_POST['tipo_beca'] ?? 'sin_beca');
         $error             = null;
 
-    // Validaciones
-     if(empty($apellido) || empty($nombre) || empty($documento)) {
-        $error = "Apellido, nombre y documento son obligatorios.";
+        // Validaciones
+        if(empty($apellido) || empty($nombre) || empty($documento)) {
+            $error = "Apellido, nombre y documento son obligatorios.";
             $instructores = $this->getInstructores();
             require_once 'app/views/jugadores/create.php';
             return;
         }
 
-    // Verificar documento duplicado
-    $stmt = $this->pdo->prepare(
-        "SELECT id FROM jugadores WHERE documento = :documento"
-    );
-    $stmt->execute([':documento' => $documento]);
+        // Verificar documento duplicado
+        $stmt = $this->pdo->prepare(
+            "SELECT id FROM jugadores WHERE documento = :documento"
+        );
+        $stmt->execute([':documento' => $documento]);
         if($stmt->fetch()) {
-            $error = "Ya existe un jugador con ese número de documento de identidad.";
+            $error = "Ya existe un jugador con ese número de documento.";
             $instructores = $this->getInstructores();
             require_once 'app/views/jugadores/create.php';
             return;
         }
 
-      // Verificar camiseta duplicada
-     if(!empty($camiseta)) {
+        // Verificar camiseta duplicada
+        if(!empty($camiseta)) {
             $stmt = $this->pdo->prepare(
                 "SELECT id FROM jugadores WHERE camiseta = :camiseta"
             );
@@ -80,7 +81,7 @@ class JugadorController {
             }
         }
 
-    // // Insertar jugador
+        // Insertar jugador
         $stmt = $this->pdo->prepare(
             "INSERT INTO jugadores (
                 apellido, nombre, talla, iniciales, camiseta,
@@ -91,8 +92,7 @@ class JugadorController {
                 :fecha_nacimiento, :edad, :documento, :celular_acudiente,
                 :instructor_id, :eps, :fecha_inscripcion, :tipo_beca
             )"
-        );
-
+       );
         $stmt->execute([
             ':apellido'          => $apellido,
             ':nombre'            => $nombre,
@@ -118,19 +118,29 @@ class JugadorController {
         $stmt->execute([':jugador_id' => $jugador_id]);
 
         // Redirigir al listado
-        header('Location: /streepsoft/public/jugadores');
+        header('Location:/streepsoft/public/jugadores');
         exit;
+    }
 
-         }
+    // ─── MOSTRAR FORMULARIO EDITAR ───
+    public function edit($id) {
+        $stmt = $this->pdo->prepare(
+            "SELECT * FROM jugadores WHERE id = :id"
+        );
+        $stmt->execute([':id' => $id]);
+        $jugador = $stmt->fetch();
+
+        if(!$jugador) {
+             header('Location:/streepsoft/public/jugadores');
+            exit;
+        }
 
         $instructores = $this->getInstructores();
         require_once 'app/views/jugadores/edit.php';
     }
 
-    //ACTUALIZAR JUGADOR
-
-        public function update($id) {
-
+    // ─── ACTUALIZAR JUGADOR ───
+    public function update($id) {
         $apellido          = trim($_POST['apellido'] ?? '');
         $nombre            = trim($_POST['nombre'] ?? '');
         $talla             = trim($_POST['talla'] ?? '');
@@ -154,7 +164,6 @@ class JugadorController {
             return;
         }
 
-
         // Verificar documento duplicado excluyendo el jugador actual
         $stmt = $this->pdo->prepare(
             "SELECT id FROM jugadores WHERE documento = :documento AND id != :id"
@@ -166,7 +175,7 @@ class JugadorController {
             require_once 'app/views/jugadores/edit.php';
             return;
         }
-        
+
         $stmt = $this->pdo->prepare(
             "UPDATE jugadores SET
                 apellido = :apellido,
@@ -185,7 +194,7 @@ class JugadorController {
                 estado = :estado
              WHERE id = :id"
         );
-         $stmt->execute([
+        $stmt->execute([
             ':apellido'          => $apellido,
             ':nombre'            => $nombre,
             ':talla'             => $talla,
@@ -202,12 +211,13 @@ class JugadorController {
             ':estado'            => $estado,
             ':id'                => $id
         ]);
-        header('Location:/streepsoft/public/jugadores');
+
+         header('Location:/streepsoft/public/jugadores');
         exit;
-    } 
-     
-    //CAMBIAR ESTADO 
-     public function cambiarEstado($id) {
+    }
+
+    // ─── CAMBIAR ESTADO ───
+    public function cambiarEstado($id) {
         $estado = trim($_POST['estado'] ?? '');
 
         if(!in_array($estado, ['activo', 'inactivo', 'retirado'])) {
@@ -220,11 +230,11 @@ class JugadorController {
         );
         $stmt->execute([':estado' => $estado, ':id' => $id]);
 
-        header('Location:/streepsoft/public/jugadores');
+         header('Location:/streepsoft/public/jugadores');
         exit;
     }
 
-    //VER DETALLE
+    // ─── VER DETALLE ───
     public function show($id) {
         $stmt = $this->pdo->prepare(
             "SELECT j.*, i.nombre AS instructor_nombre, c.nombre AS categoria_nombre
@@ -237,12 +247,12 @@ class JugadorController {
         $jugador = $stmt->fetch();
 
         if(!$jugador) {
-            header('Location:/streepsoft/public/jugadores');
+             header('Location:/streepsoft/public/jugadores');
             exit;
         }
 
-    //TRAER DOCUMENTOS DEL JUGADOR
-     $stmt = $this->pdo->prepare(
+        // Traer documentos del jugador
+        $stmt = $this->pdo->prepare(
             "SELECT * FROM documentos WHERE jugador_id = :jugador_id"
         );
         $stmt->execute([':jugador_id' => $id]);
@@ -250,7 +260,9 @@ class JugadorController {
 
         require_once 'app/views/jugadores/show.php';
     }
-     private function getInstructores() {
+
+    // ─── MÉTODO PRIVADO: OBTENER INSTRUCTORES ───
+    private function getInstructores() {
         $stmt = $this->pdo->prepare(
             "SELECT i.*, c.nombre AS categoria_nombre 
              FROM instructores i
@@ -261,5 +273,5 @@ class JugadorController {
         $stmt->execute();
         return $stmt->fetchAll();
     }
-
+}
 ?>
