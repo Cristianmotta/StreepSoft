@@ -9,3 +9,4 @@ export default function loadSection(elementId, url) {
         })
         .catch(error => console.error('loadSection:', error));
 }
+

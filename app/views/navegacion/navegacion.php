@@ -39,7 +39,7 @@
 
         <nav class="sidebar-links">
             <a href="/streepsoft/app/views/dashboard/index.php">Estadísticas</a>
-            <a href="/streepsoft/app/views/jugadores/index.php">Gestión de alumnos</a>
+            <a href="/streepsoft/public/gestionJugadores.php">Gestión de alumnos</a>
             <a href="/streepsoft/app/views/deudas/index.php">Deudas</a>
             <a href="/streepsoft/app/views/perfilJugador/index.php">Perfil de alumnos</a>
             <a href="#">Actualización de datos</a>
@@ -48,7 +48,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/login/index.php">Cerrar</a></button>
+            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/views/auth/login.php">Cerrar</a></button>
         </div>
     </div>
 

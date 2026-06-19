@@ -474,6 +474,24 @@ select option::checkmark{
     color: #000;
 }
 
+/* ===== COLORES PARA ESTADO ===== */
+.estado-activo p {
+    background-color: #28a745;   /* verde */
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.estado-inactivo p {
+    background-color: #dc3545;   /* rojo */
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+}
 
 
 @media (max-width: 992px){

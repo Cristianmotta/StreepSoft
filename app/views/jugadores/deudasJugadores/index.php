@@ -123,7 +123,7 @@
                             <th>Tipo</th>
                             <th>
                                 <div class="table-column">
-                                    <h3>Mensualidad</h3>
+                                    <h3>Matricula</h3>
                                     <p>Fecha pago</p>
                                 </div>
                             </th>
@@ -200,9 +200,9 @@
                                 </div>
                             </th>
                             <th>Total</th>
-                            <th>Estado</th>
+                            <th>pago</th>
                             <th>Acciones</th>
-                            <th>Pago</th>
+                            <th>pagar</th>
                         </tr>
                     </thead>
                     <tbody>

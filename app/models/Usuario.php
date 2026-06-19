@@ -23,9 +23,6 @@ class usuario
         return $stmt->fetch() ?: null;
     }
 
-    
-
-    
 }
 
 

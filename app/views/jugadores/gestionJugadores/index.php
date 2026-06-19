@@ -1,3 +1,9 @@
+<?php
+// No usar var_dump ni die aquí
+if (empty($jugadores)) {
+    echo "<p>No hay jugadores registrados.</p>";
+} else {
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,6 +11,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de Alumnos</title>
     <link rel="stylesheet" href="/streepsoft/public/css/jugadores/gestion.css" />
+    <link rel="icon" type="image/png" href="/streepsoft/public/Image/logo.jpeg">
+    <style>
+        .estado-activo {  
+            color: #28a745; 
+            font-weight: bold; 
+        }
+
+        .estado-inactivo { 
+            color: #dc3545; 
+            font-weight: bold; 
+        }
+
+        .pago-pagado {
+            background-color: #28a745;   /* verde */
+            color: white;
+            padding: 0 0 12px;
+            border-radius: 5px;
+        }
+
+        .pago-pendiente {
+            background-color: #ffc107;   /* amarillo */
+            color: #1f1f1f;
+            padding: 0 0 12px;
+            border-radius: 5px;
+        }
+
+        .pago-mora {
+            background-color: #dc3545;   /* rojo */
+            color: white;
+            padding: 0 0 12px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <div id="nav-card"></div>
@@ -15,12 +54,11 @@
         <span></span>
    </div>
 
-
     <div class="card-border">
         <div class="black-card">
             <div class="text-card">
                 <h1>Gestion de Alumno</h1>
-                <p>Temporada 2026 -<span> Registrados 5 Alumnos </span></p>
+                <p>Temporada 2026 -<span> Registrados <?= count ($jugadores) ?> Alumnos </span></p>
             </div>
 
 
@@ -31,9 +69,7 @@
             </div>
         </div>
 
-
         <div class="card-options">
-            
             <div class="card-select">
                 <div class="select-categorias">
                     <label class="categoria">Categorias</label>
@@ -57,6 +93,7 @@
                 </select>
                 </div>
             </div>
+
             <div class="card-select">
                 <div class="select-estado">
                     <label class="estado">Estado</label>
@@ -71,16 +108,16 @@
                 </div>
             </div>
 
-
             <div class="card-buscar">
                 <div class="buscar">
-                    <button>
+                    <button type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
                         <img src="/streepsoft/public/Image/search.png" alt="search">
                     </button>
 
-                    <input type="text" placeholder="Buscar Alumno">
+                    <input type="text" id="buscarInput" placeholder="Buscar Alumno" autocomplete="off">
                 </div>
             </div>
+
         </div>
 
         <div class="division"></div>
@@ -107,30 +144,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach ($jugadores as $jugador): ?>
                         <tr>
                             <td>
                                 <div class="table-foto">
                                     J
                                 </div>
                             </td>
-                            <td>Castillo moreno</td>
-                            <td>Juan luis</td>
-                            <td>12/06/2004</td>
-                            <td>22</td>
-                            <td>sub 20</td>
-                            <td>Mcj</td>
-                            <td>Luis</td>
-                            <td>Juan torres</td>
-                            <td>312-566-8893</td>
+                            <td><?= htmlspecialchars($jugador['apellidos']) ?></td>
+                            <td><?= htmlspecialchars($jugador['nombres'])  ?></td>
+                            <td><?= htmlspecialchars($jugador['fecha_nacimiento']) ?></td>
+                            <td><?= htmlspecialchars($jugador['edad']) ?></td>
+                            <td><?= htmlspecialchars($jugador['categoria']) ?></td>
+                            <td><?= htmlspecialchars($jugador['iniciales']) ?></td>
+                            <td><?= htmlspecialchars($jugador['instructor']) ?></td>
+                            <td><?= htmlspecialchars($jugador['acudiente']) ?></td>
+                            <td><?= htmlspecialchars($jugador['numero_acudiente']) ?></td>
                             <td>
-                                <div class="table-estado">
-                                    <p>activo</p>
-                                </div>
+                                <div class="estado estado-<?= strtolower($jugador['estado']) ?>">
+                                    <p><?= htmlspecialchars($jugador['estado']) ?></p>
+                                </div>  
                             </td>
-                            <td>29/01/2026</td>
+                            <td><?= htmlspecialchars($jugador['fecha_limite_pago']) ?></td>
                             <td>
-                                <div class="pago">
-                                    <p>pago</p>
+                                <div class="pago pago-<?= strtolower($jugador['pago']) ?>">
+                                    <p><?= htmlspecialchars($jugador['pago']) ?></p>
                                 </div>
                             </td>
                             <td>
@@ -138,17 +176,21 @@
                                     <button>
                                         <span class="mingcute--edit-fill"></span>
                                     </button>
-                                    <button>
-                                        <span class="ic--round-delete"></span>                                                                                                                         
-                                    </button>
+                                    <form method="post" action="gestionJugadores.php?action=eliminar" style="display:inline;" onsubmit="return confirm('¿Eliminar este jugador?')">
+                                        <input type="hidden" name="id_jugadores" value="<?= $jugador['id_jugadores'] ?>">
+                                        <button type="submit" class="btn-eliminar">
+                                            <span class="ic--round-delete"></span>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
-       
+
         <div class="division-2"></div>
 
         <div class="card-footer">
@@ -163,8 +205,36 @@
         </div>
     </div>    
 
+   <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const inputBuscar = document.getElementById('buscarInput');
+        const filas = document.querySelectorAll('.tabla tbody tr');
+        const btnLimpiar = document.getElementById('btnLimpiarBusqueda');
+
+            function filtrarTabla() {
+                const texto = inputBuscar.value.toLowerCase().trim();
+                
+                filas.forEach(fila => {
+                    // Obtener todo el texto de la fila
+                    const textoFila = fila.textContent.toLowerCase();
+                    // Si el texto buscado está contenido, se muestra; si no, se oculta
+                    fila.style.display = textoFila.includes(texto) ? '' : 'none';
+                });
+            }
+
+            // Al escribir
+            inputBuscar.addEventListener('input', filtrarTabla);
+
+            // Botón para limpiar el campo
+            btnLimpiar.addEventListener('click', function() {
+                inputBuscar.value = '';
+                filtrarTabla();  // Actualizar la vista (mostrar todo)
+            });
+        });
+   </script>
    <script src="/streepsoft/public/js/jugadores/gestion.js"></script>
    <script src="/streepsoft/public/js/dashboard/hamburguesa.js"></script>
    <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
 </body>
 </html>
+<?php } // fin del else ?>
