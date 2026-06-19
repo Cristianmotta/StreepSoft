@@ -5,56 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Alumno | StreepSoft</title>
-
-    <link rel="stylesheet" href="/streepsoft/public/css/dashboard.css">
-    <link rel="stylesheet" href="/streepsoft/public/css/jugadores.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dashboard.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/perfil.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
 <body>
-    <div class="navbar">
-        <nav class="main-navbar">
-            <div class="navbar-group">
-                <a href="#" class="navbar-item" title="Usuario">
-                    <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
-                </a>
-                <a href="#" class="navbar-item" title="Notificaciones">
-                    <img src="/streepsoft/public/Image/notifica.png" alt="notifica" class="navbar-icon">
-                </a>
-            </div>
-            <div class="navbar-group">
-                <div class="navbar-logo">
-                    <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo">
-                </div>
-                <button class="navbar-item btn-menu" onclick="toggleMenu()" aria-label="Abrir menú">
-                    <img src="/streepsoft/public/Image/menu.png" alt="hamburguesa" class="navbar-icon">
-                </button>
-            </div>
-        </nav>
-        <div class="linea"></div>
-    </div>
-
-    <div id="side-menu" class="sidebar">
-        <div class="sidebar-header">
-            <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo" class="sidebar-logo">
-            <button class="close-icon-btn" onclick="toggleMenu()">
-                <img src="/streepsoft/public/Image/menu.png" alt="cerrar">
-            </button>
-        </div>
-        <nav class="sidebar-links">
-            <a href="">Estadísticas</a>
-            <a href="#">Gestión de alumnos</a>
-            <a href="#">Perfil de alumnos</a>
-            <a href="#">Actualización de datos</a>
-            <a href="#">Registro de deuda</a>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="btn-cerrar-sesion" onclick="toggleMenu()">Cerrar</button>
-        </div>
-    </div>
-
-    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+    
+    <div id="nav-card"></div>
 
     <section class="perfil-page">
 
@@ -194,6 +153,7 @@
     </section>
 
     <script src="/streepsoft/public/js/dashboard/hamburguesa.js"></script>
+    <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
 </body>
 
 </html>
