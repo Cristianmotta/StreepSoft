@@ -48,7 +48,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/views/auth/login.php">Cerrar</a></button>
+            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/views/auth/login.php">Cerrar sesion</a></button>
         </div>
     </div>
 
