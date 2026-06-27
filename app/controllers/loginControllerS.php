@@ -14,7 +14,8 @@ $contrasenaInput = trim($_POST['contrasena'] ?? '');
 $usuario = $usuarioModel->obtenerporusuario($usuarioInput);
 
 if (!$usuario) {
-    die("Usuario no encontrado");
+    header('Location: /streepsoft/app/views/auth/login.php?error=1');
+    exit;
 }
 
 if (!password_verify($contrasenaInput, $usuario['contrasena'])) {

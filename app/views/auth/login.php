@@ -9,8 +9,8 @@
     <!-- Font Awesome - librería de íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet" href="/streepsoft/public/css/login.css">
-   <link rel="stylesheet" href="/streepsoft/public/css/login-alert.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/login/login.css">
+   <link rel="stylesheet" href="/streepsoft/public/css/login/login-alert.css">
 </head>
 
 <body class="background-login">
@@ -45,7 +45,7 @@
 
                 <?php if(isset($_GET['error'])): ?>
                     <div id="mensajeError" class="alert-login-error">
-                        <p class="parrafo">Contraseña Usuario o Incorrecta</p>
+                        <p class="parrafo">Usuario o Contraseña Incorrecta</p>
                         <div class="barra-tiempo"></div>
                     </div>
                 <?php endif; ?>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificar Codigo</title>
-    <link rel="stylesheet" href="/streepsoft/public/css/login.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/login/login.css">
 </head>
 <body class="background-login">
     <div class="page-wrapper">
