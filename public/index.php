@@ -1,6 +1,14 @@
 <?php
 
-define('BASE_URL', 'http://localhost/streepsoft/')
+define('BASE_URL', 'http://localhost/streepsoft/');
+require_once '../config/database.php';
+require_once '../app/core/Auth.php'
+require_once '../app/models/Jugador.php';
+require_once '../app/controllers/JugadorController.php';
+
+
+$jugadorModel      = new Jugador($pdo);
+$jugadorController = new JugadorController($jugadorModel);
 
 ?>
 <!DOCTYPE html>
@@ -8,8 +16,10 @@ define('BASE_URL', 'http://localhost/streepsoft/')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Streepsotf</title>
+    <title>Inicio | Streepsoft</title>
     <link rel="stylesheet" href="./css/homepanel/index.css">
+    <link rel="shortcut icon" href="./assets/img/logofavi.ico" type="image/x-icon">
+    
 </head>
 <body>
     <div class="nav-des">
@@ -107,7 +117,7 @@ define('BASE_URL', 'http://localhost/streepsoft/')
 
     <footer class="footer">
         <div class="footer-copy">
-            <p>© 2026 Streepsotf - <span>CopCo</span>lombia - Todos los derechos reservados</p>
+            <p>© 2026 Streepsoft - <span>CopCo</span>lombia - Todos los derechos reservados</p>
         </div>
     </footer>
 
