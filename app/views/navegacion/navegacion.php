@@ -38,17 +38,19 @@
         </div>
 
         <nav class="sidebar-links">
-            <a href="/streepsoft/app/views/dashboard/index.php">Estadísticas</a>
-            <a href="/streepsoft/public/gestionJugadores.php">Gestión de alumnos</a>
-            <a href="/streepsoft/app/views/deudas/index.php">Deudas</a>
-            <a href="/streepsoft/app/views/perfilJugador/index.php">Perfil de alumnos</a>
+            <a href="/streepsoft/dashboard">Estadísticas</a>
+            <a href="/streepsoft/jugadores/gestionJugadores">Gestión de alumnos</a>
+            <a href="/streepsoft/jugadores/deudas">Deudas</a>
+            <a href="/streepsoft/perfilJugador">Perfil de alumnos</a>
             <a href="#">Actualización de datos</a>
-
             <a href="#">Registro de deuda</a>
         </nav>
 
         <div class="sidebar-footer">
-            <button class="btn-cerrar-sesion" onclick="toggleMenu()"><a href="/streepsoft/app/views/auth/login.php">Cerrar sesion</a></button>
+            <form method="POST" action="/streepsoft/logout" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
+                <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
+                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
+            </form>
         </div>
     </div>
 

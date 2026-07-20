@@ -14,6 +14,11 @@
                 draggable="false">
 
             <h1 class="h1-verify">Pin de Seguridad</h1>
+            <?php 
+                $emailOculto = $_GET['email'] ?? 'tu correo';
+                $usuario = $_GET['usuario'] ?? '';
+            ?>
+            <p class="message-code">Se acaba de enviar un correo electrónico con un código de verificación a <?php echo htmlspecialchars($emailOculto); ?></p>
 
             <form action="/streepsoft/app/controllers/RecuperacionController.php" method="POST" id="pinForm">
                 

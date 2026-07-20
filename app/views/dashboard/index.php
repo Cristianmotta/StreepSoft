@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -74,5 +76,29 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/streepsoft/public/js/dashboard/statistic.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
+    <script>
+        // ✅ BLOQUEAR RETROCESO EN DASHBOARD
+        
+        // Detener cualquier intento de navegación hacia atrás
+        window.history.pushState(null, null, window.location.href);
+        
+        window.addEventListener('popstate', function(event) {
+            // Bloquear silenciosamente
+            window.history.pushState(null, null, window.location.href);
+        });
+
+        // Alternativamente, mostrar alerta (si prefieres feedback)
+        window.addEventListener('popstate', function(event) {
+            event.preventDefault();
+            alert('No puedes retroceder en el dashboard por razones de seguridad. Usa los menús de navegación.');
+            window.history.pushState(null, null, window.location.href);
+        });
+
+        // También bloquear cuando el usuario intenta cerrar la pestaña
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+</script>
 </body>
 </html>
