@@ -11,6 +11,7 @@ $_SESSION['quick_login']['expires_at'] > time();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio | Streepsotf</title>
     <link rel="stylesheet" href="/streepsoft/public/css/homepanel/index.css">
+    <link rel="shortcut icon" href="/streepsoft/public//assets/img/logofavi.ico" type="image/x-icon">
 </head>
 <body>
     <div class="nav-des">
