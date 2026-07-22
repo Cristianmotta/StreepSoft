@@ -1,127 +1,299 @@
 <?php
+declare(strict_types=1);
+session_start();
 
-define('BASE_URL', 'http://localhost/streepsoft/');
-require_once '../config/database.php';
-require_once '../app/core/Auth.php'
-require_once '../app/models/Jugador.php';
-require_once '../app/controllers/JugadorController.php';
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+$base = dirname($_SERVER['SCRIPT_NAME']);
+$base = str_replace('\\', '/', $base);
+
+// IMPORTANTE: Si la ruta termina en /public, quitar /public
+// Esto sucede cuando el archivo está en /public/index.php
+if (basename($base) === 'public') {
+    $base = dirname($base);
+}
+
+// ============================================================================
+// 1. CONFIGURACIÓN INICIAL
+// ============================================================================
+
+// Definir la URL base de la aplicación
+define('BASE_URL', rtrim($protocol. '://' . $host . $base, '/') . '/');
+define('APP_PATH', __DIR__ . '/../app');
+define('CONFIG_PATH', __DIR__ . '/../config');
+
+// Zona horaria
+date_default_timezone_set('America/Bogota');
+
+// Configuración de errores
+error_reporting(E_ALL);
+ini_set('display_errors', '0');  // No mostrar errores en pantalla (seguridad)
+ini_set('log_errors', '1');      // Loguear errores en archivo
+ini_set('error_log', __DIR__ . '/../logs/error.log');
+
+// ============================================================================
+// 2. CARGAR ARCHIVOS NECESARIOS
+// ============================================================================
+
+// Cargar configuración de base de datos
+require_once CONFIG_PATH . '/database.php';
+
+// Cargar clases base (Core)
+require_once APP_PATH . '/core/Model.php';
+require_once APP_PATH . '/core/Controller.php';
+require_once APP_PATH . '/core/Auth.php';
+require_once APP_PATH . '/core/SessionTimeout.php';
+require_once APP_PATH . '/helpers/url.php';
+
+// ========================================================================
+// CARGAR MODELOS
+// =========================================================================
+
+require_once APP_PATH . '/models/Usuario.php';
+require_once APP_PATH . '/models/Jugador.php';
+require_once APP_PATH . '/models/Estadistica.php';
+require_once APP_PATH . '/models/Recuperacion.php';
 
 
-$jugadorModel      = new Jugador($pdo);
-$jugadorController = new JugadorController($jugadorModel);
+// Verificar si la sesion expiro por timeout
+SessionTimeout::check();
 
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Streepsoft</title>
-    <link rel="stylesheet" href="./css/homepanel/index.css">
-    <link rel="shortcut icon" href="./assets/img/logofavi.ico" type="image/x-icon">
+// ANTES DE RENDERIZAR VISTAS PROTEGIDAS
+if (Auth::check()) {
+    // Verificar que la sesión no expiró
+    if (time() - ($_SESSION['last_activity'] ?? time()) > 600) {
+        // 10 minutos de inactividad
+        session_destroy();
+        header('Location: /streepsoft/?timeout=1');
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
+}
+
+// Hacer disponible la conexión PDO globalmente
+$GLOBALS['pdo'] = $pdo ?? null;
+
+// ============================================================================
+// 3. DEFINIR RUTAS
+// ============================================================================
+
+// Definir las rutas de la aplicación
+// Formato: method(ruta, 'ControllerName@methodName')
+
+// RUTAS PÚBLICAS (sin autenticación requerida)
+$rutas = [
+    // Página de inicio
+    'GET' => [
+        '/' => ['controller' => 'PublicController', 'method' => 'home'],
+        '/home' => ['controller' => 'PublicController', 'method' => 'home'],
+        
+        // Login
+        '/login' => ['controller' => 'AuthController', 'method' => 'showLogin'],
+        
+        // Recuperar contraseña
+        '/recuperar-contrasena' => ['controller' => 'RecuperacionController', 'method' => 'showRecover'],
+    ],
     
-</head>
-<body>
-    <div class="nav-des">
-        <nav>
-            <img src="./Image/copColombiaInternacional.svg" alt="CopColombia">
-            <button class="iniciar"><a href="<?= BASE_URL ?>app/views/auth/login.php">Iniciar Sesión</a></button>
-        </nav>
-        <div class="linea"></div>
-    </div>
+    'POST' => [
+        // Login (procesar)
+        '/login' => ['controller' => 'AuthController', 'method' => 'login'],
+        
+        // Logout
+        '/logout' => ['controller' => 'AuthController', 'method' => 'logout'],
+        '/quick-login' => ['controller' => 'QuickLoginController', 'method' => 'quickLogin'],
+    
+        // Recuperacion de contraseña
+        '/recuperacion-enviar-pin' => ['action' => 'recuperation'],
+    ]
+];
 
-    <div class="des">
-        <div class="imagenes">
+// RUTAS PROTEGIDAS (requieren autenticación)
+if (Auth::check()) {
+    $rutasProtegidas = [
+        'GET' => [
+            '/dashboard' => ['controller' => 'DashboardController', 'method' => 'index'],
+            '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
+            '/jugadores/deudas' => ['controller' => 'JugadorController', 'method' => 'deudas'],
+            '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
+        ],
+        
+        'POST' => [
+            '/jugadores/guardar' => ['controller' => 'JugadorController', 'method' => 'guardar'],
+            '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
+        ]
+    ];
+    
+    // Combinar rutas
+    foreach ($rutasProtegidas as $metodo => $rutasMetodo) {
+        if (!isset($rutas[$metodo])) {
+            $rutas[$metodo] = [];
+        }
+        $rutas[$metodo] = array_merge($rutas[$metodo], $rutasMetodo);
+    }
+}
+ 
+// ============================================================================
+// 4. PROCESAR LA PETICIÓN
+// ============================================================================
 
-            <div class="slide">
-                <img src="./Image/collaege.png" alt="imagen-1">
-                <div class="overlay">
-                    <h1><span>Cop</span>&nbsp;<span>Co</span>lombia</h1>
-                    <p>!Cumpliendo Sueños he ilusiones!</p>
-                </div>
-            </div>
+try {
+    // Obtener el método HTTP (GET, POST, etc)
+    $metodo = $_SERVER['REQUEST_METHOD'];
+    
+    $uri = $_GET['url'] ?? '/';
 
-            <div class="slide">
-                <img src="./Image/collaege-2.png" alt="imagen-2">
-                <div class="overlay">
-                    <h1>Entren<span>amiento</span> profesional</h1>
-                    <p>Supera tus límites cada día</p>
-                </div>
-            </div>
+    // Si viene en REQUEST_URI (cuando .htaccess funciona o entras directo a /public/)
+    if (empty($_GET['url'])) {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-            <div class="slide">
-                <img src="./Image/collaege-3.jpg" alt="imagen-3">
-                <div class="overlay">
-                    <h1>Haz historia</h1>
-                    <p>El esfuerzo define tu camino</p>
-                </div>
-            </div>
-        </div>
+        // Extraer la carpeta del proyecto de BASE_URL
+        $projectFolder = parse_url(BASE_URL, PHP_URL_PATH);
+        $projectFolder = rtrim($projectFolder, '/');
 
-        <button class="botton prev">⟨</button>
-        <button class="botton next">⟩</button>
+        if (!empty($projectFolder) && 
+                $projectFolder !== '/'
+                && strpos($uri, $projectFolder) === 0){
+            $uri = substr($uri, strlen($projectFolder));
+        }
 
-        <div class="indicadores"></div>
-    </div>
+        if (strpos($uri, '/public') === 0){
+            $uri = substr($uri, strlen('/public'));
+        }
 
-    <div class="vision">
-        <div class="Vi-des">
-            <h1>Vi<span>si</span>ón</h1>
-            <p>Ser una organización social líder a nivel nacional e internacional, en el cumplimiento de sueños de NNA,
-                comprometida con la igualdad de oportunidades, mediante alianzas estratégicas que multipliquen el
-                impacto en nuestros programas y actividades que promuevan la implementación de ODS.</p>
-        </div>
+        $uri = trim($uri, '/');
 
-        <div class="vi-imagenes">
+        if ($uri === ''){
+            $uri = '/';
+        } else {
+            $uri = '/' . $uri;
+        }
+    }
+    
+    $uri = '/' . trim($uri, '/');
 
-            <div class="vi-imagen">
-                <img src="./Image/collaege-4.jpg" alt="imagen-5">
-            </div>
+    // Buscar la ruta en nuestras rutas definidas
+    $rutaEncontrada = null;
+    $parametros = [];
+    
+    if (isset($rutas[$metodo])) {
+        foreach ($rutas[$metodo] as $ruta => $detalles) {
+            // Convertir :id a regex
+            $patrón = str_replace(':id', '(\d+)', preg_quote($ruta, '#'));
+            
+            if (preg_match('#^' . $patrón . '$#', $uri, $matches)) {
+                $rutaEncontrada = $detalles;
+                array_shift($matches);  // Remover el match completo
+                $parametros = $matches;
+                break;
+            }
+        }
+    }
 
-            <div class="vi-imagen-derecha">
-                <div class="vi-imagen">
-                    <img src="./Image/collaege-7.jpeg" alt="imagen-6">
-                </div>
+    if (!empty($rutas[$_SERVER['REQUEST_METHOD']][$uri])) {
+        $ruta = $rutas[$_SERVER['REQUEST_METHOD']][$uri];
+        
+        if (isset($ruta['action']) && $ruta['action'] === 'recuperation') {
+            // Ejecutar RecuperacionController.php directamente (mantiene PHPMailer intacto)
+            require_once APP_PATH . '/controllers/RecuperacionController.php';
+            exit;
+        }
+    }
 
-                <div class="vi-imagen">
-                    <img src="./Image/collaege-6.jpeg" alt="imagen-7">
-                </div>
-            </div>
+    // Si no encontramos la ruta, mostrar 404
+    if (!$rutaEncontrada) {
 
+        http_response_code(404);
 
-        </div>
-    </div>
+        echo "<h2>404 - Ruta no encontrada</h2>";
 
-    <div class="mision">
-        <div class="mi-des">
-            <h1><span>Mi</span>sión</h1>
-            <p>Somos una organización con enfoque social, deportivo, educativo y de cultura de Paz, que utiliza
-                diferentes estrategias en sinergia con los ODS para mitigar y combatir flagelos en los que se ven
-                expuestos NNAJ en Colombia.</p>
-        </div>
+        echo "<hr>";
 
-        <div class="mi-imagenes">
-            <div class="mi-img">
-                <img src="./Image/collaege-8.png" alt="imagen-8">
-            </div>
+        echo "<strong>REQUEST_URI:</strong><br>";
+        echo htmlspecialchars($_SERVER['REQUEST_URI']);
 
-            <div class="mi-img">
-                <img src="./Image/collaege-9.jpg" alt="imagen-9">
-            </div>
+        echo "<br><br>";
 
-            <div class="mi-img">
-                <img src="./Image/collaege-10.avif" alt="imagen-10">
-            </div>
-        </div>
-    </div>
+        echo "<strong>SCRIPT_NAME:</strong><br>";
+        echo htmlspecialchars($_SERVER['SCRIPT_NAME']);
 
-    <footer class="footer">
-        <div class="footer-copy">
-            <p>© 2026 Streepsoft - <span>CopCo</span>lombia - Todos los derechos reservados</p>
-        </div>
-    </footer>
+        echo "<br><br>";
 
+        echo "<strong>BASE_URL:</strong><br>";
+        echo htmlspecialchars(BASE_URL);
 
-    <script src="/streepsoft/public/js/main.js"></script>
-</body>
-</html>
+        echo "<br><br>";
+
+        echo "<strong>Ruta calculada (\$uri):</strong><br>";
+        echo htmlspecialchars($uri);
+
+        echo "<br><br>";
+
+        echo "<strong>Método HTTP:</strong><br>";
+        echo htmlspecialchars($metodo);
+
+        echo "<br><br>";
+
+        echo "<strong>Rutas disponibles:</strong>";
+
+        echo "<pre>";
+        print_r(array_keys($rutas[$metodo] ?? []));
+        echo "</pre>";
+
+        exit;
+    }
+    
+    // ========================================================================
+    // 5. EJECUTAR EL CONTROLADOR
+    // ========================================================================
+    
+    // Obtener nombre del controlador y método
+    $controllerName = $rutaEncontrada['controller'];
+    $methodName = $rutaEncontrada['method'];
+    
+    // Cargar el archivo del controlador
+    $controllerFile = APP_PATH . '/controllers/' . $controllerName . '.php';
+    
+    if (!file_exists($controllerFile)) {
+        throw new Exception("Controlador no encontrado: $controllerName");
+    }
+    
+    require_once $controllerFile;
+    
+    // Crear una instancia del controlador
+    if (!class_exists($controllerName)) {
+        throw new Exception("Clase controlador no encontrada: $controllerName");
+    }
+    
+    $controller = new $controllerName($GLOBALS['pdo']);
+    
+    // Verificar que el método existe
+    if (!method_exists($controller, $methodName)) {
+        throw new Exception("Método no encontrado: $controllerName@$methodName");
+    }
+    
+    // Ejecutar el método
+    if (count($parametros) > 0) {
+        call_user_func_array([$controller, $methodName], $parametros);
+    } else {
+        $controller->$methodName();
+    }
+
+} catch (Exception $e) {
+    // Si hay un error, registrarlo
+    error_log("Error: " . $e->getMessage());
+    
+    // Mostrar el error (solo en desarrollo)
+    http_response_code(500);
+    echo "Error en la aplicación";
+    
+    if (ini_get('display_errors')) {
+        echo "<pre>";
+        echo htmlspecialchars($e->getMessage());
+        echo "</pre>";
+    }
+}
+
