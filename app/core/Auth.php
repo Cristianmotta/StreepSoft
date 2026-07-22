@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-<<<<<<< HEAD
-// Auth - Clae para menejar autenticacion
+// Auth - Clase para manejar autenticacion
 class Auth {
 
     // Verificar si el usuario esta autenticado 
@@ -65,33 +64,11 @@ class Auth {
 
         // Limpiar cookie
         if (ini_get("session.use_cokies")) {
-=======
-class Auth {
-
-    // ─── INICIAR SESIÓN ───
-    public static function login(array $usuario): void {
-        session_start();
-        $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['usuario']    = $usuario['usuario'];
-        $_SESSION['nombre']     = $usuario['nombre'];
-    }
-
-    // ─── DESTRUCTOR DE SESIÓN ───
-    public static function logout(): void {
-        session_start();
-        
-        // Elimina todas las variables de sesión
-        $_SESSION = [];
-        
-        // Elimina la cookie de sesión
-        if (ini_get('session.use_cookies')) {
->>>>>>> upstream/developer
             $params = session_get_cookie_params();
             setcookie(
                 session_name(),
                 '',
                 time() - 42000,
-<<<<<<< HEAD
                 $params["path"],
                 $params["domain"],
                 $params["secure"],
@@ -126,52 +103,14 @@ class Auth {
             $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI'] ?? '/';
             
             header('Location: ' . $redirectTo);
-=======
-                $params['path'],
-                $params['domain'],
-                $params['secure'],
-                $params['httponly']
-            );
-        }
-
-        // Destruye la sesión completamente
-        session_destroy();
-
-        header('Location: ' . BASE_URL . 'login');
-        exit;
-    }
-
-    // ─── VERIFICAR SI HAY SESIÓN ACTIVA ───
-    public static function check(): bool {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        return isset($_SESSION['usuario_id']);
-    }
-
-    // ─── PROTEGER RUTAS ───
-    public static function requerirLogin(): void {
-        if (!self::check()) {
-            header('Location: ' . BASE_URL . 'login');
->>>>>>> upstream/developer
             exit;
         }
     }
 
-<<<<<<< HEAD
     public static function getRedirectTo(string $default = '/'): string
     {
         $redirect = $_SESSION['redirect_to'] ?? $default;
         unset($_SESSION['redirect_to']);  // Limpiar después de usar
         return $redirect;
-=======
-    // ─── OBTENER USUARIO ACTUAL ───
-    public static function usuario(): array {
-        return [
-            'id'      => $_SESSION['usuario_id'] ?? null,
-            'usuario' => $_SESSION['usuario'] ?? null,
-            'nombre'  => $_SESSION['nombre'] ?? null
-        ];
->>>>>>> upstream/developer
     }
 }
