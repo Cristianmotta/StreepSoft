@@ -1,8 +1,11 @@
 <?php
 
+
+
+
 define('BASE_URL', 'http://localhost/streepsoft/');
 require_once '../config/database.php';
-require_once '../app/core/Auth.php'
+require_once '../app/core/Auth.php';
 require_once '../app/models/Jugador.php';
 require_once '../app/controllers/JugadorController.php';
 
