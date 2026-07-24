@@ -4,6 +4,8 @@ const total = slides.length;
 const contenedor = document.querySelector('.imagenes');
 const indicadores = document.querySelector('.indicadores')
 
+
+
 /* Crear punticos */
 
 for (let i = 0; i < total; i++){

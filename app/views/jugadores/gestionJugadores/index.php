@@ -1,8 +1,10 @@
 <?php
-// No usar var_dump ni die aquí
-if (empty($jugadores)) {
-    echo "<p>No hay jugadores registrados.</p>";
-} else {
+
+echo "<pre>";
+print_r($jugadores);
+echo "</pre>";
+die();
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -237,4 +239,3 @@ if (empty($jugadores)) {
    <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
 </body>
 </html>
-<?php } // fin del else ?>

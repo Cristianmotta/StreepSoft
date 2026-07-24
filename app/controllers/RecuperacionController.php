@@ -22,6 +22,21 @@ class RecuperacionController
         $this->model = new RecuperacionModel($pdo);
     }
 
+    private static function ocultarEmail(string $email): string
+    {
+        $partes = explode('@', $email);
+        if (count($partes) !== 2) {
+            return $email;
+        }
+        
+        $usuario = $partes[0];
+        $dominio = $partes[1];
+        $mostrar = min(4, strlen($usuario));
+        $usuarioOculto = substr($usuario, 0, $mostrar) . '•••••••••••••';
+        
+        return $usuarioOculto . '@' . $dominio;
+    }
+
     public function enviarPin(string $usuario): void
     {
 
@@ -154,7 +169,8 @@ class RecuperacionController
 
             $mail->send();
 
-            header("Location: /streepsoft/app/views/auth/verificarCodigo.php?usuario=" . urldecode($usuario));
+            $emailOculto = self::ocultarEmail($usuario);
+            header("Location: /streepsoft/app/views/auth/verificarCodigo.php?usuario=" . urldecode($usuario) . "&email=" . urlencode($emailOculto) );
 
         } catch (Exception $e){
             echo 'Error enviando correo';
