@@ -75,7 +75,7 @@ if (Auth::check()) {
 }
 
 // Hacer disponible la conexión PDO globalmente
-$GLOBALS['pdo'] = $pdo ?? null;
+$GLOBALS['pdo'] = $pdo ??  null;
 
 // ============================================================================
 // 3. DEFINIR RUTAS
