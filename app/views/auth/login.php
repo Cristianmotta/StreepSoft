@@ -1,6 +1,51 @@
+<?php
+// Inicializar contador de retrocesos en sesión
+if (!isset($_SESSION['backClickCount'])) {
+    $_SESSION['backClickCount'] = 0;
+}
+
+$mensaje = '';
+$tipo = '';
+
+if (isset($_GET['error'])) {
+
+    switch ($_GET['error']) {
+
+        case 'campos_vacios':
+            $mensaje = 'Debes completar todos los campos.';
+            $tipo = 'danger';
+            break;
+
+        case 'credenciales_invalidas':
+            $mensaje = 'Usuario o contraseña incorrectos.';
+            $tipo = 'danger';
+            break;
+
+        case 'csrf':
+            $mensaje = 'La sesión expiró. Intenta nuevamente.';
+            $tipo = 'warning';
+            break;
+
+        default:
+            $mensaje = 'Ha ocurrido un error.';
+            $tipo = 'danger';
+    }
+}
+
+if (isset($_GET['success'])) {
+
+    switch ($_GET['success']) {
+
+        case 'logout':
+            $mensaje = 'Has cerrado sesión correctamente.';
+            $tipo = 'success';
+            break;
+    }
+
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,26 +59,25 @@
    
 
 </head>
-
 <body class="background-login">
     <div class="page-wrapper">
         <div class="login-card">
 
             <div class="link-password">
-                <a href="/streepsoft/public/"><img src="/streepsoft/public/Image/icon_arrow_back.svg" alt=""></a>
+                <a href="/streepsoft/home"><img src="/streepsoft/public/Image/icon_arrow_back.svg" alt=""></a>
             </div>
 
             <img src="/streepsoft/public/Image/CopColombiaInternacional.svg" alt="Logo" class="logoLogin" draggable="false">
 
             <h1 class="h1-login">Iniciar Sesión</h1>
 
-            <form action="/streepsoft/app/controllers/loginControllerS.php"  method="POST">
+            <form action="/streepsoft/login" method="POST">
 
                 <div class="input-group">
                     <label for="email">Correo</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-user"></i>
-                        <input type="text" id="email" name="usuario" placeholder="Usuario" required>
+                        <input type="email" id="email" name="usuario" placeholder="Usuario" required>
                     </div>
                 </div>
 
@@ -45,9 +89,9 @@
                     </div>
                 </div>
 
-                <?php if(isset($_GET['error'])): ?>
+                <?php if(!empty($mensaje)): ?>
                     <div id="mensajeError" class="alert-login-error">
-                        <p class="parrafo">Usuario o Contraseña Incorrecta</p>
+                        <p class="parrafo"><?= htmlspecialchars($mensaje) ?></p>
                         <div class="barra-tiempo"></div>
                     </div>
                 <?php endif; ?>
@@ -88,6 +132,37 @@
     </div>
 
     <script src="/streepsoft/public/js/login/login.js"></script>
-</body>
+    <script>
+        // Contador de veces que el usuario intenta retroceder
+        let backClickCount = <?php echo $_SESSION['backClickCount'] ?? 0; ?>;
+        const MAX_BACK_CLICKS = 2;
 
+        // Prevenir retroceso (back button)
+        window.history.pushState(null, null, window.location.href);
+                    
+        window.addEventListener('popstate', function(event) {
+            // Incrementar contador
+            backClickCount++;
+                    
+            // Si ya intentó 2 veces, bloquearlo
+            if (backClickCount >= MAX_BACK_CLICKS) {
+                alert('No puedes retroceder más de 2 veces. Por favor, inicia sesión o usa el botón de flecha.');
+                // Volver a empujar el estado para mantener en login
+                window.history.pushState(null, null, window.location.href);
+            } else {
+                // Permitir retroceso
+                window.history.back();
+            }
+        });
+
+        // Guardar el contador en el servidor (opcional, para persistencia)
+        window.addEventListener('beforeunload', function() {
+            fetch('/streepsoft/api/update-back-count', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ count: backClickCount })
+            }).catch(e => {}); // Ignorar errores
+        });
+    </script>
+</body>
 </html>
