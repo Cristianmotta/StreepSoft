@@ -2,14 +2,61 @@
 declare(strict_types=1);
 session_start();
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+$base = dirname($_SERVER['SCRIPT_NAME']);
+$base = str_replace('\\', '/', $base);
 
+// IMPORTANTE: Si la ruta termina en /public, quitar /public
+// Esto sucede cuando el archivo está en /public/index.php
+if (basename($base) === 'public') {
+    $base = dirname($base);
+}
 
-define('BASE_URL', 'http://localhost/streepsoft/');
-require_once '../config/database.php';
-require_once '../app/core/Auth.php';
-require_once '../app/models/Jugador.php';
-require_once '../app/controllers/JugadorController.php';
+// ============================================================================
+// 1. CONFIGURACIÓN INICIAL
+// ============================================================================
+
+// Definir la URL base de la aplicación
+define('BASE_URL', rtrim($protocol. '://' . $host . $base, '/') . '/');
+define('APP_PATH', __DIR__ . '/../app');
+define('CONFIG_PATH', __DIR__ . '/../config');
+
+// Zona horaria
+date_default_timezone_set('America/Bogota');
+
+// Configuración de errores
+error_reporting(E_ALL);
+ini_set('display_errors', '0');  // No mostrar errores en pantalla (seguridad)
+ini_set('log_errors', '1');      // Loguear errores en archivo
+ini_set('error_log', __DIR__ . '/../logs/error.log');
+
+// ============================================================================
+// 2. CARGAR ARCHIVOS NECESARIOS
+// ============================================================================
+
+// Cargar configuración de base de datos
+require_once CONFIG_PATH . '/database.php';
+
+// Cargar clases base (Core)
+require_once APP_PATH . '/core/Model.php';
+require_once APP_PATH . '/core/Controller.php';
+require_once APP_PATH . '/core/Auth.php';
+require_once APP_PATH . '/core/SessionTimeout.php';
+require_once APP_PATH . '/helpers/url.php';
+
+// ========================================================================
+// CARGAR MODELOS
+// =========================================================================
+
+require_once APP_PATH . '/models/Usuario.php';
+require_once APP_PATH . '/models/Jugador.php';
+require_once APP_PATH . '/models/Estadistica.php';
+require_once APP_PATH . '/models/Recuperacion.php';
 
 
 // Verificar si la sesion expiro por timeout
