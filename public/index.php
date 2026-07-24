@@ -2,7 +2,6 @@
 declare(strict_types=1);
 session_start();
 
-<<<<<<< HEAD
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
@@ -11,37 +10,6 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https'
 $host = $_SERVER['HTTP_HOST'];
 $base = dirname($_SERVER['SCRIPT_NAME']);
 $base = str_replace('\\', '/', $base);
-=======
-define('BASE_URL', 'http://localhost/streepsoft/');
-require_once '../config/database.php';
-require_once '../app/core/Auth.php'
-require_once '../app/models/Jugador.php';
-require_once '../app/controllers/JugadorController.php';
-
-
-$jugadorModel      = new Jugador($pdo);
-$jugadorController = new JugadorController($jugadorModel);
-
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Streepsoft</title>
-    <link rel="stylesheet" href="./css/homepanel/index.css">
-    <link rel="shortcut icon" href="./assets/img/logofavi.ico" type="image/x-icon">
-    
-</head>
-<body>
-    <div class="nav-des">
-        <nav>
-            <img src="./Image/copColombiaInternacional.svg" alt="CopColombia">
-            <button class="iniciar"><a href="<?= BASE_URL ?>app/views/auth/login.php">Iniciar Sesión</a></button>
-        </nav>
-        <div class="linea"></div>
-    </div>
->>>>>>> upstream/developer
 
 // IMPORTANTE: Si la ruta termina en /public, quitar /public
 // Esto sucede cuando el archivo está en /public/index.php
@@ -116,7 +84,6 @@ $GLOBALS['pdo'] = $pdo ?? null;
 // Definir las rutas de la aplicación
 // Formato: method(ruta, 'ControllerName@methodName')
 
-<<<<<<< HEAD
 // RUTAS PÚBLICAS (sin autenticación requerida)
 $rutas = [
     // Página de inicio
@@ -143,13 +110,6 @@ $rutas = [
         '/recuperacion-enviar-pin' => ['action' => 'recuperation'],
     ]
 ];
-=======
-    <footer class="footer">
-        <div class="footer-copy">
-            <p>© 2026 Streepsoft - <span>CopCo</span>lombia - Todos los derechos reservados</p>
-        </div>
-    </footer>
->>>>>>> upstream/developer
 
 // RUTAS PROTEGIDAS (requieren autenticación)
 if (Auth::check()) {
