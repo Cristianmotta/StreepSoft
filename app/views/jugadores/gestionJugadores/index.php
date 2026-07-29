@@ -1,10 +1,5 @@
 <?php
-
-echo "<pre>";
-print_r($jugadores);
-echo "</pre>";
-die();
-
+/** @var array $jugadores */     
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -51,8 +46,8 @@ die();
     <div id="nav-card"></div>
 
     <div class="button-group">
-        <a href="../gestionJugadores/index.php" class="activo">Registro</a>
-        <a href="../deudasJugadores/index.php" >Deudas Alumnos</a>
+        <a href="/streepsoft/jugadores/gestion" class="activo">Registro</a>
+        <a href="/streepsoft/jugadores/deudas" >Deudas Alumnos</a>
         <span></span>
    </div>
 
@@ -132,13 +127,11 @@ die();
                             <th>Foto</th>
                             <th>Apellidos</th>
                             <th>Nombres</th>
+                            <th>documentos</th>
                             <th>Fecha Nacimiento</th>
                             <th>Edad</th>
-                            <th>Categoria</th>
-                            <th>Inicial</th>
-                            <th>Instructor</th>
-                            <th>Acudiente</th>
-                            <th>Numero Acudiente</th>
+                            <th>Categoria</th> 
+                            <th>Instructor</th>  
                             <th>Estado</th>
                             <th>Fecha limite</th>
                             <th>Pago</th>
@@ -155,19 +148,17 @@ die();
                             </td>
                             <td><?= htmlspecialchars($jugador['apellidos']) ?></td>
                             <td><?= htmlspecialchars($jugador['nombres'])  ?></td>
+                            <td><?= htmlspecialchars($jugador['documentos'])  ?></td>
                             <td><?= htmlspecialchars($jugador['fecha_nacimiento']) ?></td>
                             <td><?= htmlspecialchars($jugador['edad']) ?></td>
                             <td><?= htmlspecialchars($jugador['categoria']) ?></td>
-                            <td><?= htmlspecialchars($jugador['iniciales']) ?></td>
                             <td><?= htmlspecialchars($jugador['instructor']) ?></td>
-                            <td><?= htmlspecialchars($jugador['acudiente']) ?></td>
-                            <td><?= htmlspecialchars($jugador['numero_acudiente']) ?></td>
                             <td>
                                 <div class="estado estado-<?= strtolower($jugador['estado']) ?>">
                                     <p><?= htmlspecialchars($jugador['estado']) ?></p>
                                 </div>  
                             </td>
-                            <td><?= htmlspecialchars($jugador['fecha_limite_pago']) ?></td>
+                            <td><?= htmlspecialchars($jugador['fecha_pago']) ?></td>
                             <td>
                                 <div class="pago pago-<?= strtolower($jugador['pago']) ?>">
                                     <p><?= htmlspecialchars($jugador['pago']) ?></p>
