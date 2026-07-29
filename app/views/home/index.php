@@ -1,9 +1,24 @@
 <?php
-// Verificar si hay quick login disponible
-$quickLoginDisponible = isset($_SESSION['quick_login']) && 
-$_SESSION['quick_login']['expires_at'] > time();
-?>
+    // Quick login SOLO si:
+    // 1. Existe cookie quick_login_data (no sesión)
+    // 2. NO fue logout manual (no existe cookie logout_manual)
+    $quickLoginDisponible = (
+        isset($_COOKIE['quick_login_data']) &&
+        !isset($_COOKIE['logout_manual'])
+    );
 
+    // Debug
+    error_log("Home - quickLoginDisponible: " . ($quickLoginDisponible ? 'true' : 'false'));
+    error_log("Home - COOKIE quick_login_data: " . (isset($_COOKIE['quick_login_data']) ? 'true' : 'false'));
+    error_log("Home - COOKIE logout_manual: " . (isset($_COOKIE['logout_manual']) ? 'true' : 'false'));
+
+    $remainingMs = 0;
+    if ($quickLoginDisponible) {
+        $quickData = SessionTimeout::getQuickLoginData();
+        $remainingMs = $quickData ? max(0, ($quickData['expires_at'] - time()) * 1000) : 0;
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,13 +32,13 @@ $_SESSION['quick_login']['expires_at'] > time();
         <nav>
             <img src="/streepsoft/public/Image/copColombiaInternacional.svg" alt="CopColombia">
             
-
-            <?php if (Auth::check()): ?>
-                <a href="<?= url('/dashboard') ?>">
-                    <button class="iniciar">
+            <?php if ($quickLoginDisponible): ?>
+                <form method="POST" action="<?= url('/quick-login') ?>" style="display:inline;">
+                    <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
+                    <button type="submit" class="iniciar">
                         Inicio rapido
                     </button>
-                </a>
+                </form>
             <?php else: ?>
                 <a href="<?= url('/login') ?>">
                     <button class="iniciar">
@@ -35,7 +50,6 @@ $_SESSION['quick_login']['expires_at'] > time();
         </nav>
         <div class="linea"></div>
     </div>
-
     <div class="des" >
         <div class="imagenes">
 
@@ -126,7 +140,13 @@ $_SESSION['quick_login']['expires_at'] > time();
             <p>© 2026 Streepsotf - <span>CopCo</span>lombia - Todos los derechos reservados</p>
         </div>
     </footer>
-
+    
+    <?php if ($quickLoginDisponible): ?>
+    <script>
+        const QUICK_LOGIN_REMAINING = 87000; // ejemplo: 87 segundos restantes
+        setTimeout(() => { window.location.reload(); }, QUICK_LOGIN_REMAINING);
+    </script>
+    <?php endif; ?>
 </body>    
     <script src="/streepsoft/public/js/main/main.js"></script>
 </html>

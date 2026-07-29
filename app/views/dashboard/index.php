@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadistica | Streepssoft</title>
     <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dashboard.css">
-    
 </head>
 <body>
     
@@ -20,10 +17,13 @@
             <!-- Contenedor para alinear el select a la derecha -->
             <div class="chart-header">
                 <div class="select-wrapper">
-                    <label for="year-select">Año</label>
-                    <select id="year-select" class="custom-select">
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
+                    <label for="year-select">año</label>
+                    <select class="custom-select">
+                        <button> 
+                            <selectedcontent></selectedcontent>
+                        </button>
+                        <option value="2026"> 2026</option>
+                        <option value="2025"> 2025 </option>
                     </select>
                 </div>
             </div>
@@ -76,6 +76,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/streepsoft/public/js/dashboard/statistic.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
+    <script src="/streepsoft/public/js/timer/time.js"></script>
     <script>
         // ✅ BLOQUEAR RETROCESO EN DASHBOARD
         
@@ -85,19 +86,6 @@
         window.addEventListener('popstate', function(event) {
             // Bloquear silenciosamente
             window.history.pushState(null, null, window.location.href);
-        });
-
-        // Alternativamente, mostrar alerta (si prefieres feedback)
-        window.addEventListener('popstate', function(event) {
-            event.preventDefault();
-            alert('No puedes retroceder en el dashboard por razones de seguridad. Usa los menús de navegación.');
-            window.history.pushState(null, null, window.location.href);
-        });
-
-        // También bloquear cuando el usuario intenta cerrar la pestaña
-        window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
-            e.returnValue = '';
         });
 </script>
 </body>

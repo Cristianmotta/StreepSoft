@@ -36,7 +36,13 @@ class JugadorController extends Controller
     public function gestion(): void
     {
         // Obtener todos los jugadores del modelo
-        $jugadores = $this->jugadorModel->obtenerTodos();
+        try {
+            $jugadores = $this->jugadorModel->obtenerTodos();
+        } catch (Exception $e) {
+            error_log("Gestion jugadiores: " . $e->getMessage());
+            $jugadores = [];
+        }
+        
 
         // Enviar datos a la vista
         $this->view('jugadores/gestionJugadores/index', [
@@ -53,7 +59,13 @@ class JugadorController extends Controller
     public function deudas(): void
     {
         // Obtener solo jugadores con deuda
-        $jugadores = $this->jugadorModel->obtenerConDeuda();
+        try {
+            $jugadores = $this->jugadorModel->obtenerConDeuda();
+        } catch (Exception $e){
+            error_log("Deudas jugadores: " . $e->getMessage());
+            $jugadores = [];
+        }
+        
 
         // Enviar datos a la vista
         $this->view('jugadores/deudasJugadores/index', [
@@ -136,5 +148,16 @@ class JugadorController extends Controller
         } else {
             $this->redirect('/jugadores/gestion?error=eliminacion_fallida');
         }
+    }
+
+
+    public function perfil(): void
+    {
+        $jugadores = $this->jugadorModel->obtenerTodos();
+
+        $this->view('perfilJugador/index', [
+            'titulo' => 'Perfil de Alumnos',
+            'jugadores' => $jugadores
+        ]);
     }
 }
