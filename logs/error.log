@@ -14,3 +14,42 @@
 [28-Jul-2026 21:15:37 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
 [28-Jul-2026 21:15:37 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
 [28-Jul-2026 21:15:37 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[28-Jul-2026 21:26:29 America/Bogota] Quick login cookie establecida para: cdavidg4396@gmail.com
+[28-Jul-2026 21:26:29 America/Bogota] Session expirada por timeout: cdavidg4396@gmail.com
+[28-Jul-2026 21:26:29 America/Bogota] Home - quickLoginDisponible: true
+[28-Jul-2026 21:26:29 America/Bogota] Home - COOKIE quick_login_data: true
+[28-Jul-2026 21:26:29 America/Bogota] Home - COOKIE logout_manual: false
+[28-Jul-2026 21:26:31 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[28-Jul-2026 21:26:31 America/Bogota] Quick login cookie limpiada tras uso exitoso
+[28-Jul-2026 21:26:31 America/Bogota] Quick login exitoso: cdavidg4396@gmail.com
+[28-Jul-2026 21:26:31 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:26:31 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:26:31 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[28-Jul-2026 21:26:31 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[28-Jul-2026 21:26:32 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 159
+[28-Jul-2026 21:26:32 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 159
+[28-Jul-2026 21:28:28 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 159
+[28-Jul-2026 21:28:28 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 159
+[28-Jul-2026 21:29:58 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 157
+[28-Jul-2026 21:29:58 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 157
+[28-Jul-2026 21:30:19 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 158
+[28-Jul-2026 21:30:19 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 158
+[28-Jul-2026 21:31:44 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:31:44 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:31:44 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[28-Jul-2026 21:31:44 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[28-Jul-2026 21:31:48 America/Bogota] Home - quickLoginDisponible: false
+[28-Jul-2026 21:31:48 America/Bogota] Home - COOKIE quick_login_data: false
+[28-Jul-2026 21:31:48 America/Bogota] Home - COOKIE logout_manual: false
+[28-Jul-2026 21:31:50 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:31:50 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[28-Jul-2026 21:31:50 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[28-Jul-2026 21:31:50 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[28-Jul-2026 21:31:53 America/Bogota] Logout manual: cdavidg4396@gmail.com - Cookies limpiadas
+[28-Jul-2026 21:31:53 America/Bogota] Logout: cdavidg4396@gmail.com
+[28-Jul-2026 21:31:53 America/Bogota] Home - quickLoginDisponible: false
+[28-Jul-2026 21:31:53 America/Bogota] Home - COOKIE quick_login_data: false
+[28-Jul-2026 21:31:53 America/Bogota] Home - COOKIE logout_manual: true
+[28-Jul-2026 21:31:58 America/Bogota] Home - quickLoginDisponible: false
+[28-Jul-2026 21:31:58 America/Bogota] Home - COOKIE quick_login_data: false
+[28-Jul-2026 21:31:58 America/Bogota] Home - COOKIE logout_manual: true
