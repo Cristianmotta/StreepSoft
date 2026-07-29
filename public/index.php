@@ -1,5 +1,17 @@
 <?php
 declare(strict_types=1);
+
+ini_set('session.cookie_lifetime', '0');
+ini_set('session.gc_maxlifetime', '600');
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/streepsoft/',
+    'secure' => false,
+    'httponly' => true,
+    'samesite' => 'Strict'
+]);
+
 session_start();
 
 ini_set('display_errors', '1');
@@ -116,6 +128,7 @@ if (Auth::check()) {
     $rutasProtegidas = [
         'GET' => [
             '/dashboard' => ['controller' => 'DashboardController', 'method' => 'index'],
+            '/nav-menu' => ['controller' => 'NavController', 'method' => 'render'],
             '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
             '/jugadores/deudas' => ['controller' => 'JugadorController', 'method' => 'deudas'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],

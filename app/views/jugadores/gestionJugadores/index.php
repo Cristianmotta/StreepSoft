@@ -1,11 +1,3 @@
-<?php
-
-echo "<pre>";
-print_r($jugadores);
-echo "</pre>";
-die();
-
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -51,8 +43,8 @@ die();
     <div id="nav-card"></div>
 
     <div class="button-group">
-        <a href="../gestionJugadores/index.php" class="activo">Registro</a>
-        <a href="../deudasJugadores/index.php" >Deudas Alumnos</a>
+        <a href="/streepsoft/jugadores/gestion" class="activo">Registro</a>
+        <a href="/streepsoft/jugadores/deudas" >Deudas Alumnos</a>
         <span></span>
    </div>
 

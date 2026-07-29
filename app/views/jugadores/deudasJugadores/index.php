@@ -10,8 +10,8 @@
     <div id="nav-card"></div>
 
     <div class="button-group">
-        <a href="../gestionJugadores/index.php" >Registro</a>
-        <a href="../deudasJugadores/index.php" class="activo">Deudas Alumnos</a>
+        <a href="/streepsoft/jugadores/gestion" >Registro</a>
+        <a href="/streepsoft/jugadores/deudas" class="activo">Deudas Alumnos</a>
         <span></span>
    </div>
 
