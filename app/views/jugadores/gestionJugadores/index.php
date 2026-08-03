@@ -1,3 +1,6 @@
+<?php
+/** @var array $jugadores */
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
