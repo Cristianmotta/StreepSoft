@@ -502,3 +502,97 @@
 [02-Aug-2026 20:07:00 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
 [02-Aug-2026 20:07:00 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
 [02-Aug-2026 20:07:00 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:35:37 America/Bogota] Home - quickLoginDisponible: false
+[03-Aug-2026 15:35:37 America/Bogota] Home - COOKIE quick_login_data: false
+[03-Aug-2026 15:35:37 America/Bogota] Home - COOKIE logout_manual: false
+[03-Aug-2026 15:36:59 America/Bogota] Login exitoso: davidsllvv12@gmail.com
+[03-Aug-2026 15:36:59 America/Bogota] Login exitoso: davidsllvv12@gmail.com
+[03-Aug-2026 15:36:59 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:36:59 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:36:59 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:36:59 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:38:24 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:24 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:24 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:38:24 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:38:32 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:32 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:32 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:38:32 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:38:35 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:35 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:38:35 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:38:35 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:18 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:18 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:18 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:18 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:23 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:23 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:23 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:23 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:45 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:45 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:45 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:45 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:46 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:46 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:46 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:46 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:51 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:39:52 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:52 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:39:52 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:39:52 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:40:16 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:16 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:16 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:40:16 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:40:25 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:25 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:25 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:40:25 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:40:39 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:39 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:39 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:40:39 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:40:43 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:43 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:40:43 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:40:43 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:43:01 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:43:01 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 15:43:01 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 15:43:01 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 15:55:20 America/Bogota] Quick login cookie establecida para: davidsllvv12@gmail.com
+[03-Aug-2026 15:55:20 America/Bogota] Session expirada por timeout: davidsllvv12@gmail.com
+[03-Aug-2026 15:55:20 America/Bogota] Home - quickLoginDisponible: true
+[03-Aug-2026 15:55:20 America/Bogota] Home - COOKIE quick_login_data: true
+[03-Aug-2026 15:55:20 America/Bogota] Home - COOKIE logout_manual: false
+[03-Aug-2026 15:56:48 America/Bogota] Home - quickLoginDisponible: true
+[03-Aug-2026 15:56:48 America/Bogota] Home - COOKIE quick_login_data: true
+[03-Aug-2026 15:56:48 America/Bogota] Home - COOKIE logout_manual: false
+[03-Aug-2026 15:58:16 America/Bogota] Home - quickLoginDisponible: false
+[03-Aug-2026 15:58:16 America/Bogota] Home - COOKIE quick_login_data: false
+[03-Aug-2026 15:58:16 America/Bogota] Home - COOKIE logout_manual: false
+[03-Aug-2026 20:07:44 America/Bogota] Login exitoso: davidsllvv12@gmail.com
+[03-Aug-2026 20:07:44 America/Bogota] Login exitoso: davidsllvv12@gmail.com
+[03-Aug-2026 20:07:44 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:07:44 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:07:44 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 20:07:44 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 20:07:48 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:07:48 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:07:48 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 20:07:48 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[03-Aug-2026 20:08:03 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:08:03 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoftbd.pagos' doesn't exist
+[03-Aug-2026 20:08:03 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[03-Aug-2026 20:08:03 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'

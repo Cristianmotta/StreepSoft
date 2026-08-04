@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> SideBar | streepsoft </title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css"> -->
-    
+
 </head>
 
 <style>
-    * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -18,9 +18,9 @@
 
 }
 
-body {
+/* body {
     background-color: #5b6677;
-}
+} */
 
 .container {
     width: 100%;
@@ -242,20 +242,6 @@ body {
 </style>
 
 <body>
-    <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> SideBar | streepsoft </title>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <link rel="stylesheet" href="style.css">
-
-</head>
-
-<body>
     <div class="container">
         <div class="sidebar active">
             <div class="menu-btn">
@@ -281,14 +267,14 @@ body {
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="">
                                 <i class="icon ph-bold ph-user"></i>
                                 <span class="text">Gestion de Jugadores</span>
                                 <i class="arrow ph-bold ph-caret-down"></i>
                             </a>
                             <ul class="sub-menu">
                                 <li>
-                                    <a href="#">
+                                    <a href="/app/views/jugadores/gestionJugadores/create.php">
                                         <span class="text">Crear Jugador</span>
                                     </a>
                                 </li>
