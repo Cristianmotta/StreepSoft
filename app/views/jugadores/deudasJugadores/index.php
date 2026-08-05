@@ -92,10 +92,9 @@
                         <button>
                             <selectedcontent></selectedcontent>
                         </button>
-                        <option value="todo">Todos</option>
-                        <option value="">Beca</option>
-                        <option value="">Media-beca</option>
-                        <option value="">Normal</option>
+                        <option value="todo">Beca Completa 100% </option>
+                        <option value="">Media Beca 50%</option>
+                        <option value="">Beca del 25%</option>
                     </select>
                 </div>
             </div>
