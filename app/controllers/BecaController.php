@@ -6,7 +6,7 @@ class BecaController extends Controller
 {
     private Jugador $jugadorModel;
 
-    //Tipos de beca a porcentajes
+    //Tipos de beca en porcentajes
     private const TIPOS_BECA = [
         'sin_beca' => 0,
         'beca_25' => 25,
@@ -226,9 +226,9 @@ class BecaController extends Controller
     /**
      * Redirigir a una URL
      */
-    private function redirect(string $url): void
-    {
-        header('Location: /proyecto' . $url);
-        exit;
-    }
+    // private function redirect(string $url): void
+    // {
+    //     header('Location: /proyecto' . $url);
+    //     exit;
+    // }
 }
