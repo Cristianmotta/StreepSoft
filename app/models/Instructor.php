@@ -6,7 +6,7 @@ class Instructor extends Model
     protected static $primaryKey = 'id';
 
     
-    //Obtener todos los instructores activos
+     //Obtener instructores activos
      
     public function obtenerActivos(): array
     {
@@ -22,9 +22,9 @@ class Instructor extends Model
     }
 
     
-    //Obtener todos los instructores
+    //Obtener todos los instructores (incluye inactivos)
      
-    public function obtenerTodas(): array
+    public function obtenerTodos(): array
     {
         $sql = "SELECT i.*, c.nombre AS categoria_nombre
                 FROM instructores i
@@ -53,17 +53,32 @@ class Instructor extends Model
     }
 
     
-     //Obtener instructores por categoría
+     //Cambiar estado del instructor (activar/desactivar)
      
-    public function obtenerPorCategoria(int $categoriaId): array
+    public function cambiarEstado(int $id, int $activo): bool
     {
-        $sql = "SELECT * FROM instructores 
-                WHERE categoria_id = :categoria_id AND activo = 1
-                ORDER BY nombre ASC";
-        
+        $sql = "UPDATE instructores SET activo = :activo WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':categoria_id' => $categoriaId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->execute([
+            ':id' => $id,
+            ':activo' => $activo
+        ]);
+    }
+
+    
+    //Retirar instructor (poner inactivo)
+     
+    public function retirar(int $id): bool
+    {
+        return $this->cambiarEstado($id, 0);
+    }
+
+    
+    //Activar instructor
+     
+    public function activar(int $id): bool
+    {
+        return $this->cambiarEstado($id, 1);
     }
 
     /**
