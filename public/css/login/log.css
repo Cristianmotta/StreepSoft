@@ -16,7 +16,7 @@
     height: 420px;
 
     display: flex;
-    flex-direction: hidden;
+    flex-direction: row-reverse;
 }
 
 .card,
@@ -47,7 +47,8 @@
 
     background: 
         linear-gradient(
-            rgba(20, 20, 20, 0.818)
+            rgba(20, 20, 20, 0.59),
+            rgba(20, 20, 20, 0.59)
         )
     ;
 
@@ -68,7 +69,7 @@
 
 .imagen-logo{
     position: relative;
-    top: 349px;
+    top: 365px;
     z-index: 1;
 }
 
@@ -93,8 +94,8 @@
 
 .h1-login {
     font-family: "Poppins", sans-serif;
-    font-weight: 300;
-    font-size: 25px;
+    font-weight: 200;
+    font-size: 20px;
     color: #ffffff;
     text-align: center;
 }
@@ -114,7 +115,7 @@ label {
     color: #ffffff;
     font-size: 14px;
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
 }
 
 .input-group {
@@ -190,21 +191,40 @@ input {
 
 .h1-recover {
     font-family: "Poppins", sans-serif;
-    font-weight: 200;
+    font-weight: 300;
     color: #ffffff;
     font-size: 25px;
-    margin-bottom: 0px;
-    margin-top: 5px;
+    margin-bottom: 12px;
+    margin-top: 25px;
     text-align: center;
 }
 
-.message-code {
-    text-align: center;
+.messege,
+.messege-recoverd,
+.message-code{
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    text-align: left;
     color: #cccccc;
-    font-size: 14px;
+    font-size: clamp(9px, 1.5vw, 12.3px);
     line-height: 1.5;
-    margin-bottom: 35px;
 }
+
+.messege{
+    margin-bottom: 30px;
+    margin-top: 22px;
+}
+
+.message-code {
+    margin-bottom: 10px;
+    margin-top: 22px;
+}
+
+.messege-recoverd{
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
 
 .buttonRecover {
     font-family: "Poppins", sans-serif;
@@ -246,7 +266,7 @@ input {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .pin-input {
@@ -277,10 +297,11 @@ input {
 /* Actualizar Contraseña */
 
 .h1-Password-recovered {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
     color: #ffffff;
-    font-size: 27px;
-    margin-bottom: 12px;
-    margin-top: 90px;
+    font-size: clamp(15px, 2vw, 20px);
+    margin-bottom: 2px;
 }
 
 .password-strength {
@@ -351,17 +372,17 @@ span{
         opacity .7s ease;
 }
 
-.page-wrapper.salir-login{
+.page-wrapper.salir-recover{
+    transform: translateX(-300px);
+    opacity:0;
+}
+.page-wrapper.entrar-recover{
     transform: translateX(300px);
     opacity:0;
 }
 
-.page-wrapper.entrar-login{
-    transform: translateX(-300px);
-    opacity:0;
-}
 
-@media (max-width:1024px){
+@media (max-width:1094px){
 
 .page-wrapper{
     width: 72%;
@@ -372,7 +393,7 @@ span{
 }
 
 .h1-login{
-    font-size:22px;
+    font-size:10px;
 }
 
 .logo-recover{

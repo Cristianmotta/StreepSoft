@@ -3,347 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> SideBar | streepsoft </title>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css"> -->
-    <style>
-    * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-        }
-
-        body {
-            background-color: #5b6677;
-        }
-
-        .container {
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            position: relative;
-            width: 256px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background-color: #fff;
-            padding: 24px;
-            border-radius: 30px;
-            transition: all 0.5s;
-        }
-
-        .sidebar .head {
-            display: flex;
-            gap: 20px;
-            border-bottom: 1px solid #f6f6f6;
-        }
-
-        .user-img {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .user-img img {
-            width: 100%;
-            object-fit: cover;
-
-        }
-
-        .user-details .title,
-        .menu .title {
-            font-size: 10px;
-            font-weight: 500;
-            color: #757575;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .user-details .name {
-            font-size: 14px;
-            font-weight: 500;
-
-        }
-
-        .menu ul li {
-            position: relative;
-            list-style: none;
-            margin-bottom: 5px;
-        }
-
-        .menu ul li a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #757575;
-            text-decoration: none;
-            padding: 12px 8px;
-            border-radius: 8px;
-            transition: all 0.1s;
-        }
-
-        .menu ul li>a:hover,
-        .menu ul li.active>a {
-            color: #000;
-            background-color: #f6f6f6;
-        }
-
-        .menu ul li .icon {
-            font-size: 20px;
-        }
-
-        .menu ul li .text {
-            flex: 1;
-        }
-
-        .menu ul li .arrow {
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .menu ul li.active .arrow {
-            transform: rotate(180deg);
-        }
-
-        .menu .sub-menu {
-            display: none;
-            margin-left: 20px;
-            padding-left: 20px;
-            padding-top: 5px;
-            border-left: 1px solid #f6f6f6;
-        }
-
-        .menu .sub-menu li a {
-            padding: 5px 5px;
-            font-size: 12px;
-
-        }
-
-        .menu:not(:last-child) {
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #f6f6f6;
-        }
-
-        .menu-btn {
-            position: absolute;
-            right: -14px;
-            top: 3.5%;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #757575;
-            border: 2px solid #f6f6f6;
-            background-color: #fff;
-        }
-
-        .menu-btn:hover i {
-            color: #000;
-        }
-
-        .menu-btn i {
-            transition: all 0.2s;
-        }
-
-        .sidebar.active {
-            width: 92px;
-        }
-
-        .sidebar.active .menu-btn i{
-            transform: rotate(180deg);
-
-        } 
-
-        .sidebar.active .user-details{
-            display: none;
-        }
-
-        .sidebar.active .menu .title{
-            text-align: center;
-        }
-
-        .sidebar.active .menu ul li .arrow{
-            display: none;
-        }
-
-        .sidebar.active .menu ul li .arrow{
-            display: none;
-        }
-
-        .sidebar.active .menu > ul > li > a {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar.active .menu > ul > li > a .text{
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 10px;
-            border-radius: 4px;
-            color: #fff;
-            background-color: #000;
-            opacity: 0;
-            visibility: hidden;
-            
-        }
-
-        .sidebar.active .menu > ul > li > a .text::after{
-            content: "";
-            position: absolute;
-            left: -5px;
-            top: 20%;
-            width: 20px;
-            height: 20px;
-            border-radius: 2px;
-            background-color: #000;
-            transform: rotate(45deg);
-            z-index: -1;
-
-        }
-
-        .sidebar.active .menu > ul > li > a:hover .text{
-            left: 50px;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar.active .menu .sub-menu{
-            position: absolute;
-            top: 0;
-            left: 20px;
-            width: 200px;
-            border-radius: 20px;
-            padding: 10px 20px;
-            border: 1px solid #f6f6f6;
-            background: #fff;
-            box-shadow: 0px 10px 8px rgba(0, 0, 0, 0.1);
-        }
-
-    </style>
+    <title>nav | streepsooft </title>
+    <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar active">
-            <div class="menu-btn">
-                <i class="ph-bold ph-caret-left"></i>
-            </div>
-            <div class="head">
-                <div class="user-img">
-                    <img src="" alt="" />
-                </div>
-                <div class="user-details">
-                    <p class="title">Director del Club</p>
-                    <p class="name">Hugo Florez</p>
-                </div>
-            </div>
-            <div class="nav">
-                <div class="menu">
-                    <p class="title">Panel de Navegacion</p>
-                    <ul>
-                        <li class="">
-                            <a href="#">
-                                <i class="icon ph-bold ph-house-simple"></i>
-                                <span class="text">Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="icon ph-bold ph-user"></i>
-                                <span class="text">Gestion de Jugadores</span>
-                                <i class="arrow ph-bold ph-caret-down"></i>
-                            </a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Crear Jugador</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Editar Jugador</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Visualizar Jugador</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Desactivar Jugador</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i class="icon ph-bold ph-user"></i>
-                                <span class="text">Mensualidades</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i class="icon ph-bold ph-user"></i>
-                                <span class="text">Perfil de Alumnos</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i class="icon ph-bold ph-user"></i>
-                                <span class="text">Actualizacion de datos</span>
+    <div class="navbar">
+        <nav class="main-navbar">
+            <div class="navbar-group">
+                <a href="#" class="navbar-item" title="Notificaciones">
+                    <div class="mingcute--notification-line"></div>
+                </a>
 
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="menu">
-                    <p class="title">Ajustes de Cuenta</p>
-                    <ul>
-                        <li class="">
-                            <a href="#">
-                                <i class="icon ph-bold ph-house-simple"></i>
-                                <span class="text">Configuracion</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="line"></div>
 
-                    <div class="menu">
-                        <p class="title">SESION</p>
-                        <ul>
-                            <li class="">
-                                <a href="#">
-                                    <i class="icon ph-bold ph-info"></i>
-                                    <span class="text">Cerrar Sesion</span>
-                                </a>
-                            </li>
-                        </ul>
+
+                <a href="#" class="navbar-items" title="Usuario">
+                    <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
+                    
+                    <div class="navbar-user-info">
+                        <h1>Administrador</h1>
+                        <p>Admin@admin.com</p>
                     </div>
-                    </div>
+                </a>
+            </div>
+
+            <div class="navbar-group">
+                <button class="navbar-item btn-menu" onclick="toggleMenu()" aria-label="Abrir menú">
+                    <img src="/streepsoft/public/Image/menu.png" alt="hamburguesa" class="navbar-icon">
+                </button>
+                <div class="navbar-logo">
+                    <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo">
                 </div>
             </div>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"
-            integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw=="
-            crossorigin="anonymous"></script>
-        <script src="/streepsoft/public/js/navbar/script.js"></script>
+        </nav>
+    </div>
+    
+    <aside id="side-menu" class="sidebar">
 
+        <nav class="sidebar-links">
+
+            <!-- INICIO  -->
+            <a href="/streepsoft/dashboard" class="sidebar-link" title="Inicio">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 19.5v-9z"/>
+                        <path d="M9 21v-6h6v6"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Inicio
+                </div>
+
+            </a>
+
+
+            <!-- JUGADORES -->
+            <div class="sidebar-item">
+
+                <button 
+                    class="sidebar-link players-btn"
+                    onclick="togglePlayers()"
+                    title="Jugadores"
+                >
+
+                    <span class="sidebar-icon-1">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="9" cy="8" r="3"/>
+                            <circle cx="17" cy="9" r="2.5"/>
+                            <path d="M3.5 20c.5-3.5 2.5-5.5 5.5-5.5s5 2 5.5 5.5"/>
+                            <path d="M14 15c3-.5 5.5 1.5 6 5"/>
+                        </svg>
+                    </span>
+
+                    <div class="sidebar-text">
+                        Jugadores
+                    </div>
+
+                    <span class="sidebar-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- SUBMENÚ DE JUGADORES -->
+                <div id="players-menu" class="players-menu">
+
+                    <a href="/streepsoft/jugadores/gestion">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+
+                        <div>Alumno</div>
+                    </a>
+
+
+                    <a href="#">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 8v8"/>
+                                <path d="M8 12h8"/>
+                            </svg>
+                        </span>
+
+                        <div>Instructor</div>
+                    </a>
+
+
+                    <a href="#">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                                <path d="M3 4v6h6"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+
+                        <div>Desactivar</div>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!--  PAGOS -->
+            <a href="/streepsoft/jugadores/deudas" class="sidebar-link" title="Pagos">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="6" width="18" height="13" rx="1"/>
+                        <path d="M3 10h18"/>
+                        <path d="M7 15h4"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Pagos
+                </div>
+
+            </a>
+
+
+            <!-- =========================
+                DOCUMENTOS
+            ========================== -->
+            <a href="#" class="sidebar-link" title="Documentos">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 3h9l5 5v13H5z"/>
+                        <path d="M14 3v6h5"/>
+                        <path d="M8 13h8"/>
+                        <path d="M8 17h6"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Documentos
+                </div>
+
+            </a>
+
+
+            <!-- ACTUALIZACIÓN -->
+            <a href="#" class="sidebar-link" title="Actualización de datos">
+
+                <div class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3a9 9 0 1 0 8.5 6"/>
+                        <path d="M12 7v5l3 2"/>
+                        <path d="M16 3h5v5"/>
+                    </svg>
+                </div>
+
+                <div class="sidebar-text">
+                    Actualización de datos
+                </div>
+
+            </a>
+
+        </nav>
+
+
+        <!-- CERRAR SESIÓN -->
+        <form method="POST" action="/streepsoft/logout" class="sidebar-footer" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
+            <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
+            <button class="cerrar-sesion">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/>
+                        <path d="M14 8l4 4-4 4"/>
+                        <path d="M8 12h10"/>
+                    </svg>
+                </span>
+                <div class="sidebar-text">
+                    Cerrar sesión
+                </div>
+            </button>
+        </form>
+    </aside>
+
+    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+    <script>
+        // Variables globales
+const sideMenu = document.getElementById('side-menu');
+const overlay = document.getElementById('overlay');
+const body = document.body;
+ 
+// ========== TOGGLE SIDEBAR ==========
+function toggleMenu() {
+    body.classList.toggle('sidebar-open');
+    overlay.classList.toggle('active');
+}
+ 
+// ========== TOGGLE PLAYERS SUBMENU ==========
+function togglePlayers() {
+    const playersMenu = document.getElementById('players-menu');
+    const playersBtn = document.querySelector('.players-btn');
+    
+    playersMenu.classList.toggle('active');
+    playersBtn.classList.toggle('active');
+}
+ 
+// ========== CERRAR SIDEBAR EN MOBILE AL HACER CLICK EN UN LINK ==========
+document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+        // Solo cerrar si está en móvil
+        if (window.innerWidth <= 768) {
+            body.classList.remove('sidebar-open');
+            overlay.classList.remove('active');
+        }
+    });
+});
+ 
+    </script>
 </body>
 
 </html>
