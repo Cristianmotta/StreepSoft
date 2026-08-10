@@ -5,387 +5,248 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nav | streepsooft </title>
-    <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa">
-    <style>
-        :root {
-            /* Variables para facilitar cambios rápidos */
-            --navbar-height: 84px;
-            --icon-size: 55px;
-            --padding-sides: 20px;
-            --navbar-bg: #212020;
-            --gold-main: #D09E10;
-            --dark-bg: #111111;
-            --text-white: #ffffff;
-            --card-bg: #D09E10;
-            --text-color: #ffffff;
-            --danger-red: #5a0000;
-            --sidebar-bg: #000000;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: #141414;
-            overflow-x: hidden;
-        }
-
-        /* --- BARRA DE NAVEGACIÓN --- */
-        .main-navbar {
-            background: var(--navbar-bg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: var(--navbar-height);
-            padding: 0 var(--padding-sides);
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--gold-main);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            border-bottom-right-radius: 5px;
-            border-bottom-left-radius: 5px;
-        }
-
-        .navbar-group {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .navbar-icon {
-            width: var(--icon-size);
-            height: var(--icon-size);
-            object-fit: contain;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-item:hover .navbar-icon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--gold-main));
-        }
-
-        .navbar-logo img {
-            height: 70px;
-            width: auto;
-            display: block;
-            transition: height 0.3s ease;
-        }
-
-        .btn-menu {
-            background: none;
-            border: none;
-            cursor: pointer;
-            outline: none;
-        }
-
-        /* --- SIDEBAR (Panel Lateral) --- */
-        .sidebar {
-            height: 100vh;
-            width: 340px;
-            max-width: 100vw;
-            position: fixed;
-            z-index: 2000;
-            top: 0;
-            right: -100%;
-            background-color: var(--sidebar-bg);
-            transition: all 0.1s cubic-bezier(0.77, 0, 0.175, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.7);
-        }
-
-        /* Cuando está activo se mueve a su posición 0 */
-        .sidebar.active {
-            right: 0;
-        }
-
-        /* --- SIDEBAR HEADER (Encabezado del Menú Lateral) --- */
-        .sidebar-header {
-            display: flex;
-            justify-content: right;
-            /* Empuja el logo a la izquierda y el botón a la derecha */
-            align-items: center;
-            /* Centra ambos elementos verticalmente */
-            padding: 12px;
-            background-color: var(--navbar-bg);
-            /* Fondo oscuro igual al de la imagen */
-            margin-bottom: 10px;
-            /* border-bottom: 2px solid var(--gold-main); <- Opcional si quieres una línea dorada separadora */
-        }
-
-        .sidebar-logo {
-            width: 100px;
-            /* Tamaño real y visible para el logo */
-            height: auto;
-            position: relative;
-            right: 12px;
-            display: block;
-            /* Eliminamos el background, relative, left y bottom para que Flexbox lo acomode */
-            transition: all 0.3s ease;
-        }
-
-        .close-icon-btn {
-            background: transparent;
-            /* Fondo transparente en lugar de un color fijo */
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-icon-btn img {
-            width: 45px;
-            /* Tamaño real y proporcionado para el botón (hamburguesa o cerrar) */
-            height: auto;
-            /* Eliminamos los position y bottom que lo desubicaban */
-            transition: width 0.3s ease;
-            /* Nota: Si tu imagen original ya es dorada, puedes borrar la línea de abajo. Si es negra y necesitas que se vea dorada, déjala. */
-            filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(5deg);
-        }
-
-        /* Enlaces del menú (Aquí está la magia del Scroll) */
-        .sidebar-links {
-            display: flex;
-            flex-direction: column;
-            padding: 0 40px;
-            flex: 1;
-            /* Le dice que ocupe todo el espacio restante */
-            overflow-y: auto;
-            /* Activa el scroll vertical si es necesario */
-        }
-
-        /* Personalización del Scrollbar para que se vea elegante */
-        .sidebar-links::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar-links::-webkit-scrollbar-track {
-            background: #111;
-        }
-
-        .sidebar-links::-webkit-scrollbar-thumb {
-            background: var(--gold-main);
-            border-radius: 10px;
-        }
-
-        .sidebar-links a {
-            text-decoration: none;
-            font-size: 20px;
-            color: white;
-            padding: 15px 0;
-            border-bottom: 1px solid #222;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            /* Evita que los enlaces se aplasten */
-        }
-
-        .sidebar-links a:hover {
-            color: var(--gold-main);
-            padding: 15px 15px;
-        }
-
-        /* Botón Cerrar (Fijo al final) */
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 20px 40px 40px 40px;
-            /* Ajuste del padding para que no se vea apretado con el scroll */
-            display: flex;
-            justify-content: center;
-        }
-
-        .cerrar-sesion,
-        .btn-cerrar-sesion {
-            background: #D09E10;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 0;
-            width: 100%;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-cerrar-sesion {
-            background: none;
-        }
-
-        .cerrar-sesion:hover {
-            background-color: #8b0000;
-            transform: scale(1.02);
-        }
-
-        /* --- OVERLAY CON BLUR --- */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(9, 9, 9, 0.304);
-            backdrop-filter: blur(2px);
-            z-index: 1500;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .linea-1 {
-            position: relative;
-            top: -12px;
-            height: 2px;
-            background: #D09E10;
-            margin-bottom: 22px;
-        }
-
-        /* ========================================= */
-        /* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
-        /* ========================================= */
-        /* Tablets y pantallas medianas (hasta 768px) */
-        @media screen and (max-width: 768px) {
-            :root {
-                --navbar-height: 70px;
-                --icon-size: 45px;
-                --padding-sides: 15px;
-            }
-
-            .navbar-logo img {
-                height: 50px;
-            }
-
-            .sidebar-logo {
-                right: 15px;
-                width: 120px;
-            }
-
-            .close-icon-btn img {
-                width: 50px;
-            }
-        }
-
-        /* Teléfonos móviles (hasta 480px) */
-        @media screen and (max-width: 480px) {
-            :root {
-                --navbar-height: 60px;
-                --icon-size: 35px;
-                --padding-sides: 10px;
-            }
-
-            .navbar-group {
-                gap: 10px;
-            }
-
-            .navbar-logo img {
-                height: 40px;
-            }
-
-            .sidebar {
-                width: 100%;
-                max-width: 320px;
-            }
-
-            .sidebar-header {
-                padding: 15px 20px;
-            }
-
-            .sidebar-logo {
-                left: 10px;
-                width: 100px;
-            }
-
-            .close-icon-btn img {
-                width: 40px;
-            }
-
-            .sidebar-links {
-                padding: 0 20px;
-            }
-
-            .sidebar-links a {
-                font-size: 18px;
-                padding: 12px 0;
-            }
-
-            .sidebar-footer {
-                padding: 15px 20px 25px 20px;
-                /* Reducido para móviles */
-            }
-
-            .cerrar-sesion,
-            .btn-cerrar-sesion {
-                font-size: 18px;
-                padding: 10px 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css">
 </head>
-
 <body>
     <div class="navbar">
         <nav class="main-navbar">
             <div class="navbar-group">
-                <a href="#" class="navbar-item" title="Usuario">
-                    <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
-                </a>
                 <a href="#" class="navbar-item" title="Notificaciones">
-                    <img src="/streepsoft/public/Image/notifica.png" alt="notifica" class="navbar-icon">
+                    <div class="mingcute--notification-line"></div>
+                </a>
+
+                <div class="line"></div>
+
+
+                <a href="#" class="navbar-items" title="Usuario">
+                    <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
+                    
+                    <div class="navbar-user-info">
+                        <h1>Administrador</h1>
+                        <p>Admin@admin.com</p>
+                    </div>
                 </a>
             </div>
 
             <div class="navbar-group">
-                <div class="navbar-logo">
-                    <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo">
-                </div>
                 <button class="navbar-item btn-menu" onclick="toggleMenu()" aria-label="Abrir menú">
                     <img src="/streepsoft/public/Image/menu.png" alt="hamburguesa" class="navbar-icon">
                 </button>
+                <div class="navbar-logo">
+                    <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo">
+                </div>
             </div>
         </nav>
-        <div class="linea"></div>
     </div>
-
-    <div id="side-menu" class="sidebar">
-        <div class="sidebar-header">
-            <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo" class="sidebar-logo">
-            <button class="close-icon-btn" onclick="toggleMenu()">
-                <img src="/streepsoft/public/Image/menu.png" alt="cerrar">
-            </button>
-        </div>
-        <div class="linea-1"></div>
+    
+    <aside id="side-menu" class="sidebar">
 
         <nav class="sidebar-links">
-            <a href="/streepsoft/dashboard">Estadísticas</a>
-            <a href="/streepsoft/jugadores/gestion">Gestión de alumnos</a>
-            <a href="/streepsoft/jugadores/deudas">Deudas</a>
-            <a href="/streepsoft/perfil-jugador">Perfil de alumnos</a>
-            <a href="#">Actualización de datos</a>
-            <a href="#">Registro de deuda</a>
+
+            <!-- INICIO  -->
+            <a href="/streepsoft/dashboard" class="sidebar-link" title="Inicio">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 10.5L12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 19.5v-9z"/>
+                        <path d="M9 21v-6h6v6"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Inicio
+                </div>
+
+            </a>
+
+
+            <!-- JUGADORES -->
+            <div class="sidebar-item">
+
+                <button 
+                    class="sidebar-link players-btn"
+                    onclick="togglePlayers()"
+                    title="Jugadores"
+                >
+
+                    <span class="sidebar-icon-1">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="9" cy="8" r="3"/>
+                            <circle cx="17" cy="9" r="2.5"/>
+                            <path d="M3.5 20c.5-3.5 2.5-5.5 5.5-5.5s5 2 5.5 5.5"/>
+                            <path d="M14 15c3-.5 5.5 1.5 6 5"/>
+                        </svg>
+                    </span>
+
+                    <div class="sidebar-text">
+                        Jugadores
+                    </div>
+
+                    <span class="sidebar-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- SUBMENÚ DE JUGADORES -->
+                <div id="players-menu" class="players-menu">
+
+                    <a href="/streepsoft/jugadores/gestion">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+
+                        <div>Alumno</div>
+                    </a>
+
+
+                    <a href="#">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 8v8"/>
+                                <path d="M8 12h8"/>
+                            </svg>
+                        </span>
+
+                        <div>Instructor</div>
+                    </a>
+
+
+                    <a href="#">
+                        <span class="submenu-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                                <path d="M3 4v6h6"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </span>
+
+                        <div>Desactivar</div>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!--  PAGOS -->
+            <a href="/streepsoft/jugadores/deudas" class="sidebar-link" title="Pagos">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="6" width="18" height="13" rx="1"/>
+                        <path d="M3 10h18"/>
+                        <path d="M7 15h4"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Pagos
+                </div>
+
+            </a>
+
+
+            <!-- =========================
+                DOCUMENTOS
+            ========================== -->
+            <a href="#" class="sidebar-link" title="Documentos">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 3h9l5 5v13H5z"/>
+                        <path d="M14 3v6h5"/>
+                        <path d="M8 13h8"/>
+                        <path d="M8 17h6"/>
+                    </svg>
+                </span>
+
+                <div class="sidebar-text">
+                    Documentos
+                </div>
+
+            </a>
+
+
+            <!-- ACTUALIZACIÓN -->
+            <a href="#" class="sidebar-link" title="Actualización de datos">
+
+                <div class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3a9 9 0 1 0 8.5 6"/>
+                        <path d="M12 7v5l3 2"/>
+                        <path d="M16 3h5v5"/>
+                    </svg>
+                </div>
+
+                <div class="sidebar-text">
+                    Actualización de datos
+                </div>
+
+            </a>
+
         </nav>
 
-        <div class="sidebar-footer">
-            <form method="POST" action="/streepsoft/logout" class="cerrar-sesion" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
-                <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
-                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
-            </form>
-        </div>
-    </div>
+
+        <!-- CERRAR SESIÓN -->
+        <form method="POST" action="/streepsoft/logout" class="sidebar-footer" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
+            <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
+            <button class="cerrar-sesion">
+
+                <span class="sidebar-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/>
+                        <path d="M14 8l4 4-4 4"/>
+                        <path d="M8 12h10"/>
+                    </svg>
+                </span>
+                <div class="sidebar-text">
+                    Cerrar sesión
+                </div>
+            </button>
+        </form>
+    </aside>
 
     <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
 
-    <script src="/streepsoft/public/js/dashboard/hamburguesa.js"></script>
+    <script>
+        // Variables globales
+const sideMenu = document.getElementById('side-menu');
+const overlay = document.getElementById('overlay');
+const body = document.body;
+ 
+// ========== TOGGLE SIDEBAR ==========
+function toggleMenu() {
+    body.classList.toggle('sidebar-open');
+    overlay.classList.toggle('active');
+}
+ 
+// ========== TOGGLE PLAYERS SUBMENU ==========
+function togglePlayers() {
+    const playersMenu = document.getElementById('players-menu');
+    const playersBtn = document.querySelector('.players-btn');
+    
+    playersMenu.classList.toggle('active');
+    playersBtn.classList.toggle('active');
+}
+ 
+// ========== CERRAR SIDEBAR EN MOBILE AL HACER CLICK EN UN LINK ==========
+document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+        // Solo cerrar si está en móvil
+        if (window.innerWidth <= 768) {
+            body.classList.remove('sidebar-open');
+            overlay.classList.remove('active');
+        }
+    });
+});
+ 
+    </script>
 </body>
 
 </html>
