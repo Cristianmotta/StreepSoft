@@ -1,19 +1,41 @@
 <?php
 
-declare(strict_types=1);
-
-class Categoria
+class Categoria extends Model
 {
-    private PDO $pdo;
+    protected static $table = 'categorias';
+    protected static $primaryKey = 'id';
 
-    public function __construct(PDO $pdo)
+    
+     //Obtener categorías activas 
+     
+    public function obtenerActivas(): array
     {
-        $this->pdo = $pdo;
+        $sql = "SELECT id, nombre FROM categorias WHERE activa = 1 ORDER BY nombre ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    
+     //Obtener todas las categorías
+     
     public function obtenerTodas(): array
     {
-        $stmt = $this->pdo->query("SELECT id_categorias, nombre FROM categorias ORDER BY nombre");
+        $sql = "SELECT * FROM categorias ORDER BY nombre ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    
+    //Obtener categoría por ID
+     
+    public function obtenerPorId(int $id): ?array
+    {
+        $sql = "SELECT * FROM categorias WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 }
