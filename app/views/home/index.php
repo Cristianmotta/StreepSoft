@@ -214,7 +214,6 @@
         setTimeout(() => { window.location.reload(); }, QUICK_LOGIN_REMAINING);
     </script>
     <?php endif; ?>
-</body>
 
     <script>
         let index = 0;
@@ -283,4 +282,5 @@
         });
     </script>
     <script src="/streepsoft/public/js/main/galeria.js"></script>
+</body>
 </html>

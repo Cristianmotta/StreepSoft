@@ -135,7 +135,7 @@
 
 
             <!--  PAGOS -->
-            <a href="/streepsoft/jugadores/deudas" class="sidebar-link" title="Pagos">
+            <a href="/streepsoft/pagos/historial" class="sidebar-link" title="Pagos">
 
                 <span class="sidebar-icon">
                     <svg viewBox="0 0 24 24">
