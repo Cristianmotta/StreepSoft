@@ -1,3 +1,5 @@
+@import url('../hamburguesa/hamburguer.css');
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,7 +9,7 @@ body {
 
 /* Contenedor principal */
 .pagos-container {
-    width: calc(100% - 10px);
+    width: calc(100% - 5px);
     margin: 25px auto;
 }
 

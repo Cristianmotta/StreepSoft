@@ -18,7 +18,7 @@
                 <div class="line"></div>
 
 
-                <a href="#" class="navbar-items" title="Usuario">
+                <a href="/streepsoft/perfil/administrador" class="navbar-items" title="Usuario">
                     <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
                     
                     <div class="navbar-user-info">

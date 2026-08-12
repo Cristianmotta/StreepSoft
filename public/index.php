@@ -133,6 +133,7 @@ if (Auth::check()) {
             '/jugadores/deudas' => ['controller' => 'JugadorController', 'method' => 'deudas'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
             '/pagos/historial' => ['controller' => 'PagosController', 'method' => 'matriz'],
+            '/perfil/administrador' => ['controller' => 'PerfilAdminController', 'method' => 'perfil'],
         ],
         
         'POST' => [
