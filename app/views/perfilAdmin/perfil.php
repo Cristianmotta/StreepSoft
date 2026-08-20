@@ -174,9 +174,15 @@
                                     Reporte General de Jugadores
                                 </td>
                                 <td>Lista completa de todos los jugadores registrados</td>
-                                <td><span class="badge-formato badge-pdf">PDF</span></td>
                                 <td>
-                                    <button class="boton-descargar">
+                                    <select class="select-formato">
+                                        <option value="pdf" selected>PDF</option>
+                                        <option value="word">WORD</option>
+                                        <option value="excel">EXCEL</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="boton-descargar" data-tipo="jugadores">
                                         <i class="fi fi-rr-download"></i> Descargar
                                     </button>
                                 </td>
@@ -188,9 +194,15 @@
                                     Reporte de Pagos
                                 </td>
                                 <td>Historial de todos los pagos realizados</td>
-                                <td><span class="badge-formato badge-word">WORD</span></td>
                                 <td>
-                                    <button class="boton-descargar">
+                                    <select class="select-formato">
+                                        <option value="pdf" selected>PDF</option>
+                                        <option value="word">WORD</option>
+                                        <option value="excel">EXCEL</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="boton-descargar" data-tipo="pagos">
                                         <i class="fi fi-rr-download"></i> Descargar
                                     </button>
                                 </td>
@@ -202,9 +214,15 @@
                                     Reporte de Deudas
                                 </td>
                                 <td>Estado actual de deudas de los jugadores</td>
-                                <td><span class="badge-formato badge-pdf">PDF</span></td>
                                 <td>
-                                    <button class="boton-descargar">
+                                    <select class="select-formato">
+                                        <option value="pdf" selected>PDF</option>
+                                        <option value="word">WORD</option>
+                                        <option value="excel">EXCEL</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="boton-descargar" data-tipo="deudas">
                                         <i class="fi fi-rr-download"></i> Descargar
                                     </button>
                                 </td>
@@ -216,9 +234,15 @@
                                     Reporte de Torneos
                                 </td>
                                 <td>Historial y resultados de torneos</td>
-                                <td><span class="badge-formato badge-excel">EXCEL</span></td>
                                 <td>
-                                    <button class="boton-descargar">
+                                    <select class="select-formato">
+                                        <option value="pdf" selected>PDF</option>
+                                        <option value="word">WORD</option>
+                                        <option value="excel">EXCEL</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="boton-descargar" data-tipo="torneos">
                                         <i class="fi fi-rr-download"></i> Descargar
                                     </button>
                                 </td>

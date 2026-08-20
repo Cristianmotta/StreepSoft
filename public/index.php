@@ -69,7 +69,7 @@ require_once APP_PATH . '/models/Usuario.php';
 require_once APP_PATH . '/models/Jugador.php';
 require_once APP_PATH . '/models/Estadistica.php';
 require_once APP_PATH . '/models/Recuperacion.php';
-
+require_once APP_PATH . '/models/Deuda.php';
 
 // Verificar si la sesion expiro por timeout
 SessionTimeout::check();
@@ -134,6 +134,7 @@ if (Auth::check()) {
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
             '/pagos/historial' => ['controller' => 'PagosController', 'method' => 'matriz'],
             '/perfil/administrador' => ['controller' => 'PerfilAdminController', 'method' => 'perfil'],
+            '/reportes/generar' => ['controller' => 'ReporteController', 'method' => 'generar'],
         ],
         
         'POST' => [
