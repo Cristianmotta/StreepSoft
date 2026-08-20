@@ -8,11 +8,13 @@ declare(strict_types=1);
 
 class NavController extends Controller
 {
-    public function render(): void
-    {
-        // view(), ya genera csrftoken, isAuth, authUser, etc.
-        $this->view('navegacion/navegacion');
-    }
+public function render(): void
+{
+    $csrfToken = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = $csrfToken;
+    $this->view('navegacion/navegacion', ['csrfToken' => $csrfToken]);
+}
+
 }
 
 

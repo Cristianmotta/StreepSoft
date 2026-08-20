@@ -271,13 +271,9 @@
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/timer/time.js"></script>
     <script>
-        // ✅ BLOQUEAR RETROCESO EN DASHBOARD
-        
-        // Detener cualquier intento de navegación hacia atrás
         window.history.pushState(null, null, window.location.href);
-        
         window.addEventListener('popstate', function(event) {
-            // Bloquear silenciosamente
+            event.preventDefault();
             window.history.pushState(null, null, window.location.href);
         });
     </script>
