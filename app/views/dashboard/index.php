@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadistica | Streepssoft</title>
     <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dash.css">
 </head>
+
 <body>
-    
+
     <div id="nav-card"></div>
 
 
@@ -32,7 +34,7 @@
                     </div>
 
                     <div class="info">
-                        <h2>Total de <span>Jugadores</span>  </h2>
+                        <h2>Total de <span>Jugadores</span> </h2>
                         <h3>5</h3>
                         <p>0 este mes </p>
                     </div>
@@ -60,7 +62,7 @@
                         <p>0.1 vs este mes </p>
                     </div>
                 </div>
-                
+
                 <div class="card-info">
                     <div class="icon">
                         <div class="ph--soccer-ball"></div>
@@ -82,7 +84,7 @@
 
                             <div class="select-wrapper">
                                 <select class="custom-select">
-                                    <button> 
+                                    <button>
                                         <selectedcontent></selectedcontent>
                                     </button>
                                     <option value="2026"> 2026</option>
@@ -251,7 +253,7 @@
                             </table>
 
 
-                                <!-- BOTÓN FINAL -->
+                            <!-- BOTÓN FINAL -->
 
                             <a href="#" class="ver-pagos">
                                 <span>Ver Todos los pagos</span>
@@ -261,30 +263,35 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
-    <script src="/streepsoft/public/js/dashboard/estadistica.js"></script>
-    <script src="/streepsoft/public/js/dashboard/grafica.js"></script>
-    <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
-    <script src="/streepsoft/public/js/timer/time.js"></script>
-    <script>
-        // ✅ BLOQUEAR RETROCESO EN DASHBOARD
-        
-        // Detener cualquier intento de navegación hacia atrás
-        window.history.pushState(null, null, window.location.href);
-        
-        window.addEventListener('popstate', function(event) {
-            // Bloquear silenciosamente
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
+        <script src="/streepsoft/public/js/dashboard/estadistica.js"></script>
+        <script src="/streepsoft/public/js/dashboard/grafica.js"></script>
+        <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
+        <script src="/streepsoft/public/js/timer/time.js"></script>
+        <script>
+            // ✅ BLOQUEAR RETROCESO EN DASHBOARD
+
+            // Detener cualquier intento de navegación hacia atrás
             window.history.pushState(null, null, window.location.href);
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"
+
+            window.addEventListener('popstate', function(event) {
+                // Bloquear silenciosamente
+                window.history.pushState(null, null, window.location.href);
+            });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"
             integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw=="
             crossorigin="anonymous"></script>
-    <script src="/streepsoft/public/js/navbar/script.js"></script>
+        <script src="/streepsoft/public/js/navbar/script.js"></script>
+
+        <-- Chatbot--
+            <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
+            <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
 
 </body>
+
 </html>
