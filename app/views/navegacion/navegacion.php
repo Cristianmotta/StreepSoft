@@ -18,7 +18,7 @@
                 <div class="line"></div>
 
 
-                <a href="#" class="navbar-items" title="Usuario">
+                <a href="/streepsoft/perfil/administrador" class="navbar-items" title="Usuario">
                     <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
                     
                     <div class="navbar-user-info">
@@ -134,7 +134,6 @@
             </div>
 
 
-            <!--  PAGOS -->
             <a href="/streepsoft/jugadores/deudas" class="sidebar-link" title="Pagos">
 
                 <span class="sidebar-icon">
@@ -151,10 +150,6 @@
 
             </a>
 
-
-            <!-- =========================
-                DOCUMENTOS
-            ========================== -->
             <a href="#" class="sidebar-link" title="Documentos">
 
                 <span class="sidebar-icon">
@@ -172,8 +167,6 @@
 
             </a>
 
-
-            <!-- ACTUALIZACIÓN -->
             <a href="#" class="sidebar-link" title="Actualización de datos">
 
                 <div class="sidebar-icon">
@@ -192,8 +185,6 @@
 
         </nav>
 
-
-        <!-- CERRAR SESIÓN -->
         <form method="POST" action="/streepsoft/logout" class="sidebar-footer" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
             <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
             <button class="cerrar-sesion">
@@ -214,39 +205,9 @@
 
     <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
 
-    <script>
-        // Variables globales
-const sideMenu = document.getElementById('side-menu');
-const overlay = document.getElementById('overlay');
-const body = document.body;
- 
-// ========== TOGGLE SIDEBAR ==========
-function toggleMenu() {
-    body.classList.toggle('sidebar-open');
-    overlay.classList.toggle('active');
-}
- 
-// ========== TOGGLE PLAYERS SUBMENU ==========
-function togglePlayers() {
-    const playersMenu = document.getElementById('players-menu');
-    const playersBtn = document.querySelector('.players-btn');
-    
-    playersMenu.classList.toggle('active');
-    playersBtn.classList.toggle('active');
-}
- 
-// ========== CERRAR SIDEBAR EN MOBILE AL HACER CLICK EN UN LINK ==========
-document.querySelectorAll('.sidebar-link').forEach(link => {
-    link.addEventListener('click', () => {
-        // Solo cerrar si está en móvil
-        if (window.innerWidth <= 768) {
-            body.classList.remove('sidebar-open');
-            overlay.classList.remove('active');
-        }
-    });
-});
- 
-    </script>
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
 </body>
-
 </html>
+
+
+

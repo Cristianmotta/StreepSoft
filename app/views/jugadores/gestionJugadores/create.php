@@ -317,5 +317,5 @@
         </div>
 
 
-   
-        <script src="/streepsoft/public/js/nuevo/nuevoalumno.js"></script>
+<script src="/streepsoft/public/js/nuevo/nuevoalumno.js"></script>
+<script src="/streepsoft/public/js/nuevo/FotoAlumno.js"></script>

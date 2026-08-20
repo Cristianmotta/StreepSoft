@@ -6,7 +6,7 @@ class Instructor extends Model
     public function obtenerTodos(): array
     {
         $sql = "
-            SELECT id_instructor, nombres, apellidos
+            SELECT id_instructor, nombres, apellidos, edad, numero_instructor
             FROM instructor
             ORDER BY nombres
         ";

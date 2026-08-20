@@ -124,12 +124,12 @@ class JugadorController extends Controller
     {
         // Verificar que sea POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/jugadores/crear');
+            $this->redirect('/streepsoft/jugadores/crear');
         }
 
         // Validar CSRF (el formulario ahora incluye el campo oculto _token)
         if (!$this->validateCSRFToken($_POST['_token'] ?? '')) {
-            $this->redirect('/jugadores/crear?error=csrf');
+            $this->redirect('/streepsoft/jugadores/crear?error=csrf');
         }
 
         // ------------------------------------------------------------
@@ -172,18 +172,18 @@ class JugadorController extends Controller
 
         foreach ($obligatorios as $campo) {
             if ($datos[$campo] === '') {
-                $this->redirect('/jugadores/crear?error=campos_vacios');
+                $this->redirect('/streepsoft/jugadores/crear?error=campos_vacios');
             }
         }
 
         if ($datos['id_categorias'] <= 0 || $datos['id_eps'] <= 0 || $datos['id_instructor'] <= 0) {
-            $this->redirect('/jugadores/crear?error=campos_vacios');
+            $this->redirect('/streepsoft/jugadores/crear?error=campos_vacios');
         }
 
         // Validar que la fecha de nacimiento tenga formato correcto y no sea futura
         $fecha = DateTime::createFromFormat('Y-m-d', $datos['fecha_nacimiento']);
         if (!$fecha || $fecha > new DateTime()) {
-            $this->redirect('/jugadores/crear?error=fecha_invalida');
+            $this->redirect('/streepsoft/jugadores/crear?error=fecha_invalida');
         }
 
         // ------------------------------------------------------------
@@ -193,7 +193,7 @@ class JugadorController extends Controller
             $nombreFoto = $this->subirFotoJugador($_FILES['foto'] ?? null);
         } catch (Exception $e) {
             error_log("Guardar jugador (foto): " . $e->getMessage());
-            $this->redirect('/jugadores/crear?error=' . urlencode($e->getMessage()));
+            $this->redirect('/streepsoftjugadores/crear?error=' . urlencode($e->getMessage()));
         }
         $datos['foto'] = $nombreFoto;
 
@@ -277,19 +277,19 @@ class JugadorController extends Controller
     {
         // Verificar que sea POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/jugadores/gestion');
+            $this->redirect('/streepsoft/jugadores/gestion');
         }
 
         // Validar CSRF
         if (!$this->validateCSRFToken($_POST['_token'] ?? '')) {
-            $this->redirect('/jugadores/gestion?error=csrf');
+            $this->redirect('/streepsoft/jugadores/gestion?error=csrf');
         }
 
         // Eliminar el jugador
         if ($this->jugadorModel->eliminar($id)) {
-            $this->redirect('/jugadores/gestion?success=eliminado');
+            $this->redirect('/streepsoft/jugadores/gestion?success=eliminado');
         } else {
-            $this->redirect('/jugadores/gestion?error=eliminacion_fallida');
+            $this->redirect('/streepsoft/jugadores/gestion?error=eliminacion_fallida');
         }
     }
 

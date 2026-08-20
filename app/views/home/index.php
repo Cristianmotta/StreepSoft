@@ -291,4 +291,5 @@
         });
     </script>
     <script src="/streepsoft/public/js/main/galeria.js"></script>
+</body>
 </html>
