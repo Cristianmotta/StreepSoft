@@ -961,14 +961,14 @@ tbody td{
 .modal-registro-contenido {
     position: relative;
 
-    width: 90%;
-    max-width: 1000px;
+    width: 85%;
+    max-width: 720px;
 
-    height: 90vh;
+    height: 80vh;
 
     background: white;
 
-    border-radius: 15px;
+    border-radius: 2px;
 
     overflow: hidden;
 
