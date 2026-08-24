@@ -1,26 +1,27 @@
 <?php
-    // Quick login SOLO si:
-    // 1. Existe cookie quick_login_data (no sesión)
-    // 2. NO fue logout manual (no existe cookie logout_manual)
-    $quickLoginDisponible = (
-        isset($_COOKIE['quick_login_data']) &&
-        !isset($_COOKIE['logout_manual'])
-    );
+// Quick login SOLO si:
+// 1. Existe cookie quick_login_data (no sesión)
+// 2. NO fue logout manual (no existe cookie logout_manual)
+$quickLoginDisponible = (
+    isset($_COOKIE['quick_login_data']) &&
+    !isset($_COOKIE['logout_manual'])
+);
 
-    // Debug
-    error_log("Home - quickLoginDisponible: " . ($quickLoginDisponible ? 'true' : 'false'));
-    error_log("Home - COOKIE quick_login_data: " . (isset($_COOKIE['quick_login_data']) ? 'true' : 'false'));
-    error_log("Home - COOKIE logout_manual: " . (isset($_COOKIE['logout_manual']) ? 'true' : 'false'));
+// Debug
+error_log("Home - quickLoginDisponible: " . ($quickLoginDisponible ? 'true' : 'false'));
+error_log("Home - COOKIE quick_login_data: " . (isset($_COOKIE['quick_login_data']) ? 'true' : 'false'));
+error_log("Home - COOKIE logout_manual: " . (isset($_COOKIE['logout_manual']) ? 'true' : 'false'));
 
-    $remainingMs = 0;
-    if ($quickLoginDisponible) {
-        $quickData = SessionTimeout::getQuickLoginData();
-        $remainingMs = $quickData ? max(0, ($quickData['expires_at'] - time()) * 1000) : 0;
-    }
+$remainingMs = 0;
+if ($quickLoginDisponible) {
+    $quickData = SessionTimeout::getQuickLoginData();
+    $remainingMs = $quickData ? max(0, ($quickData['expires_at'] - time()) * 1000) : 0;
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,11 +29,12 @@
     <link rel="stylesheet" href="/streepsoft/public/css/homepanel/panel.css">
     <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
 </head>
+
 <body>
     <div class="nav-des">
         <nav>
             <img src="/streepsoft/public/Image/logo.png" alt="CopColombia">
-            
+
             <?php if ($quickLoginDisponible): ?>
                 <form method="POST" action="<?= url('/quick-login') ?>" style="display:inline;">
                     <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
@@ -52,7 +54,7 @@
                     </button>
                 </a>
             <?php endif; ?>
-            
+
         </nav>
         <div class="linea"></div>
     </div>
@@ -72,8 +74,8 @@
             <div class="slide">
                 <img src="/streepsoft/public/Image/collaege-2.png" alt="imagen-2">
                 <div class="overlay">
-                <h1>Cada partido es una <span>oportunidad</span>.</h1>
-                <p>para demostrar quién eres.</p>
+                    <h1>Cada partido es una <span>oportunidad</span>.</h1>
+                    <p>para demostrar quién eres.</p>
                 </div>
             </div>
 
@@ -233,7 +235,7 @@
 
         /* Crear punticos */
 
-        for (let i = 0; i < total; i++){
+        for (let i = 0; i < total; i++) {
             let punto = document.createElement('span');
             punto.addEventListener('click', () => {
                 index = i;
@@ -291,5 +293,12 @@
         });
     </script>
     <script src="/streepsoft/public/js/main/galeria.js"></script>
+
+    <-- Chatbot--
+        <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
+        <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
+
+
 </body>
+
 </html>

@@ -305,7 +305,7 @@
                                                             &times;
                                                         </button>
 
-                                                    <iframe 
+                                                        <iframe 
                                                             src="/streepsoft/deudas/<?= (int) $deuda['id_deudas'] ?>/pago" 
                                                             class="iframe-registro">
                                                         </iframe>

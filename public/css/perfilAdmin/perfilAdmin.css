@@ -369,6 +369,49 @@ body {
     color: #4ade80;
 }
 
+/* Estilos base del select */
+.select-formato {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 8px 16px; /* Más relleno para que se vea como en la imagen */
+    border-radius: 8px; /* Bordes más redondeados */
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    border: none; /* Sin borde, como en tu imagen */
+    outline: none;
+    text-align: center;
+    
+    /* Esto quita la flechita por defecto del select para que luzca 100% como un botón */
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* COLORES DINÁMICOS */
+
+/* 1. Cuando la opción seleccionada es PDF */
+.select-formato:has(option[value="pdf"]:checked) {
+    background-color: #3b0b0b; /* Rojo oscuro */
+    color: #e61919; /* Letra roja brillante */
+}
+
+/* 2. Cuando la opción seleccionada es WORD */
+.select-formato:has(option[value="word"]:checked) {
+    background-color: #233656; /* Azul oscuro */
+    color: #3b82f6; /* Letra azul brillante */
+}
+
+/* 3. Cuando la opción seleccionada es EXCEL */
+.select-formato:has(option[value="excel"]:checked) {
+    background-color: #264a0f; /* Verde oscuro */
+    color: #3bb81b; /* Letra verde brillante */
+}
+
+/* Efecto focus sutil acorde al color seleccionado */
+.select-formato:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
 .boton-descargar {
     background: none;
     border: 1px solid #D09E10;
