@@ -7,9 +7,9 @@ class Matricula extends Model
     protected static $table = 'matriculas';
     protected static $primaryKey = 'id';
 
-    /**
-     * Registrar una nueva matrícula
-     */
+    
+     //Registrar una nueva matrícula
+     
     public function registrar(int $jugadorId, float $valor, string $metodoPago, string $fechaPago): bool
     {
         $sql = "INSERT INTO matriculas (jugador_id, anio, valor, metodo_pago, fecha_pago)   
@@ -25,9 +25,9 @@ class Matricula extends Model
         ]);
     }
 
-    /**
-     * Verificar si un jugador ya pagó la matrícula del año actual
-     */
+    
+     //Verificar si un jugador ya pagó la matrícula del año actual
+     
     public function pagoRealizado(int $jugadorId): bool 
     {
         $sql = "SELECT id FROM matriculas 
@@ -42,9 +42,9 @@ class Matricula extends Model
         return $stmt->fetch() !== false;
     }
 
-    /**
-     * Obtener todas las matrículas del año actual con datos del jugador
-     */
+    
+     //Obtener todas las matrículas del año actual con datos del jugador
+     
     public function obtenerTodasDelAnio(): array
     {
         $sql = "SELECT m.*, 
@@ -61,9 +61,9 @@ class Matricula extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Obtener jugadores que no han pagado la matrícula del año actual
-     */
+    
+    //Obtener jugadores que no han pagado la matrícula del año actual
+     
     public function obtenerNoPagosMatricula(): array
     {
         $sql = "SELECT j.id, j.nombre, j.apellido, j.documento,
@@ -79,17 +79,17 @@ class Matricula extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Obtener jugadores que no han pagado matrícula (alias)
-     */
+    
+    //Obtener jugadores que no han pagado matrícula 
+     
     public function obtenerMorososMatricula(): array
     {
         return $this->obtenerNoPagosMatricula();
     }
 
-    /**
-     * Obtener el valor de la matrícula desde configuración
-     */
+    
+    //Obtener el valor de la matrícula desde configuración
+     
     public function getValorMatricula(): float
     {
         $sql = "SELECT valor FROM configuracion WHERE clave = 'valor_matricula'";
@@ -99,9 +99,9 @@ class Matricula extends Model
         return (float)($result['valor'] ?? 0);
     }
 
-    /**
-     * Actualizar el valor de la matrícula
-     */
+    
+     //Actualizar el valor de la matrícula
+     
     public function setValorMatricula(float $valor): bool
     {
         $sql = "UPDATE configuracion SET valor = :valor WHERE clave = 'valor_matricula'";

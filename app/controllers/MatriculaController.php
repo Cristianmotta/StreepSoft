@@ -14,10 +14,10 @@ class MatriculaController extends Controller
         $this->jugadorModel = new Jugador($pdo);
     }
 
-    /**
-     * Listar todas las matrículas del año actual
-     * Ruta: /matricula/listar (GET)
-     */
+    
+     //Listar todas las matrículas del año actual
+     
+     
     public function listar(): void
     {
         $matriculas = $this->matriculaModel->obtenerTodasDelAnio();
@@ -33,10 +33,9 @@ class MatriculaController extends Controller
         ]);
     }
 
-    /**
-     * Mostrar formulario para registrar matrícula
-     * Ruta: /matricula/registrar (GET)
-     */
+    
+    //Mostrar formulario para registrar matrícula
+     
     public function registrarForm(): void
     {
         $jugadores = $this->matriculaModel->obtenerMorososMatricula();
@@ -49,10 +48,9 @@ class MatriculaController extends Controller
         ]);
     }
 
-    /**
-     * Guardar una nueva matrícula
-     * Ruta: /matricula/guardar (POST)
-     */
+    
+     //Guardar una nueva matrícula
+    
     public function guardar(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -103,9 +101,9 @@ class MatriculaController extends Controller
     /**
      * Redirigir a una URL
      */
-    private function redirect(string $url): void
-    {
-        header('Location: /proyecto' . $url);
-        exit;
-    }
+    // private function redirect(string $url): void
+    // {
+    //     header('Location: /proyecto' . $url);
+    //     exit;
+    // }
 }

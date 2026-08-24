@@ -1,0 +1,118 @@
+.modal-alumno {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 5000;
+}
+
+/* Modal abierto */
+.modal-alumno.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenedor */
+.modal-alumno-contenido {
+    position: relative;
+    width: min(1400px, 95vw);
+    height: min(90vh, 900px);
+    background: #1a1a1a;
+    overflow: hidden;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* Animación al abrir */
+.modal-alumno.activo .modal-alumno-contenido {
+    transform: translateY(0) scale(1);
+}
+
+/* Contenedor donde entra create.php */
+#contenidoNuevoAlumno {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Botón X */
+.cerrar-modal {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    width: 42px;
+    height: 42px;
+    border: 2px solid #D09E10;
+    border-radius: 50%;
+    background: #000;
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 20;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.cerrar-modal:hover {
+    background: #D09E10;
+    color: #000;
+    transform: rotate(90deg);
+}
+
+/* Scroll */
+#contenidoNuevoAlumno::-webkit-scrollbar {
+    width: 8px;
+}
+
+#contenidoNuevoAlumno::-webkit-scrollbar-track {
+    background: #111;
+}
+
+#contenidoNuevoAlumno::-webkit-scrollbar-thumb {
+    background: #D09E10;
+    border-radius: 10px;
+}
+
+/* ========================================================= AJUSTES PARA QUE CREATE.PHP SE ADAPTE AL MODAL ========================================================= */
+#contenidoNuevoAlumno .main-content {
+    width: 100%;
+    min-height: 100%;
+}
+
+/* El card original tiene margin: 3%. Lo reducimos dentro del modal para aprovechar mejor el espacio. */
+#contenidoNuevoAlumno .card-body {
+    margin: 20px;
+}
+
+/* ========================================================= RESPONSIVE ========================================================= */
+@media (max-width: 768px) {
+    .modal-alumno {
+        padding: 10px;
+    }
+
+    .modal-alumno-contenido {
+        width: 100%;
+        height: 95vh;
+        border-radius: 8px;
+    }
+
+    #contenidoNuevoAlumno .card-body {
+        margin: 10px;
+    }
+
+    .cerrar-modal {
+        top: 8px;
+        right: 8px;
+        width: 38px;
+        height: 38px;
+        font-size: 26px;
+    }
+}
