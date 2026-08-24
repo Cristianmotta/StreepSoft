@@ -24,7 +24,7 @@ class ReportePagos implements ReporteDatos
 
     public function getFilas(): array
     {
-        $deudas = $this->deudaModel->obtenerTodas();
+        $deudas = $this->deudaModel->obtenerTodos();
 
         $filas = [];
 

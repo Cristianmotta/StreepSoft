@@ -211,13 +211,20 @@ if ($quickLoginDisponible) {
     </footer>
 
     <?php if ($quickLoginDisponible): ?>
-        <script>
-            const QUICK_LOGIN_REMAINING = 87000; // ejemplo: 87 segundos restantes
-            setTimeout(() => {
-                window.location.reload();
-            }, QUICK_LOGIN_REMAINING);
-        </script>
+    <script>
+        const QUICK_LOGIN_REMAINING = <?= (int)$remainingMs ?>;
+        setTimeout(() => { window.location.reload(); }, QUICK_LOGIN_REMAINING);
+    </script>
     <?php endif; ?>
+    <script>
+        // BLOQUEAR RETROCESO EN HOME
+        window.history.pushState(null, null, window.location.href);
+        window.addEventListener('popstate', function(event) {
+            event.preventDefault();
+            window.history.pushState(null, null, window.location.href);
+        });
+    </script>
+</body>
 
     <script>
         let index = 0;

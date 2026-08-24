@@ -69,7 +69,14 @@ require_once APP_PATH . '/models/Usuario.php';
 require_once APP_PATH . '/models/Jugador.php';
 require_once APP_PATH . '/models/Estadistica.php';
 require_once APP_PATH . '/models/Recuperacion.php';
+require_once APP_PATH . '/models/Categoria.php';
+require_once APP_PATH . '/models/Instructor.php';
+require_once APP_PATH . '/models/Eps.php';
+require_once APP_PATH . '/models/TipoDocumento.php';
+require_once APP_PATH . '/models/Documento.php';
 require_once APP_PATH . '/models/Deuda.php';
+require_once APP_PATH . '/models/MetodoPago.php';
+
 
 // Verificar si la sesion expiro por timeout
 SessionTimeout::check();
@@ -130,8 +137,10 @@ if (Auth::check()) {
             '/dashboard' => ['controller' => 'DashboardController', 'method' => 'index'],
             '/nav-menu' => ['controller' => 'NavController', 'method' => 'render'],
             '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
-            '/jugadores/deudas' => ['controller' => 'JugadorController', 'method' => 'deudas'],
+            '/jugadores/deudas' => ['controller' => 'DeudaController', 'method' => 'listar'],
+            '/deudas/:id/pago' => ['controller' => 'DeudaController', 'method' => 'mostrarPago'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
+            '/perfil-jugador' => ['controller' => 'JugadorController', 'method' => 'perfil'],
             '/pagos/historial' => ['controller' => 'PagosController', 'method' => 'matriz'],
             '/perfil/administrador' => ['controller' => 'PerfilAdminController', 'method' => 'perfil'],
             '/reportes/generar' => ['controller' => 'ReporteController', 'method' => 'generar'],
@@ -140,6 +149,7 @@ if (Auth::check()) {
         'POST' => [
             '/jugadores/guardar' => ['controller' => 'JugadorController', 'method' => 'guardar'],
             '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
+            '/deudas/registrar-pago' => ['controller' => 'DeudaController', 'method' => 'registrarPago'],
         ]
     ];
     
@@ -197,12 +207,12 @@ try {
     
     if (isset($rutas[$metodo])) {
         foreach ($rutas[$metodo] as $ruta => $detalles) {
-            // Convertir :id a regex
-            $patrón = str_replace(':id', '(\d+)', preg_quote($ruta, '#'));
+            // Convertir :id a un patrón numérico y construir la regex
+            $patron = '#^' . str_replace(':id', '(\d+)', $ruta) . '$#';
             
-            if (preg_match('#^' . $patrón . '$#', $uri, $matches)) {
+            if (preg_match($patron, $uri, $matches)) {
                 $rutaEncontrada = $detalles;
-                array_shift($matches);  // Remover el match completo
+                array_shift($matches); // Remover el match completo
                 $parametros = $matches;
                 break;
             }

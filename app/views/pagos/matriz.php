@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link rel="stylesheet" href="/streepsoft/public/css/pagos/pagos.css">
 </head>
-
 <body>
-
     <div id="nav-card"></div>
     <div class="main-content">
         <div class="pagos-container">
