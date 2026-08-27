@@ -452,6 +452,134 @@ body {
     background: rgba(208, 158, 16, 0.1);
 }
 
+/* ===== Modal ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.activo {
+    display: flex;
+}
+
+.modal-caja {
+    background: #000000;
+    border: 2px solid #D09E10;
+    border-radius: 10px;
+    padding: 24px;
+    width: 90%;
+    max-width: 420px;
+    color: white;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.modal-cerrar {
+    background: none;
+    border: none;
+    color: #D09E10;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.modal-caja label {
+    display: block;
+    font-size: 13px;
+    color: #aaaaaa;
+    margin: 12px 0 4px;
+}
+
+.modal-caja input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #1a1a1a;
+    border: 1px solid #2b2b2b;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: white;
+}
+
+.modal-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.boton-cancelar {
+    background: none;
+    border: 1px solid #2b2b2b;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.boton-guardar {
+    background: #D09E10;
+    border: none;
+    color: #000000;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.modal-mensaje {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.modal-mensaje-error {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+
+.toast-exito {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #101d14;
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    animation: entradaToast 0.3s ease;
+}
+
+.toast-exito i {
+    font-size: 16px;
+}
+
+@keyframes entradaToast {
+    from {
+        transform: translateY(-15px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
 

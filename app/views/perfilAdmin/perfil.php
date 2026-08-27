@@ -14,6 +14,13 @@
 
     <div class="main-content">
 
+        <?php if (($_GET['success'] ?? '') === 'actualizado'): ?>
+            <div id="notificacion-exito" class="toast-exito">
+                <i class="fi fi-rr-check-circle"></i>
+                Información actualizada correctamente.
+            </div>
+        <?php endif; ?>
+
         <div class="perfil-admin-container">
             <div class="perfil-fila-superior">
                 <div class="tarjeta-datos">
@@ -30,14 +37,22 @@
                         </div>
 
                         <div class="info-admin">
-                            <h2>Nombre Administrador</h2>
+                            <h2><?php echo isset($admin['nombre_completo']) ? $admin['nombre_completo'] : 'No disponible'; ?></h2>
                             <p class="rol-admin">Administrador</p>
 
                             <div class="dato-linea">
                                 <i class="fi fi-rr-envelope"></i>
                                 <div>
                                     <span class="dato-label">Correo electrónico</span>
-                                    <strong>nombre.administrador@gmail.com</strong>
+                                    <strong><?php echo isset($admin['usuario']) ? $admin['usuario'] : 'No disponible'; ?></strong>
+                                </div>
+                            </div>
+
+                            <div class="dato-linea">
+                                <i class="fi fi-rr-user"></i>
+                                <div>
+                                    <span class="dato-label">Documento de identidad</span>
+                                    <strong><?php echo isset($admin['documento_identidad']) ? $admin['documento_identidad'] : 'No disponible'; ?></strong>
                                 </div>
                             </div>
 
@@ -45,7 +60,7 @@
                                 <i class="fi fi-rr-phone-call"></i>
                                 <div>
                                     <span class="dato-label">Teléfono</span>
-                                    <strong>+57 300 123 4567</strong>
+                                    <strong><?php echo isset($admin['telefono']) ? $admin['telefono'] : 'No disponible'; ?></strong>
                                 </div>
                             </div>
 
@@ -53,16 +68,8 @@
                                 <i class="fi fi-rr-calendar"></i>
                                 <div>
                                     <span class="dato-label">Fecha de registro</span>
-                                    <strong>15 de enero de 2024</strong>
-                                </div>
-                            </div>
-
-                            <div class="dato-linea">
-                                <i class="fi fi-rr-user"></i>
-                                <div>
-                                    <span class="dato-label">Nombre de Usuario</span>
-                                    <strong>Usuario04</strong>
-                                </div>
+                                    <strong><?php echo isset($admin['creado_en']) ? date('d/m/Y', strtotime($admin['creado_en'])) : 'No disponible'; ?></strong>
+                                </div> <!--empty-->
                             </div>
                         </div>
                     </div>
@@ -258,19 +265,79 @@
                 <div class="linea-divisora"></div>
             </div>
 
+            <!-- Modal: Editar información -->
+            <div class="modal-overlay" id="modalEditarInfo">
+                <div class="modal-caja">
+                    <div class="modal-header">
+                        <h3>Editar información</h3>
+                        <button type="button" class="modal-cerrar" id="cerrarModalEditarInfo">✕</button>
+                    </div>
+
+                    <?php if (($_GET['error'] ?? '') === 'campos_vacios'): ?>
+                        <p class="modal-mensaje modal-mensaje-error">Todos los campos son obligatorios.</p>
+                    <?php endif; ?>
+
+                    <?php if (($_GET['error'] ?? '') === 'nombre_invalido'): ?>
+                        <p class="modal-mensaje modal-mensaje-error">El nombre solo puede contener letras y espacios.</p>
+                    <?php endif; ?>
+
+                    <?php if (($_GET['error'] ?? '') === 'telefono_invalido'): ?>
+                        <p class="modal-mensaje modal-mensaje-error">El teléfono solo puede contener números.</p>
+                    <?php endif; ?>
+
+                    <?php if (($_GET['error'] ?? '') === 'documento_invalido'): ?>
+                        <p class="modal-mensaje modal-mensaje-error">El documento solo puede contener números.</p>
+                    <?php endif; ?>
+
+                    <!-- Envía la información al controlador mediante una petición oculta (POST) -->
+                    <form action="/streepsoft/perfil/actualizar" method="POST" id="formEditarInfo">
+
+                        <label for="input-nombre-completo">Nombre completo</label>
+                        <input type="text" id="input-nombre-completo" name="nombre_completo"
+                            value="<?php echo isset($admin['nombre_completo']) ? htmlspecialchars($admin['nombre_completo']) : ''; ?>"
+                            pattern="[A-Za-zÀ-ÿñÑ\s]+"
+                            title="Solo se permiten letras y espacios, sin números ni caracteres especiales"
+                            required>
+
+                        <label for="input-telefono">Teléfono</label>
+                        <input type="text" id="input-telefono" name="telefono"
+                            value="<?php echo isset($admin['telefono']) ? htmlspecialchars($admin['telefono']) : ''; ?>"
+                            pattern="[0-9]+"
+                            maxlength="10"
+                            title="Solo se permiten números"
+                            required>
+
+                        <label for="input-documento">Documento de identidad</label>
+                        <input type="text" id="input-documento" name="documento_identidad"
+                            value="<?php echo isset($admin['documento_identidad']) ? htmlspecialchars($admin['documento_identidad']) : ''; ?>"
+                            pattern="[0-9]+"
+                            maxlength="10"
+                            title="Solo se permiten números"
+                            required>
+
+                        <div class="modal-acciones">
+                            <button type="button" class="boton-cancelar" id="cancelarModalEditarInfo">Cancelar</button>
+                            <button type="submit" class="boton-guardar">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
+    </div>
 
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-        <script src="/streepsoft/public/js/navbar/script.js"></script>
-        <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
-        <script src="/streepsoft/public/js/perfilAdmin/perfilAdmin.js"></script>
-        <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
 
-            <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
-            <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="/streepsoft/public/js/navbar/script.js"></script>
+    <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
+    <script src="/streepsoft/public/js/perfilAdmin/perfilAdmin.js"></script>
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
 </body>
 
 </html>

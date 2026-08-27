@@ -150,6 +150,7 @@ if (Auth::check()) {
             '/jugadores/guardar' => ['controller' => 'JugadorController', 'method' => 'guardar'],
             '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
             '/deudas/registrar-pago' => ['controller' => 'DeudaController', 'method' => 'registrarPago'],
+            '/perfil/actualizar' => ['controller' => 'PerfilAdminController', 'method' => 'actualizarPerfil'],
         ]
     ];
     

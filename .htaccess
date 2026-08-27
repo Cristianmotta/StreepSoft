@@ -1,7 +1,5 @@
-prueba123
-
 #1. Ocultar el lista de archivos en directorios
-Options - Indexes
+Options -Indexes
 
 
 #2. Definir codificación de caracteres por defecto
@@ -14,7 +12,7 @@ AddDefaultCharset UTF-8
     RewriteEngine On
 
      #Establecer la ruta base (modifica si tu proyecto esta en una subcarpeta)
-    RewriteBase /
+    RewriteBase /streepsoft/
 
     # Regla de excepcion 1: No redirigir si la peticion corresponde a un archivo real
     # (ej: assets/css/estilos.css)
