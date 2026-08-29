@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-08-2026 a las 17:15:50
+-- Tiempo de generación: 29-08-2026 a las 22:21:52
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -73,7 +73,7 @@ CREATE TABLE `deudas` (
 
 INSERT INTO `deudas` (`id_deudas`, `id_jugadores`, `matricula`, `mes`, `anio`, `totalidad`, `fecha_limite_pago`, `fecha_pago`, `id_metodo_pago`, `concepto`, `descuento_porcentaje`, `valor_pagado`, `pago`, `id_tipo_becas`) VALUES
 (6, 10, 100000.00, 'Junio', '2026', 150000.00, '2026-06-30', NULL, 1, NULL, 0, NULL, 'mora', 1),
-(7, 9, 90000.00, 'Junio', '2026', 80000.00, '2026-06-29', NULL, NULL, NULL, 0, NULL, 'mora', 2);
+(7, 9, 90000.00, 'Junio', '2026', 80000.00, '2026-06-29', '2026-08-20', 1, NULL, 0, 80000.00, 'pagado', 2);
 
 -- --------------------------------------------------------
 
@@ -98,7 +98,8 @@ INSERT INTO `documentos` (`id_documento`, `id_jugadores`, `documento`, `id_tipo_
 (14, 16, '10011201234', 2),
 (15, 17, '2034668904', 3),
 (16, 18, '3450039932', 2),
-(17, 19, '456779955', 3);
+(17, 19, '456779955', 3),
+(18, 21, '10010101', 3);
 
 -- --------------------------------------------------------
 
@@ -169,6 +170,7 @@ CREATE TABLE `jugadores` (
   `iniciales` varchar(10) DEFAULT NULL,
   `acudiente` varchar(100) NOT NULL,
   `numero_acudiente` varchar(20) NOT NULL,
+  `id_responsable` int(11) DEFAULT NULL,
   `id_categorias` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `id_eps` int(11) NOT NULL,
@@ -179,13 +181,15 @@ CREATE TABLE `jugadores` (
 -- Volcado de datos para la tabla `jugadores`
 --
 
-INSERT INTO `jugadores` (`id_jugadores`, `foto`, `nombres`, `apellidos`, `fecha_nacimiento`, `iniciales`, `acudiente`, `numero_acudiente`, `id_categorias`, `created_at`, `id_eps`, `id_instructor`) VALUES
-(9, 'juan.jpg', 'Juan David', 'Pérez Gómez', '2010-05-15', 'JDPG', 'Carlos Pérez', '3001234567', 1, '2026-06-22 04:51:13', 2, 1),
-(10, 'maria.jpg', 'María Fernanda', 'López Ruiz', '2011-08-20', 'MFLR', 'Ana Ruiz', '3119876543', 1, '2026-06-22 04:51:13', 1, 1),
-(16, NULL, 'JUAN andres', 'lopez Guzman', '2006-06-12', 'JAG', 'Lopez', '300024904', 6, '2026-08-12 19:03:53', 12, 2),
-(17, NULL, 'JUAN andres', 'lopez Guzman', '2022-06-12', 'Mat', 'julian', '312227789', 4, '2026-08-12 21:43:43', 9, 1),
-(18, NULL, 'Kevin', 'Bolaños', '2016-06-14', 'BKI', 'Lopez', '3216733893', 4, '2026-08-13 03:25:02', 4, 1),
-(19, '05c2d8e0b6f3ccd3df9c500a844b45a8.jpg', 'Fabian', 'Garzon', '2013-10-15', 'GFN', 'Andres', '320789222334', 5, '2026-08-13 03:31:47', 8, 2);
+INSERT INTO `jugadores` (`id_jugadores`, `foto`, `nombres`, `apellidos`, `fecha_nacimiento`, `iniciales`, `acudiente`, `numero_acudiente`, `id_responsable`, `id_categorias`, `created_at`, `id_eps`, `id_instructor`) VALUES
+(9, 'juan.jpg', 'Juan David', 'Pérez Gómez', '2010-05-15', 'JDPG', 'Carlos Pérez', '3001234567', 1, 1, '2026-06-22 04:51:13', 2, 1),
+(10, 'maria.jpg', 'María Fernanda', 'López Ruiz', '2011-08-20', 'MFLR', 'Ana Ruiz', '3119876543', 2, 1, '2026-06-22 04:51:13', 1, 1),
+(16, NULL, 'JUAN andres', 'lopez Guzman', '2006-06-12', 'JAG', 'Lopez', '300024904', 3, 6, '2026-08-12 19:03:53', 12, 2),
+(17, NULL, 'JUAN andres', 'lopez Guzman', '2022-06-12', 'Mat', 'julian', '312227789', 4, 4, '2026-08-12 21:43:43', 9, 1),
+(18, NULL, 'Kevin', 'Bolaños', '2016-06-14', 'BKI', 'Lopez', '3216733893', NULL, 4, '2026-08-13 03:25:02', 4, 1),
+(19, '05c2d8e0b6f3ccd3df9c500a844b45a8.jpg', 'Fabian', 'Garzon', '2013-10-15', 'GFN', 'Andres', '320789222334', 8, 5, '2026-08-13 03:31:47', 8, 2),
+(20, '49a0e0147abf1ce0f3cacd383ceda2af.jpg', 'juan', 'lusmes', '2007-08-04', 'jl', 'cristian', '3146649074', 7, 5, '2026-08-20 22:08:51', 4, 2),
+(21, NULL, 'wswsw dwdwdw', 'h hujh', '0115-12-05', 'jdj', 'sdsdsdsds', 'dsdsdsds', 8, 6, '2026-08-27 20:56:56', 9, 2);
 
 -- --------------------------------------------------------
 
@@ -206,6 +210,35 @@ INSERT INTO `metodo_pago` (`id_metodo_pago`, `tipo_metodo_pago`) VALUES
 (1, 'Nequi'),
 (2, 'Transferencia'),
 (3, 'Efectivo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `responsables`
+--
+
+CREATE TABLE `responsables` (
+  `id_responsable` int(11) NOT NULL,
+  `nombres` varchar(100) NOT NULL,
+  `apellidos` varchar(100) NOT NULL,
+  `id_tipo_documento` int(11) NOT NULL,
+  `identificacion` varchar(25) NOT NULL,
+  `numero_celular` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `responsables`
+--
+
+INSERT INTO `responsables` (`id_responsable`, `nombres`, `apellidos`, `id_tipo_documento`, `identificacion`, `numero_celular`) VALUES
+(1, 'Carlos', 'Pérez', 3, '', '3001234567'),
+(2, 'Ana', 'Ruiz', 3, '', '3119876543'),
+(3, 'Lopez', 'Lopez', 3, '', '300024904'),
+(4, 'julian', 'julian', 3, '', '312227789'),
+(5, 'Lopez', 'Lopez', 3, '', '3216733893'),
+(6, 'Andres', 'Andres', 3, '', '320789222334'),
+(7, 'cristian', 'cristian', 3, '', '3146649074'),
+(8, 'sdsdsdsds', 'sdsdsdsds', 3, '', 'dsdsdsds');
 
 -- --------------------------------------------------------
 
@@ -274,7 +307,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `nombre_completo`, `usuario`, `contrasena`, `creado_en`, `pin_recuperacion`, `token_password`, `expired_session`, `request_password`) VALUES
 (1, 'David mora', 'davi1@gmail.com', '$2y$10$aFuRwi7s9XI9m0nDGWM92OEqSXninYWWIg5RexHdyVtd4EpFbX5DW', '0000-00-00 00:00:00', '$2y$10$uVpBPJnHhM96bhIH2fzFS.Cy3OTnWOlvJPpTaoM3CX1W0TURplSfW', '4f5a39adaecee0ee98e902f88bdb268e7a2675607282b61211893a968bc564aa', '2026-08-04 05:40:14', 0),
 (2, 'Noni', 'Noni@gmail.com', '$2y$10$aFuRwi7s9XI9m0nDGWM92OEqSXninYWWIg5RexHdyVtd4EpFbX5DW', '2026-05-17 23:20:48', NULL, NULL, NULL, 0),
-(5, 'cristian', 'cdavidg4396@gmail.com', '$2y$10$kW.AWrCQUAUATwRnvuZCMOUkeRlkfsQjn888H7ST8.C/fwwgqjEsC', '2026-05-26 15:54:10', '$2y$10$cVao9ENsVCxaxsq3uJal2OvLzPsbyifp3xMEJWt6PSzafmx/7Qg1W', 'a34d7fa3c5010fc0dc1b017b93a13e280665301406f0122bb372c4367764d247', '2026-08-13 00:04:45', 0),
+(5, 'cristian', 'cdavidg4396@gmail.com', '$2y$10$kW.AWrCQUAUATwRnvuZCMOUkeRlkfsQjn888H7ST8.C/fwwgqjEsC', '2026-05-26 15:54:10', '$2y$10$N8M44q.KCAvOq.2uIVuKqunMGmPevTVeAkJSXSQIp7f32waVY38jW', 'ef384ea181bba152d426ea67e005965f169356701d8846fa226e960058846403', '2026-08-21 00:10:29', 0),
 (6, 'JuanS', 'jsebastian1315@gmail.com', '$2y$10$StsqBLHimiWOmybVBZxeHuw647eiOScW4jTFzNclez3hKUbOkR.0W', '2026-05-26 23:19:13', '$2y$10$aTDDQCYkr.HaM/jb/0VdOe6F9NgZfaoB4MY28rLKkJ9ZwRFULX63K', '9bba13f36a47a4570ea8ef80d5919ecbf8862a215f9dc4448ddd541c067fd4af', '2026-07-20 07:58:29', 0),
 (7, 'David Angel', 'davidangel11222@gmail.com', '$2y$10$rIIaAD07wWtThQHaLq6M3uaZaC4W1fKCrjGaNuw/1Pbn9VdVjItcm', '2026-07-23 03:58:21', NULL, NULL, NULL, 0);
 
@@ -361,13 +394,21 @@ ALTER TABLE `jugadores`
   ADD PRIMARY KEY (`id_jugadores`),
   ADD KEY `fk_jugador_categoria` (`id_categorias`),
   ADD KEY `idx_jugador_instructor` (`id_instructor`),
-  ADD KEY `fk_jugadores_eps` (`id_eps`);
+  ADD KEY `fk_jugadores_eps` (`id_eps`),
+  ADD KEY `fk_jugadores_responsable` (`id_responsable`);
 
 --
 -- Indices de la tabla `metodo_pago`
 --
 ALTER TABLE `metodo_pago`
   ADD PRIMARY KEY (`id_metodo_pago`);
+
+--
+-- Indices de la tabla `responsables`
+--
+ALTER TABLE `responsables`
+  ADD PRIMARY KEY (`id_responsable`),
+  ADD KEY `fk_responsable_tipo_documento` (`id_tipo_documento`);
 
 --
 -- Indices de la tabla `tipos_beca`
@@ -408,7 +449,7 @@ ALTER TABLE `deudas`
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id_documento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_documento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `eps`
@@ -426,13 +467,19 @@ ALTER TABLE `instructor`
 -- AUTO_INCREMENT de la tabla `jugadores`
 --
 ALTER TABLE `jugadores`
-  MODIFY `id_jugadores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_jugadores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `metodo_pago`
 --
 ALTER TABLE `metodo_pago`
   MODIFY `id_metodo_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `responsables`
+--
+ALTER TABLE `responsables`
+  MODIFY `id_responsable` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_beca`
@@ -477,7 +524,14 @@ ALTER TABLE `documentos`
 ALTER TABLE `jugadores`
   ADD CONSTRAINT `fk_jugador_categoria` FOREIGN KEY (`id_categorias`) REFERENCES `categorias` (`id_categorias`),
   ADD CONSTRAINT `fk_jugadores_eps` FOREIGN KEY (`id_eps`) REFERENCES `eps` (`id_eps`),
-  ADD CONSTRAINT `fk_jugadores_instructores` FOREIGN KEY (`id_instructor`) REFERENCES `instructor` (`id_instructor`);
+  ADD CONSTRAINT `fk_jugadores_instructores` FOREIGN KEY (`id_instructor`) REFERENCES `instructor` (`id_instructor`),
+  ADD CONSTRAINT `fk_jugadores_responsable` FOREIGN KEY (`id_responsable`) REFERENCES `responsables` (`id_responsable`);
+
+--
+-- Filtros para la tabla `responsables`
+--
+ALTER TABLE `responsables`
+  ADD CONSTRAINT `fk_responsable_tipo_documento` FOREIGN KEY (`id_tipo_documento`) REFERENCES `tipo_documento` (`id_tipo_documento`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

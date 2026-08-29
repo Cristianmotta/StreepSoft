@@ -252,3 +252,32 @@ document.addEventListener("click", (e) => {
 
 // Iniciar
 actualizarTabla();
+
+const btnNuevoJugador = document.getElementById("btnNuevoJugador");
+const modalRegistro = document.getElementById("modalRegistro");
+const cerrarRegistro = document.getElementById("cerrarRegistro");
+
+// Abrir modal
+btnNuevoJugador.addEventListener("click", (e) => {
+    e.preventDefault();
+    modalRegistro.classList.add("activo");
+});
+
+// Cerrar modal (botón X)
+cerrarRegistro.addEventListener("click", () => {
+    modalRegistro.classList.remove("activo");
+});
+
+// Cerrar haciendo clic fuera del contenido
+modalRegistro.addEventListener("click", (e) => {
+    if (e.target === modalRegistro) {
+        modalRegistro.classList.remove("activo");
+    }
+});
+
+// Cerrar con tecla ESC
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        modalRegistro.classList.remove("activo");
+    }
+});
