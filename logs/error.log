@@ -795,3 +795,31 @@
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[27-Aug-2026 16:13:54 America/Bogota] Home - quickLoginDisponible: false
+[27-Aug-2026 16:13:54 America/Bogota] Home - COOKIE quick_login_data: false
+[27-Aug-2026 16:13:54 America/Bogota] Home - COOKIE logout_manual: false
+[27-Aug-2026 16:14:06 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[27-Aug-2026 16:14:06 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[27-Aug-2026 16:14:06 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[27-Aug-2026 16:14:06 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[27-Aug-2026 16:14:06 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[27-Aug-2026 16:14:06 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[27-Aug-2026 16:15:04 America/Bogota] Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'telefono' in 'field list'
+[27-Aug-2026 16:28:36 America/Bogota] Quick login cookie establecida para: cdavidg4396@gmail.com
+[27-Aug-2026 16:28:36 America/Bogota] Session expirada por timeout: cdavidg4396@gmail.com
+[27-Aug-2026 16:28:36 America/Bogota] Home - quickLoginDisponible: true
+[27-Aug-2026 16:28:36 America/Bogota] Home - COOKIE quick_login_data: true
+[27-Aug-2026 16:28:36 America/Bogota] Home - COOKIE logout_manual: false
+[27-Aug-2026 16:28:38 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[27-Aug-2026 16:28:38 America/Bogota] Quick login cookie limpiada tras uso exitoso
+[27-Aug-2026 16:28:38 America/Bogota] Quick login exitoso: cdavidg4396@gmail.com
+[27-Aug-2026 16:28:38 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[27-Aug-2026 16:28:38 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[27-Aug-2026 16:28:38 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[27-Aug-2026 16:28:38 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
+[27-Aug-2026 16:28:41 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 333
