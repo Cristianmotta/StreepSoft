@@ -12,7 +12,11 @@ public function render(): void
 {
     $csrfToken = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(32));
     $_SESSION['csrf_token'] = $csrfToken;
-    $this->view('navegacion/navegacion', ['csrfToken' => $csrfToken]);
+
+    $usuarioModel = new Usuario($this->pdo);
+    $admin = $usuarioModel->obtenerPorId(Auth::id());
+    
+    $this->view('navegacion/navegacion', ['csrfToken' => $csrfToken, 'admin' => $admin]);
 }
 
 }

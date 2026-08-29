@@ -795,3 +795,7 @@
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
 [20-Aug-2026 15:28:36 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[29-Aug-2026 12:53:16 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[29-Aug-2026 12:53:16 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[29-Aug-2026 12:53:16 America/Bogota] Dashboard: Error obteniendo jugadores con deuda: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_jugador' in 'field list'
+[29-Aug-2026 12:53:16 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'

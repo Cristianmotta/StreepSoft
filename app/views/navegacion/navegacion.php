@@ -22,8 +22,8 @@
                     <img src="/streepsoft/public/Image/usuario.png" alt="usuario" class="navbar-icon">
                     
                     <div class="navbar-user-info">
-                        <h1>Administrador</h1>
-                        <p>Admin@admin.com</p>
+                        <h1><?php echo isset($admin['nombre_completo']) ? htmlspecialchars($admin['nombre_completo']) : 'Administrador'; ?></h1>
+                        <p><?php echo isset($admin['usuario']) ? htmlspecialchars($admin['usuario']) : ''; ?></p>
                     </div>
                 </a>
             </div>
