@@ -287,8 +287,6 @@
             integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw=="
             crossorigin="anonymous"></script>
         <script src="/streepsoft/public/js/navbar/script.js"></script>
-
-        <-- Chatbot--
             <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
             <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
 

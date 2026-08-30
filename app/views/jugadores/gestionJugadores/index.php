@@ -239,7 +239,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
 
                     <div class="card-two">
                         <div class="card-registrar">
-                            <a href="/streepsoft/jugadores/crear"  id="btnNuevoalumno"  class="registrar">
+                            <a href="#"  id="btnNuevoJugador"  class="registrar">
                                 <span class="ic--round-plus"></span>
                                 <h2>Nuevo Jugador</h2>
                             </a>
@@ -262,7 +262,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                                     <th>Acudientes</th>
                                     <th>Instructor</th>
                                     <th>Estado</th>
-                                    <th>fecha limite</th>
+                                    <th>Fecha limite</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -393,6 +393,12 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="modal-registro" id="modalRegistro">
+        <div class="modal-registro-contenido">
+        <button class="cerrar-registro" id="cerrarRegistro">&times;</button>
+        <iframe src="/streepsoft/jugadores/crear" class="iframe-registro" id="iframeRegistro"></iframe>
     </div>
 
     <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
