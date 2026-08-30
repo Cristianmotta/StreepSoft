@@ -1,97 +1,143 @@
-<link rel="stylesheet" href="/streepsoft/public/css/nuevo/nuevoAlumno.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumno</title>
+    <link rel="stylesheet" href="/streepsoft/public/css/nuevo/formularioJugador.css">
+</head>
+<body>
+    <div class="contenedor">
+        <div class="contenedor-pagina-1">
 
-<div class="card-body">
-            <div class="card-black">
-                <div class="card-text">
-                    <h1>Nuevo alumno</h1>
-                    <p>Complete todos los campos para agregar un alumno</p>
-                </div>
-
-                <div class="card-icon">
-                    <span class="mingcute--user-add-2-fill"></span>
-                </div>  
-            </div>
-
-            <?php if (isset($_GET['error'])): ?>
-                <p style="color:#e74c3c; font-weight:bold;">
-                    <?php
-                        $errores = [
-                            'csrf' => 'Token de seguridad inválido, intenta de nuevo.',
-                            'campos_vacios' => 'Faltan campos obligatorios por completar.',
-                            'fecha_invalida' => 'La fecha de nacimiento no es válida.',
-                            'creacion_fallida' => 'No se pudo guardar el alumno, intenta de nuevo.',
-                        ];
-                        echo htmlspecialchars($errores[$_GET['error']] ?? 'Ocurrió un error.');
-                    ?>
-                </p>
-            <?php endif; ?>
-
-            <form action="/streepsoft/jugadores/guardar" method="POST" enctype="multipart/form-data" class="card-register">
-
-                <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
-
-                <div class="cards-fotos">
-                    <div class="card-foto">
-                        <input 
-                        type="file" 
-                        id="foto"
-                        name="foto"
-                        accept="image/png, image/jpeg"
-                        hidden>
-
-                        <label for="foto" class="upload-label">
-                            
-                            <img id="preview" class="preview-image">
-                            
-                            <div id="upload-content" class="upload-content">
-                                <div class="icon"><span class="mdi-light--camera"></span></div>
-
-                                <h2>Subir foto</h2>
-                                <h3>del Alumno</h3>
-                            </div>
-                        </label>
-
-                        <button
-                            type="button"
-                            id="remove-image"
-                            class="remove-image">
-                            <span>x</span>
-                        </button>
-                    </div>
-                    <P>JPG, PNG - MAX: 2 MB (opcional)</P>
+            <div class="encabezado">
+                <div class="titulo">
+                    <h1>Nuevo Jugador</h1>
+                    <i class="mingcute--user-add-fill"></i>
                 </div>
                 
-                <div class="card-input">
-                    <div class="card-encabezado">
-                        <div class="iconos"><span class="basil--document-solid"></span></div>
-                        <p>Datos alumno</p>
-                        <div class="line"></div>
+                <p>Complete los campos para agregar un nuevo alumno</p>      
+            </div>
+
+            <div class="contenedor-pasos">
+
+                <div class="pasos">
+
+                    <div class="paso activo">
+                        <div class="circulo"></div>
+                        <span>Datos</span>
                     </div>
 
-                    <div class="formulario">
-                        <div class="grup">
-                            <label>Segundo apellido</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="apellido2" placeholder="Ej: Gusman">
-                            </div>
+                    <div class="paso">
+                        <div class="circulo"></div>
+                        <span>Academia</span>
+                    </div>
+
+                    <div class="paso">
+                        <div class="circulo"></div>
+                        <span>uniforme</span>
+                    </div>
+
+                    
+                    <div class="paso">
+                        <div class="circulo"></div>
+                        <span>Acudiente</span>
+                    </div>
+
+                    <div class="paso">
+                        <div class="circulo"></div>
+                        <span>pago</span>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <?php if (isset($_GET['error'])): ?>
+            <p style="color:#e74c3c; font-weight:bold;">
+                <?php
+                    $errores = [
+                        'csrf' => 'Token de seguridad inválido, intenta de nuevo.',
+                        'campos_vacios' => 'Faltan campos obligatorios por completar.',
+                        'fecha_invalida' => 'La fecha de nacimiento no es válida.',
+                        'creacion_fallida' => 'No se pudo guardar el alumno, intenta de nuevo.',
+                    ];
+                    echo htmlspecialchars($errores[$_GET['error']] ?? 'Ocurrió un error.');
+                ?>
+            </p>
+        <?php endif; ?>
+
+        <form action="/streepsoft/jugadores/guardar" method="POST" enctype="multipart/form-data" id="formjugador">
+            
+            <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
+            
+            <section class="paso-formulario activo">
+                <div class="contenido-datos">
+
+                    <div class="contenedor-foto">
+                        <label class="zona-foto" id="zonaFoto">
+                            
+                            <i class="fluent--camera-add-48-filled"></i>
+
+                            <span class="texto-foto">
+                                Subir foto<br>
+                                del alumno
+                            </span>
+                            <img class="foto-miniatura" id="fotoMiniatura" src="#" alt="Foto del alumno" />
+                        </label>
+                        
+                        <input type="file"
+                               id="inputFoto"
+                               name="foto"
+                               accept="image/png, image/jpeg"
+                               hidden>
+
+                        <p class="foto-info">
+                            JPG · PNG · MAX: 2 MB
+                        </p>
+                        <input type="hidden" id="fotoBase64" name="foto_base64" value="" />
+                    </div>
+
+                    <div>
+                        <div class="titulo-seccion">
+                            <div class="basil--document-solid"></div>
+                            <span>Datos alumno</span>
                         </div>
 
-                        <div class="grup">
-                            <label>Primer Apellido</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="apellido1" placeholder="Ej: Gusman" required>
+                        <div class="grid-2">
+                            <div class="grupo">
+                                <label for="">segundo apellido</label>
+                                <input type="text"
+                                    name="apellido2"
+                                    placeholder="Opcional">
                             </div>
-                        </div>
-                        
-                        <div class="grup">
-                            <label>Documento</label>
-                            <div class="campo">
+
+                            <div class="grupo">
+                                <label for="">segundo nombre</label>
+                                <input type="text"
+                                    name="apellido1"
+                                    placeholder="Opcional">
+                            </div>
+
+                            <div class="grupo">
+                                <label for="">primer apellido</label>
+                                <input type="text"
+                                    name="nombre1"
+                                    placeholder="Obligatorio" required>
+                            </div>
+
+                            <div class="grupo">
+                                <label for="">primer Nombre</label>
+                                <input type="text"
+                                    name="nombre2"
+                                    placeholder="Obligatorio" required>
+                            </div>
+
+                            <div class="grupo">
+                                <label>Tipo de documento</label>
+
                                 <select name="id_tipo_documento" required>
                                     <option value="">Seleccione</option>
                                     <?php foreach (($tiposDocumento ?? []) as $tipo): ?>
@@ -101,221 +147,288 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="grup">
-                            <label>Eps</label>
-                            <div class="campo">
-                                <select name="id_eps" required>
-                                    <option value="">Seleccione</option>
-                                    <?php foreach (($epsList ?? []) as $eps): ?>
-                                        <option value="<?= (int)$eps['id_eps'] ?>">
-                                            <?= htmlspecialchars($eps['nombre']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <div class="grupo">
+                                <label for="">Identificacion</label>
+                                <input type="number"
+                                    name="documento"
+                                    placeholder="Escribe tu Documento" required>
                             </div>
-                        </div>
-                        
-                        <div class="grup">
-                            <label>Primer nombre</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="nombre1" placeholder="Ej: Gusman" required>
-                            </div>
-                        </div>
 
-                        <div class="grup">
-                            <label>Segundo nombre</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="nombre2" placeholder="Ej: Gusman">
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Identificacion</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="documento" placeholder="Ej: 000001000">
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Categoría</label>
-                            <div class="campo">
-                                <select name="id_categorias" required>
-                                    <option value="">Seleccione</option>
-                                    <?php foreach (($categorias ?? []) as $categoria): ?>
-                                        <option value="<?= (int)$categoria['id_categorias'] ?>">
-                                            <?= htmlspecialchars($categoria['nombre']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-encabezado">
-                        <div class="iconos"><span class="stash--data-date-duotone"></span></div>
-                        <p>Nacimiento y academia</p>
-                        <div class="line"></div>
-                    </div>
-
-                    <div class="formulario">
-                        <div class="grup">
-                            <label>Fecha de nacimiento</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="date" name="fecha_nacimiento" required>
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Iniciales</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="iniciales" placeholder="Ej: MTA">
-                            </div>
-                        </div>
-                        
-                        <div class="grup">
-                            <label>Instructor</label>
-                            <div class="campo">
-                                <select name="id_instructor" required>
-                                    <option value="">Seleccione</option>
-                                    <?php foreach (($instructores ?? []) as $instructor): ?>
-                                        <option value="<?= (int)$instructor['id_instructor'] ?>">
-                                            <?= htmlspecialchars($instructor['nombres'] . ' ' . $instructor['apellidos']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Matricula</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="number" name="matricula" placeholder="Ej: 90000">
-                            </div>
-                            <small style="opacity:.6;">Este campo aún no se guarda (pendiente conectar a `deudas`)</small>
-                        </div>
-                    </div>
-
-                    <div class="card-encabezado">
-                        <div class="iconos"><span class="lsicon--clothes-filled"></span></div>
-                        <p>Uniforme</p>
-                        <div class="line"></div>
-                    </div>
-                    <small style="opacity:.6;">Sección aún no conectada a la base de datos</small>
-
-                    <div class="formulario">
-                        <div class="grup">
-                            <label>Numero de Camisa</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="ion--shirt"></span>
-                                </span>
-                                <input type="number" name="numero_camisa" placeholder="Ej: 10">
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Talla camisa</label>
-                            <div class="campo">
-                                <span class="icon">
-                                <span class="ion--shirt"></span>
-                                </span>
-                                <input type="text" name="talla_camisa" placeholder="Ej: L">
-                            </div>
-                        </div>
-                        
-                        <div class="grup">
-                            <label>Talla Pantalon</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="icon-park-solid--clothes-pants-short"></span>
-                                </span>
-                                <input type="text" name="talla_pantalon" placeholder="Ej: L">
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Talla media</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="ph--sock-fill"></span>
-                                </span>
-                                <input type="number" name="talla_media" placeholder="Ej: 35">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-encabezado">
-                        <div class="iconos"><span class="ph--users-fill"></span></div>
-                        <p>Acudiente</p>
-                        <div class="line"></div>
-                    </div>
-
-                    <div class="formulario">
-                        <div class="grup">
-                            <label>Acudiente</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="acudiente" placeholder="Ej: Gusman" required>
-                            </div>
-                        </div>
-
-                        <div class="grup">
-                            <label>Numero Acudiente</label>
-                            <div class="campo">
-                                <span class="icon">
-                                    <span class="gridicons--user"></span>
-                                </span>
-                                <input type="text" name="numero_acudiente" placeholder="Ej: +57 310000000" required>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="footer-card">
-                    <div class="footer-text">
-                        <p>* Todos los campos son obligatorios </p>
+            <section class="paso-formulario">
+                <div class="titulo-seccion">
+                    <div class="solar--calendar-bold-duotone"></div>
+                    <span>Informacion de academia</span>
+                </div>
+
+                <div class="grid-2">
+
+                    <div class="grupo">
+                        <label>Fecha de nacimiento</label>
+
+                        <input type="date"
+                            name="fecha_nacimiento"
+                            required>
                     </div>
 
-                    <div class="footer-botton">
-                        <div class="footer-cancelar">
-                            <button type="button"
-                            id="btnCancelarAlumno">
-                                <p>cancelar</p>
-                            </button>
-                        </div>
-                            
-                        <div class="footer-guardar">
-                            <button type="submit">
-                                <p>Guardar</p>
-                            </button>
+                    <div class="grupo">
+                        <label>Edad</label>
+
+                        <input type="number"
+                            name="edad"
+                            required>
+                    </div>
+
+                    <div class="grupo">
+                        <label>Sexo</label>
+
+                        <select name="tipo_documento" required>
+                            <option value="">Seleccione</option>
+                            <option value="Femenino">Femenino</option>
+                            <option value="Masculino">Masculino</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo">
+                        <label>EPS</label>
+
+                        <select name="id_eps" required>
+                            <option value="">Seleccione</option>
+                            <?php foreach (($epsList ?? []) as $eps): ?>
+                                <option value="<?= (int)$eps['id_eps'] ?>">
+                                    <?= htmlspecialchars($eps['nombre']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="grupo">
+                        <label>Instructor</label>
+
+                        <select name="id_instructor" required>
+                            <option value="">Seleccione</option>
+                            <?php foreach (($instructores ?? []) as $instructor): ?>
+                                <option value="<?= (int)$instructor['id_instructor'] ?>">
+                                    <?= htmlspecialchars($instructor['nombres'] . ' ' . $instructor['apellidos']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    
+                    <div class="grupo">
+                        <label>Categoria</label>
+
+                        <div class="campo">
+                            <select name="id_categorias" required>
+                                <option value="">Seleccione</option>
+                                <?php foreach (($categorias ?? []) as $categoria): ?>
+                                    <option value="<?= (int)$categoria['id_categorias'] ?>">
+                                        <?= htmlspecialchars($categoria['nombre']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
                 </div>
-            </form>
+            </section>
+
+            <section class="paso-formulario">
+                <div class="titulo-seccion">
+                    <div class="fluent--shirt-20-filled"></div>
+                    <span>Informacion del Uniforme</span>
+                </div>
+
+                <div class="grid-3">
+
+                    <div class="grupo">
+                        <label>Talla de camiseta</label>
+                        <input type="number" name="numero_camisa" placeholder="Ej: 10">
+                    </div>
+
+                    <div class="grupo">
+                        <label>Talla de camiseta</label>
+                        <input type="text" name="talla_camisa" placeholder="Ej: XL">
+                    </div>
+
+
+                    <div class="grupo">
+                        <label>Talla de pantaloneta</label>
+                        <input type="text" name="talla_pantalon" placeholder="Ej: L">
+                    </div>
+
+
+                    <div class="grupo">
+                        <label>Talla de media</label>
+                        <input type="number" name="talla_media" placeholder="Ej: 35">
+                    </div>
+                </div>
+            </section> 
+
+            <section class="paso-formulario">
+                <div class="titulo-seccion">
+                    <div class="mage--users-fill"></div>
+                    <span>Informacion del Acudiente</span>
+                </div>
+
+                <div class="grid-3">
+
+                    <div class="grupo">
+                        <label for="">Acudiente</label>
+                        <input type="text"
+                            name="acudiente"
+                            placeholder="Nombres y apellidos" required>
+                    </div>
+
+                    <div class="grupo">
+                        <label>Tipo</label>
+
+                        <select name="id_tipo_documento" required>
+                            <option value="">Seleccione</option>
+                            <?php foreach (($tiposDocumento ?? []) as $tipo): ?>
+                                <option value="<?= (int)$tipo['id_tipo_documento'] ?>">
+                                    <?= htmlspecialchars($tipo['nombre']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        </select>
+                    </div>
+
+                    <div class="grupo">
+                        <label for="">Identificacion</label>
+                        <input type="text"
+                            name="Identificacion"
+                            placeholder="Escribe tu Documento" required>
+                    </div>
+
+                    <div class="grupo">
+                        <label for="">Numero</label>
+                        <input type="text"
+                            name="numero_acudiente"
+                            placeholder="Telefono de contacto" required>
+                    </div>
+                </div>
+            </section>
+
+                       
+            <section class="paso-formulario">
+                <div class="titulo-seccion">
+                    <div class="fluent--money-24-filled"></div>
+                    <span>Pago de Alumno</span>
+                </div>
+
+                <div class="grid-2">
+
+                    <div class="grupo">
+                        <label for="">Matricula</label>
+                        <input type="text"
+                            name="Matricula"
+                            placeholder="$90.000" required>
+                    </div>
+
+                    <div class="grupo">
+                        <label for="">Mensualidad</label>
+                        <input type="text"
+                            name="Mensualidad"
+                            placeholder="$80.000" required>
+                    </div>
+
+                    <div class="grupo">
+                        <label for="">Fecha de pago</label>
+                        <input type="date"
+                            name="date"
+                            required>
+                    </div>
+
+                    <div class="grupo">
+                        <label>Metodo de pago</label>
+
+                           <select name="tipo_documento" id="metodoPago"  required>
+                            <option value="">Seleccione</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Efectivo">Efectivo</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo">
+                        <label>Tipo de beca</label>
+
+                           <select name="tipo_documento" required>
+                            <option value="">Seleccione</option>
+                            <option value="sin beca">sin beca</option>
+                            <option value="Media beca">Media Beca</option>
+                            <option value="Beca">Beca</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo" id="grupoComprobante" style="display: none;">
+                        <label for="comprobante">Número de comprobante</label>
+                        <input type="text" id="comprobante" name="comprobante" 
+                                placeholder="Ingrese el número de comprobante" required>
+                    </div>
+                </div>
+            </section>
+
+
+            <footer class="acciones">
+                <button type="button"
+                        class="btn btn-cancelar"
+                        id="cerrarRegistro">   
+                    cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-anterior"
+                        id="btnAnterior">
+
+                    Anterior
+                </button>
+
+                <button type="button"
+                        class="btn btn-siguiente"
+                        id="btnSiguiente">
+
+                    Siguiente
+                </button>
+
+                <button type="submit"
+                        class="btn btn-guardar"
+                        id="btnGuardar">
+                    Guardar
+                </button>
+            </footer>
+
+        </form>
+
+    </div>
+
+    <div class="modal-recorte" id="modalRecorte">
+        <div class="modal-recorte-contenido">
+            <div class="modal-recorte-header">
+                <h3>Ajustar foto</h3>
+                <button class="modal-recorte-cerrar" id="cerrarRecorte">&times;</button>
+            </div>
+            <div class="modal-recorte-body">
+                <div class="recorte-contenedor">
+                    <img id="imagenRecorte" src="#" alt="Previsualización" />
+                </div>
+            </div>
+            <div class="modal-recorte-footer">
+                <button class="btn btn-cancelar" id="cancelarRecorte">Cancelar</button>
+                <button class="btn btn-guardar" id="aceptarRecorte">Aceptar</button>
+            </div>
         </div>
+    </div>
 
 
-<script src="/streepsoft/public/js/nuevo/nuevoalumno.js"></script>
-<script src="/streepsoft/public/js/nuevo/FotoAlumno.js"></script>
+    <script src="/streepsoft/public/js/nuevo/formularioJugador.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+
+</body>
+</html>
