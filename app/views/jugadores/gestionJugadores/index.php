@@ -262,7 +262,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                                     <th>Acudientes</th>
                                     <th>Instructor</th>
                                     <th>Estado</th>
-                                    <th>fecha limite</th>
+                                    <th>Fecha limite</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
