@@ -276,7 +276,7 @@ const comprobanteInput = document.getElementById('comprobante');
 
 if (metodoPago && grupoComprobante) {
     metodoPago.addEventListener('change', function() {
-        const valor = this.value;
+        const valor = this.options[this.selectedIndex]?.text ?? '';
         if (valor === 'Nequi' || valor === 'Transferencia') {
             grupoComprobante.style.display = 'block';
             comprobanteInput.required = true; // Opcional: hacerlo obligatorio

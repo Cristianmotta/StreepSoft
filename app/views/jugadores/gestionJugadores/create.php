@@ -117,21 +117,21 @@
                             <div class="grupo">
                                 <label for="">segundo nombre</label>
                                 <input type="text"
-                                    name="apellido1"
+                                    name="nombre2"
                                     placeholder="Opcional">
                             </div>
 
                             <div class="grupo">
                                 <label for="">primer apellido</label>
                                 <input type="text"
-                                    name="nombre1"
+                                    name="apellido1"
                                     placeholder="Obligatorio" required>
                             </div>
 
                             <div class="grupo">
                                 <label for="">primer Nombre</label>
                                 <input type="text"
-                                    name="nombre2"
+                                    name="nombre1"
                                     placeholder="Obligatorio" required>
                             </div>
 
@@ -150,11 +150,20 @@
 
                             <div class="grupo">
                                 <label for="">Identificacion</label>
-                                <input type="number"
+                                <input type="text"
+                                    inputmode="numeric"
                                     name="documento"
+                                    pattern="[0-9]*"
+                                    maxlength="10"
                                     placeholder="Escribe tu Documento" required>
                             </div>
 
+                            <div class="grupo">
+                                <label for="">Iniciales</label>
+                                <input type="text"
+                                    name="iniciales"
+                                    placeholder="Opcinal">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -179,15 +188,18 @@
                     <div class="grupo">
                         <label>Edad</label>
 
-                        <input type="number"
+                        <input type="text"
+                            inputmode="numeric"
                             name="edad"
+                            pattern="[0-9]*"
+                            maxlength="2"
                             required>
                     </div>
 
                     <div class="grupo">
                         <label>Sexo</label>
 
-                        <select name="tipo_documento" required>
+                        <select name="sexo" required>
                             <option value="">Seleccione</option>
                             <option value="Femenino">Femenino</option>
                             <option value="Masculino">Masculino</option>
@@ -248,24 +260,24 @@
 
                     <div class="grupo">
                         <label>Talla de camiseta</label>
-                        <input type="number" name="numero_camisa" placeholder="Ej: 10">
+                        <input type="text" name="numero_camisa" inputmode="numeric" placeholder="Ej: 10" pattern="[0-9]*" maxlength="3">
                     </div>
 
                     <div class="grupo">
                         <label>Talla de camiseta</label>
-                        <input type="text" name="talla_camisa" placeholder="Ej: XL">
+                        <input type="text" name="talla_camisa" placeholder="Ej: XL" maxlength="3">
                     </div>
 
 
                     <div class="grupo">
                         <label>Talla de pantaloneta</label>
-                        <input type="text" name="talla_pantalon" placeholder="Ej: L">
+                        <input type="text" name="talla_pantalon" placeholder="Ej: L" maxlength="3">
                     </div>
 
 
                     <div class="grupo">
                         <label>Talla de media</label>
-                        <input type="number" name="talla_media" placeholder="Ej: 35">
+                        <input type="number" name="talla_media" placeholder="Ej: 35" maxlength="2">
                     </div>
                 </div>
             </section> 
@@ -282,13 +294,13 @@
                         <label for="">Acudiente</label>
                         <input type="text"
                             name="acudiente"
-                            placeholder="Nombres y apellidos" required>
+                            placeholder="Nombres y apellidos">
                     </div>
 
                     <div class="grupo">
                         <label>Tipo</label>
 
-                        <select name="id_tipo_documento" required>
+                        <select name="id_tipo_documento_acudiente" required>
                             <option value="">Seleccione</option>
                             <?php foreach (($tiposDocumento ?? []) as $tipo): ?>
                                 <option value="<?= (int)$tipo['id_tipo_documento'] ?>">
@@ -302,15 +314,21 @@
                     <div class="grupo">
                         <label for="">Identificacion</label>
                         <input type="text"
+                            inputmode="numeric"
                             name="Identificacion"
-                            placeholder="Escribe tu Documento" required>
+                            placeholder="Escribe tu Documento"
+                            pattern="[0-9]*"
+                            maxlength="10">
                     </div>
 
                     <div class="grupo">
                         <label for="">Numero</label>
                         <input type="text"
+                            inputmode="numeric"
                             name="numero_acudiente"
-                            placeholder="Telefono de contacto" required>
+                            placeholder="Telefono de contacto"
+                            pattern="[0-9]*"
+                            maxlength="10">
                     </div>
                 </div>
             </section>
@@ -327,49 +345,59 @@
                     <div class="grupo">
                         <label for="">Matricula</label>
                         <input type="text"
+                            inputmode="numeric"
                             name="Matricula"
+                            maxlength="10"
                             placeholder="$90.000" required>
                     </div>
 
                     <div class="grupo">
                         <label for="">Mensualidad</label>
                         <input type="text"
+                            inputmode="numeric"
                             name="Mensualidad"
+                            maxlength="10"
                             placeholder="$80.000" required>
                     </div>
 
                     <div class="grupo">
                         <label for="">Fecha de pago</label>
                         <input type="date"
-                            name="date"
+                            name="fecha_pago"
                             required>
                     </div>
 
                     <div class="grupo">
                         <label>Metodo de pago</label>
 
-                           <select name="tipo_documento" id="metodoPago"  required>
+                        <select name="id_metodo_pago" id="metodoPago" required>
                             <option value="">Seleccione</option>
-                            <option value="Nequi">Nequi</option>
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="Efectivo">Efectivo</option>
+
+                            <?php foreach (($metodoPago ?? []) as $metodo): ?>
+                                <option value="<?= (int)$metodo['id_metodo_pago'] ?>">
+                                    <?= htmlspecialchars($metodo['tipo_metodo_pago']) ?>
+                                </option>
+                            <?php endforeach; ?>
+
                         </select>
                     </div>
 
                     <div class="grupo">
                         <label>Tipo de beca</label>
 
-                           <select name="tipo_documento" required>
+                           <select name="id_tipo_becas" required>
                             <option value="">Seleccione</option>
-                            <option value="sin beca">sin beca</option>
-                            <option value="Media beca">Media Beca</option>
-                            <option value="Beca">Beca</option>
+                            <?php foreach (($tiposBeca ?? []) as $beca): ?>
+                                <option value="<?= (int) $beca['id_tipo_beca'] ?>">
+                                    <?= htmlspecialchars($beca['nombre']) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="grupo" id="grupoComprobante" style="display: none;">
                         <label for="comprobante">Número de comprobante</label>
-                        <input type="text" id="comprobante" name="comprobante" 
+                        <input type="text" id="comprobante" name="comprobante" maxlength="10" 
                                 placeholder="Ingrese el número de comprobante" required>
                     </div>
                 </div>

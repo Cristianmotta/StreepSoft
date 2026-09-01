@@ -76,6 +76,7 @@ require_once APP_PATH . '/models/TipoDocumento.php';
 require_once APP_PATH . '/models/Documento.php';
 require_once APP_PATH . '/models/Deuda.php';
 require_once APP_PATH . '/models/MetodoPago.php';
+require_once APP_PATH . '/models/TipoBeca.php';
 
 
 // Verificar si la sesion expiro por timeout

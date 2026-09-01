@@ -21,6 +21,9 @@ class JugadorController extends Controller
     private Eps $epsModel;
     private TipoDocumento $tipoDocumentoModel;
     private Documento $documentoModel;
+    private Deuda $deudaModel;
+    private MetodoPago $metodoPagoModel;
+    private TipoBeca $tipoBecaModel;
 
     /**
      * Constructor
@@ -34,6 +37,9 @@ class JugadorController extends Controller
         $this->epsModel = new Eps($pdo);
         $this->tipoDocumentoModel = new TipoDocumento($pdo);
         $this->documentoModel = new Documento($pdo);
+        $this->deudaModel = new Deuda($pdo);
+        $this->metodoPagoModel = new MetodoPago($pdo);
+        $this->tipoBecaModel = new TipoBeca($pdo);
     }
 
     /**
@@ -98,12 +104,16 @@ class JugadorController extends Controller
             $instructores = $this->instructorModel->obtenerTodos();
             $epsList = $this->epsModel->obtenerTodas();
             $tiposDocumento = $this->tipoDocumentoModel->obtenerTodos();
+            $metodoPago = $this->metodoPagoModel->obtenerTodos();
+            $tipoBeca = $this->tipoBecaModel->obtenerTodas();
         } catch (Exception $e) {
             error_log("Crear jugador (cargar catálogos): " . $e->getMessage());
             $categorias = [];
             $instructores = [];
             $epsList = [];
             $tiposDocumento = [];
+            $metodoPago = [];
+            $tipoBeca = [];
         }
 
         $this->view('jugadores/gestionJugadores/create', [
@@ -112,6 +122,8 @@ class JugadorController extends Controller
             'instructores' => $instructores,
             'epsList' => $epsList,
             'tiposDocumento' => $tiposDocumento,
+            'metodoPago' => $metodoPago,
+            'tiposBeca' => $tipoBeca,
         ]);
     }
 
@@ -161,6 +173,13 @@ class JugadorController extends Controller
         $documentoNumero = trim($_POST['documento'] ?? '');
         $idTipoDocumento = (int) ($_POST['id_tipo_documento'] ?? 0);
 
+
+        $matricula = $this->limpiarMonto($_POST['Matricula'] ?? '');
+        $mensualidad = $this->limpiarMonto($_POST['Mensualidad'] ?? '');
+        $fechaPago = trim($_POST['fecha_pago'] ?? '');
+        $idMetodoPago = (int) ($_POST['id_metodo_pago'] ?? 0);
+        $idTipoBecas = (int) ($_POST['id_tipo_becas'] ?? 0);
+        
         // ------------------------------------------------------------
         // 2) Validar los campos obligatorios (NOT NULL en la BD)
         //    Si falta algo, no llegamos ni a tocar la base de datos.
@@ -180,9 +199,18 @@ class JugadorController extends Controller
             $this->redirect('/streepsoft/jugadores/crear?error=campos_vacios');
         }
 
+        if ($mensualidad <= 0 || $fechaPago === '' || $idMetodoPago <= 0 || $idTipoBecas <= 0){
+            $this->redirect('/streepsoft/jugadores/crear?error=campos_vacios');
+        } 
+
         // Validar que la fecha de nacimiento tenga formato correcto y no sea futura
         $fecha = DateTime::createFromFormat('Y-m-d', $datos['fecha_nacimiento']);
         if (!$fecha || $fecha > new DateTime()) {
+            $this->redirect('/streepsoft/jugadores/crear?error=fecha_invalida');
+        }
+
+        $fechaPagoObj = DateTime::createFromFormat('Y-m-d', $fechaPago);
+        if (!$fechaPagoObj) {
             $this->redirect('/streepsoft/jugadores/crear?error=fecha_invalida');
         }
 
@@ -190,10 +218,10 @@ class JugadorController extends Controller
         // 3) Subir la foto de forma segura (es opcional en la BD)
         // ------------------------------------------------------------
         try {
-            $nombreFoto = $this->subirFotoJugador($_FILES['foto'] ?? null);
+            $nombreFoto = $this->subirFotoJugador($_POST['foto_base64'] ?? null);
         } catch (Exception $e) {
             error_log("Guardar jugador (foto): " . $e->getMessage());
-            $this->redirect('/streepsoftjugadores/crear?error=' . urlencode($e->getMessage()));
+            $this->redirect('/streepsoft/jugadores/crear?error=' . urlencode($e->getMessage()));
         }
         $datos['foto'] = $nombreFoto;
 
@@ -213,6 +241,29 @@ class JugadorController extends Controller
 
             $this->documentoModel->crear($idJugador, $documentoNumero ?: null, $idTipoDocumento ?: null);
 
+            $mesesEs = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+            ];
+            
+            $idDeuda = $this->deudaModel->crearInicial([
+                'id_jugadores' => $idJugador,
+                'matricula' => $matricula,
+                'mes' => $mesesEs[(int) $fechaPagoObj->format('n')],
+                'anio' => $fechaPagoObj->format('Y'),
+                'totalidad' => $mensualidad,
+                'fecha_pago' => $fechaPago,
+                'id_metodo_pago' => $idMetodoPago,
+                'id_tipo_becas' => $idTipoBecas,
+                'concepto' => 'Matrícula y mensualidad de inscripción',
+                'valor_pagado' => $matricula + $mensualidad,
+            ]);
+            
+            if ($idDeuda === 0) {
+                throw new Exception('No se pudo crear la deuda inicial');
+            }
+            
             $this->pdo->commit();
 
             $this->redirect('/streepsoft/jugadores/gestion?success=creado');
@@ -223,35 +274,46 @@ class JugadorController extends Controller
         }
     }
 
-    /**
-     * Subir la foto del jugador de forma segura
-     */
-    private function subirFotoJugador(?array $archivo): ?string
+    private function limpiarMonto(string $valor): float
     {
-        // Si el usuario no seleccionó ningún archivo, no es un error
-        if (!$archivo || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
+        $limpio = preg_replace('/[^0-9\.]/', '', $valor); 
+        return $limpio === '' ? 0.0 : (float) $limpio;
+    }
+
+
+    /**
+     * Guardar la foto del jugador de forma segura
+     *
+     */
+    private function subirFotoJugador(?string $dataUrl): ?string
+    {
+        if (empty($dataUrl)) {
             return null;
         }
 
-        if ($archivo['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception('Error al subir la foto');
+        // El data URL viene como "data:image/jpeg;base64,xxxxx"
+        if (!preg_match('/^data:(image\/(jpeg|png));base64,(.+)$/', $dataUrl, $match)) {
+            throw new Exception('Formato de imagen no válido');
         }
 
-        $tamanoMaximo = 2 * 1024 * 1024; // 2 MB
-        if ($archivo['size'] > $tamanoMaximo) {
-            throw new Exception('La foto supera el tamaño máximo de 2MB');
+        $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
+        $mimeDeclarado = $match[1];
+        $contenidoBase64 = $match[3];
+
+        $binario = base64_decode($contenidoBase64, true);
+        if ($binario === false) {
+            throw new Exception('No se pudo leer la imagen enviada');
         }
 
-        // Detectar el tipo MIME real leyendo el contenido del archivo
-        $tiposPermitidos = [
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-        ];
+        $tamanoMaximo = 3 * 1024 * 1024; // 3 MB
+        if (strlen($binario) > $tamanoMaximo) {
+            throw new Exception('La foto supera el tamaño máximo permitido');
+        }
 
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->file($archivo['tmp_name']);
-
-        if (!isset($tiposPermitidos[$mime])) {
+        // No confiamos solo en lo que dice el data URL: comprobamos el
+        // contenido real decodificado, igual que antes se hacía con finfo.
+        $info = getimagesizefromstring($binario);
+        if ($info === false || !isset($tiposPermitidos[$info['mime']])) {
             throw new Exception('Formato de imagen no permitido (solo JPG o PNG)');
         }
 
@@ -260,10 +322,10 @@ class JugadorController extends Controller
             mkdir($carpetaDestino, 0755, true);
         }
 
-        // Nombre de archivo aleatorio y seguro (nunca el nombre original)
-        $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $tiposPermitidos[$mime];
+        // Nombre de archivo aleatorio y seguro (nunca datos del cliente)
+        $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $tiposPermitidos[$info['mime']];
 
-        if (!move_uploaded_file($archivo['tmp_name'], $carpetaDestino . '/' . $nombreArchivo)) {
+        if (file_put_contents($carpetaDestino . '/' . $nombreArchivo, $binario) === false) {
             throw new Exception('No se pudo guardar la foto en el servidor');
         }
 

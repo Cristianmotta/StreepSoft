@@ -123,6 +123,44 @@ class Deuda extends Model
         return $exito ? $this->lastInsertId() : 0;
     }
 
+    /* Primer ciclo de pago de jugador */
+    public function crearInicial(array $datos): int
+    {
+        $sql = "
+            INSERT INTO deudas (
+                id_jugadores,
+                matricula,
+                mes,
+                anio,
+                totalidad,
+                fecha_limite_pago,
+                fecha_pago,
+                id_metodo_pago,
+                id_tipo_becas,
+                concepto,
+                valor_pagado,
+                pago
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pagado')
+        ";
+
+        $exito = $this->execute($sql, [
+            $datos['id_jugadores'],
+            $datos['matricula'],
+            $datos['mes'],
+            $datos['anio'],
+            $datos['totalidad'],
+            $datos['fecha_pago'],       // fecha_limite_pago
+            $datos['fecha_pago'],       // fecha_pago
+            $datos['id_metodo_pago'],   // correcto
+            $datos['id_tipo_becas'],    // correcto
+            $datos['concepto'],
+            $datos['valor_pagado'],
+        ]);
+
+        return $exito ? $this->lastInsertId() : 0;
+    }
+
+
     /**
      * Marca un ciclo de deuda como pagado: guarda la fecha, el método
      * de pago (id_metodo_pago, FK a la tabla metodo_pago), el concepto,

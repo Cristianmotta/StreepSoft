@@ -267,12 +267,19 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php if (empty($jugadores)): ?>
+                                    <tr>
+                                        <td colspan="8" style="margin: auto; position: relative; left: 170px;">
+                                            No hay Jugadores Registrados Gracias.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                                 <?php  foreach ($jugadores as $jugador): ?>
                                 <tr data-beca="<?= htmlspecialchars($jugador['tipo_beca'] ?? '') ?>" data-estado="<?= htmlspecialchars($jugador['estado'] ?? '') ?>" data-pago="<?= htmlspecialchars($jugador['pago'] ?? '') ?>">
                                     <td>
                                         <div class="foto">
                                             <?php if (!empty($jugador['foto'])): ?>
-                                                <img src="/streepsoft/public/Image/jugadores/<?= htmlspecialchars($jugador['foto']) ?>" alt="Foto">
+                                                <img src="/streepsoft/public/Image/jugadores/<?= htmlspecialchars($jugador['foto'] ?? '') ?>" alt="Foto">
                                             <?php else: ?>
                                                 <?php
                                                     // Usa las iniciales guardadas; si no hay, las calcula 
@@ -397,8 +404,9 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
 
     <div class="modal-registro" id="modalRegistro">
         <div class="modal-registro-contenido">
-        <button class="cerrar-registro" id="cerrarRegistro">&times;</button>
-        <iframe src="/streepsoft/jugadores/crear" class="iframe-registro" id="iframeRegistro"></iframe>
+            <button class="cerrar-registro" id="cerrarRegistro">&times;</button>
+            <iframe src="/streepsoft/jugadores/crear" class="iframe-registro" id="iframeRegistro"></iframe>
+        </div>
     </div>
 
     <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
