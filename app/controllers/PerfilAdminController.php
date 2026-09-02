@@ -105,7 +105,7 @@ class PerfilAdminController extends Controller
             throw new Exception('Error al subir la foto');
         }
 
-        $tamanoMaximo = 2 * 1024 * 1024; // 2 MB
+        $tamanoMaximo = 3 * 1024 * 1024; // 2 MB
         if ($archivo['size'] > $tamanoMaximo) {
             throw new Exception('La foto supera el tamaño máximo de 2MB');
         }
