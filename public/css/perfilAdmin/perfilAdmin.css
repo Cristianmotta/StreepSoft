@@ -25,6 +25,9 @@ body {
     border-radius: 10px;
     padding: 20px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .boton-editar-info {
@@ -51,6 +54,7 @@ body {
     display: flex;
     gap: 20px;
     align-items: flex-start;
+    margin-bottom: 20px;
 }
 
 .foto-wrapper {
@@ -59,6 +63,14 @@ body {
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
+}
+
+.foto-admin-real {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #D09E10;
+    object-fit: cover;
 }
 
 .foto-placeholder {
@@ -121,15 +133,18 @@ body {
 .linea-divisora {
     height: 2px;
     background: #D09E10;
+    width: 100%;
 }
 
-/*Actividad reciente*/
+/* ===== Actividad reciente ===== */
 .tarjeta-actividad {
     background: #000000;
     border: 1px solid #2b2b2b;
     border-radius: 10px;
     padding: 20px;
-    padding-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .tarjeta-actividad h3 {
@@ -149,12 +164,13 @@ body {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-bottom: 27px;
+    margin-bottom: 20px;
     position: relative;
     padding-left: 4px;
+    flex: 1; 
 }
 
-.lista-actividad::before {
+.lista-actividad:has(.item-actividad)::before {
     content: "";
     position: absolute;
     top: 6px;
@@ -194,15 +210,14 @@ body {
 }
 
 .boton-ver-actividad {
-    width: 50%;
+    width: 60%;
     display: block;
-    margin: 0 auto;
+    margin: auto auto 16px auto;
     background: none;
     border: 1px solid #D09E10;
     color: #D09E10;
     font-size: 12px;
     padding: 8px;
-    margin-bottom: 16px;
     border-radius: 6px;
     cursor: pointer;
 }
@@ -211,7 +226,7 @@ body {
     background: rgba(208, 158, 16, 0.1);
 }
 
-/* Estadísticas del perfil */
+/* ===== Estadísticas del perfil ===== */
 .stats-perfil {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -230,11 +245,12 @@ body {
     position: relative;
 }
 
+/* Las líneas divisoras verticales de las estadísticas */
 .stat-perfil::after {
     content: "";
     position: absolute;
-    top: 10px;
-    bottom: 10px;
+    top: 20%;
+    bottom: 20%;
     right: 0;
     width: 2px;
     background: #D09E10;
@@ -266,7 +282,7 @@ body {
     font-size: 12px;
 }
 
-/* Documentos y Reportes */
+/* ===== Documentos y Reportes ===== */
 .panel-documentos {
     background: #000000;
     border: 1px solid #2b2b2b;
@@ -373,41 +389,33 @@ body {
 .select-formato {
     font-size: 12px;
     font-weight: 800;
-    padding: 8px 16px; /* Más relleno para que se vea como en la imagen */
-    border-radius: 8px; /* Bordes más redondeados */
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
     letter-spacing: 0.5px;
-    border: none; /* Sin borde, como en tu imagen */
+    border: none;
     outline: none;
     text-align: center;
-    
-    /* Esto quita la flechita por defecto del select para que luzca 100% como un botón */
-    appearance: none; 
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
 
-/* COLORES DINÁMICOS */
-
-/* 1. Cuando la opción seleccionada es PDF */
 .select-formato:has(option[value="pdf"]:checked) {
-    background-color: #3b0b0b; /* Rojo oscuro */
-    color: #e61919; /* Letra roja brillante */
+    background-color: #3b0b0b;
+    color: #e61919;
 }
 
-/* 2. Cuando la opción seleccionada es WORD */
 .select-formato:has(option[value="word"]:checked) {
-    background-color: #233656; /* Azul oscuro */
-    color: #3b82f6; /* Letra azul brillante */
+    background-color: #233656;
+    color: #3b82f6;
 }
 
-/* 3. Cuando la opción seleccionada es EXCEL */
 .select-formato:has(option[value="excel"]:checked) {
-    background-color: #264a0f; /* Verde oscuro */
-    color: #3bb81b; /* Letra verde brillante */
+    background-color: #264a0f;
+    color: #3bb81b;
 }
 
-/* Efecto focus sutil acorde al color seleccionado */
 .select-formato:focus {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
@@ -432,9 +440,7 @@ body {
 
 .boton-ver-reportes {
     width: 25%;
-    margin: 0 auto;
-    margin-top: 20px;
-    margin-bottom: 16px;
+    margin: 20px auto 16px auto;
     background: none;
     border: 1px solid #D09E10;
     color: #D09E10;
@@ -574,6 +580,7 @@ body {
         transform: translateY(-15px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -582,7 +589,6 @@ body {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-
     .perfil-fila-superior {
         grid-template-columns: 1fr;
     }
@@ -611,13 +617,12 @@ body {
         width: 100%;
     }
 
-    /* La tabla NO se aplasta -- se desliza horizontalmente en su lugar */
     .tabla-documentos {
         min-width: 500px;
     }
 
     .col-documento {
-        white-space: nowrap;   /* revertido: dejamos que la tabla se deslice, no que el texto se apriete */
+        white-space: nowrap;
     }
 }
 

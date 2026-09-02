@@ -130,4 +130,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Cambiar foto ---
+    const botonCambiarFoto = document.getElementById('botonCambiarFoto');
+    const inputFoto = document.getElementById('inputFoto');
+    const formCambiarFoto = document.getElementById('formCambiarFoto');
+
+    botonCambiarFoto?.addEventListener('click', () => {
+        inputFoto.click();
+    });
+
+    inputFoto?.addEventListener('change', () => {
+        if (inputFoto.files.length > 0) { // No envia el formulario vacio
+            formCambiarFoto.submit();
+        }
+    });
+
 });
