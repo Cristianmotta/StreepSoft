@@ -77,7 +77,7 @@ require_once APP_PATH . '/models/Documento.php';
 require_once APP_PATH . '/models/Deuda.php';
 require_once APP_PATH . '/models/MetodoPago.php';
 require_once APP_PATH . '/models/TipoBeca.php';
-
+require_once APP_PATH . '/models/Actividad.php';
 
 // Verificar si la sesion expiro por timeout
 SessionTimeout::check();
@@ -152,6 +152,7 @@ if (Auth::check()) {
             '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
             '/deudas/registrar-pago' => ['controller' => 'DeudaController', 'method' => 'registrarPago'],
             '/perfil/actualizar' => ['controller' => 'PerfilAdminController', 'method' => 'actualizarPerfil'],
+            '/perfil/cambiar-foto' => ['controller' => 'PerfilAdminController', 'method' => 'cambiarFoto'],
         ]
     ];
     

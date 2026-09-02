@@ -30,10 +30,19 @@
 
                     <div class="datos-personales">
                         <div class="foto-wrapper">
-                            <div class="foto-placeholder">
-                                <i class="fi fi-rr-user"></i>
-                            </div>
-                            <button class="boton-cambiar-foto">Cambiar foto</button>
+                            <?php if (!empty($admin['foto'])): ?>
+                                <img src="/streepsoft/public/Image/admins/<?php echo htmlspecialchars($admin['foto']); ?>"
+                                    alt="Foto de perfil" class="foto-admin-real">
+                            <?php else: ?>
+                                <div class="foto-placeholder">
+                                    <i class="fi fi-rr-user"></i>
+                                </div>
+                            <?php endif; ?>
+
+                            <form action="/streepsoft/perfil/cambiar-foto" method="POST" enctype="multipart/form-data" id="formCambiarFoto">
+                                <input type="file" name="foto" id="inputFoto" accept="image/png, image/jpeg" hidden>
+                                <button type="button" class="boton-cambiar-foto" id="botonCambiarFoto">Cambiar foto</button>
+                            </form>
                         </div>
 
                         <div class="info-admin">
@@ -81,33 +90,26 @@
                     <h3><i class="fi fi-rr-pending"></i> Actividad Reciente</h3>
 
                     <div class="lista-actividad">
-                        <div class="item-actividad">
-                            <span class="punto-actividad"></span>
-                            <p>Inicio de sesión exitoso</p>
-                            <span class="fecha-actividad">Hoy, 8:45 AM</span>
-                        </div>
-
-                        <div class="item-actividad">
-                            <span class="punto-actividad"></span>
-                            <p>Generó reporte de pagos</p>
-                            <span class="fecha-actividad">Ayer, 4:30 PM</span>
-                        </div>
-
-                        <div class="item-actividad">
-                            <span class="punto-actividad"></span>
-                            <p>Actualizó información de jugador</p>
-                            <span class="fecha-actividad">27 May, 11:20 AM</span>
-                        </div>
-
-                        <div class="item-actividad">
-                            <span class="punto-actividad"></span>
-                            <p>Realizó corrección de pagos</p>
-                            <span class="fecha-actividad">26 May, 5:10 PM</span>
-                        </div>
+                        <?php if (empty($actividad)): ?>
+                            <p style="color:#888; font-size:13px;"> Todavia no hay actividad registrada.</p>
+                        <?php else: ?>
+                            <?php foreach ($actividad as $item): ?>
+                                <div class="item-actividad">
+                                    <span class="punto-actividad"></span>
+                                    <p><?php echo htmlspecialchars($item['descripcion']); ?></p>
+                                    <span class="fecha-actividad">
+                                        <?php echo date('d M, h:i A', strtotime($item['creado_en'])) ?>
+                                    </span>
+                                </div>
+                            <?php endforeach ?>
+                        <?php endif ?>
                     </div>
 
-                    <button class="boton-ver-actividad">Ver toda la actividad</button>
-                    <div class="linea-divisora"></div>
+                    <!-- El botón y la línea quedan encapsulados al final -->
+                    <div class="actividad-footer">
+                        <button class="boton-ver-actividad">Ver toda la actividad</button>
+                        <div class="linea-divisora"></div>
+                    </div>
                 </div>
             </div>
 
@@ -118,7 +120,7 @@
                         <i class="fi fi-rr-users"></i>
                     </div>
                     <div>
-                        <h2>80</h2>
+                        <h2><?php /** @var array $stats */ echo $stats['jugadores']; ?></h2> <!-- @var array Esto le indica a Intelephense que la variable $stats sí existe y es un array-->
                         <p>Jugadores Registrados</p>
                     </div>
                 </div>
@@ -128,7 +130,7 @@
                         <i class="fi fi-rr-triangle-warning"></i>
                     </div>
                     <div>
-                        <h2>10</h2>
+                        <h2><?php echo $stats['mora']; ?></h2>
                         <p>Jugadores en Mora</p>
                     </div>
                 </div>
@@ -138,7 +140,7 @@
                         <i class="fi fi-rr-document"></i>
                     </div>
                     <div>
-                        <h2>320</h2>
+                        <h2><?php echo $stats['pagos']; ?></h2>
                         <p>Pagos Registrados</p>
                     </div>
                 </div>
@@ -148,7 +150,7 @@
                         <i class="fi fi-rr-user"></i>
                     </div>
                     <div>
-                        <h2>5</h2>
+                        <h2><?php echo $stats['instructores']; ?></h2>
                         <p>Entrenadores Activos</p>
                     </div>
                 </div>

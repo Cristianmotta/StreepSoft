@@ -32,4 +32,14 @@ class Usuario extends Model
             ':id' => $id
         ]);
     }
+
+    public function actualizarFoto(int $id, string $nombreFoto): bool
+    {
+        $sql = "UPDATE usuarios SET foto = :foto WHERE id = :id";
+
+        return $this->execute($sql, [
+            ':foto' => $nombreFoto,
+            ':id' => $id
+        ]);
+    }
 }
