@@ -8532,4 +8532,48 @@ Stack trace:
 [20-Aug-2026 01:20:16 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 161
 [20-Aug-2026 01:20:16 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 161
 [20-Aug-2026 01:20:16 America/Bogota] PHP Warning:  Undefined array key "fecha_limite_pago" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 167
-[20-Aug-2026 01:20:16 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 167
+[20-Aug-2026 01:20:16 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 167[01-Sep-2026 20:22:32 America/Bogota] Home - quickLoginDisponible: false
+[01-Sep-2026 20:22:32 America/Bogota] Home - COOKIE quick_login_data: false
+[01-Sep-2026 20:22:32 America/Bogota] Home - COOKIE logout_manual: false
+[01-Sep-2026 20:22:44 America/Bogota] Intento de login fallido: contraseña incorrecta: cdavidg4396@gmail.com
+[01-Sep-2026 20:22:53 America/Bogota] Intento de login fallido: contraseña incorrecta: cdavidg4396@gmail.com
+[01-Sep-2026 20:23:00 America/Bogota] Intento de login fallido: contraseña incorrecta: cdavidg4396@gmail.com
+[01-Sep-2026 20:23:17 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:23:17 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:23:17 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:23:17 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:23:17 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[01-Sep-2026 20:37:24 America/Bogota] Quick login cookie establecida para: cdavidg4396@gmail.com
+[01-Sep-2026 20:37:24 America/Bogota] Session expirada por timeout: cdavidg4396@gmail.com
+[01-Sep-2026 20:37:24 America/Bogota] Home - quickLoginDisponible: true
+[01-Sep-2026 20:37:24 America/Bogota] Home - COOKIE quick_login_data: true
+[01-Sep-2026 20:37:24 America/Bogota] Home - COOKIE logout_manual: false
+[01-Sep-2026 20:37:26 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:37:26 America/Bogota] Quick login cookie limpiada tras uso exitoso
+[01-Sep-2026 20:37:26 America/Bogota] Quick login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:37:26 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:37:26 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:37:26 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[01-Sep-2026 20:51:17 America/Bogota] Quick login cookie establecida para: cdavidg4396@gmail.com
+[01-Sep-2026 20:51:17 America/Bogota] Session expirada por timeout: cdavidg4396@gmail.com
+[01-Sep-2026 20:51:17 America/Bogota] Home - quickLoginDisponible: true
+[01-Sep-2026 20:51:17 America/Bogota] Home - COOKIE quick_login_data: true
+[01-Sep-2026 20:51:17 America/Bogota] Home - COOKIE logout_manual: false
+[01-Sep-2026 20:51:18 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:51:18 America/Bogota] Quick login cookie limpiada tras uso exitoso
+[01-Sep-2026 20:51:18 America/Bogota] Quick login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 20:51:18 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:51:18 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 20:51:18 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
+[01-Sep-2026 20:51:23 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 366
+[01-Sep-2026 21:53:30 America/Bogota] Quick login cookie establecida para: cdavidg4396@gmail.com
+[01-Sep-2026 21:53:30 America/Bogota] Session expirada por timeout: cdavidg4396@gmail.com
+[01-Sep-2026 21:53:30 America/Bogota] Home - quickLoginDisponible: true
+[01-Sep-2026 21:53:30 America/Bogota] Home - COOKIE quick_login_data: true
+[01-Sep-2026 21:53:30 America/Bogota] Home - COOKIE logout_manual: false
+[01-Sep-2026 21:53:33 America/Bogota] Login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 21:53:33 America/Bogota] Quick login cookie limpiada tras uso exitoso
+[01-Sep-2026 21:53:33 America/Bogota] Quick login exitoso: cdavidg4396@gmail.com
+[01-Sep-2026 21:53:33 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 21:53:33 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[01-Sep-2026 21:53:33 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'

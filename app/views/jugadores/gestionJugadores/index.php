@@ -49,6 +49,50 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
             <div class="text-card">
                 <h1>Bienvenido a Jugadores | Alumnos</h1>
             </div>
+            <?php if (isset($_GET['success'])): ?>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: <?= json_encode([
+                            'creado' => 'Jugador registrado exitosamente',
+                            'eliminado' => 'Jugador eliminado correctamente',
+                        ][$_GET['success']] ?? 'Operación exitosa') ?>,
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#f5c400',
+                        background: '#232323',
+                        color: '#ffffff',
+                        iconColor: '#2ecc71'
+                    }).then(() => {
+                        // Limpia el ?success=... de la URL para que no
+                        // vuelva a salir el mensaje si recargas la página
+                        window.history.replaceState({}, '', '/streepsoft/jugadores/gestion');
+                    });
+                </script>
+            <?php endif; ?>
+
+            <?php if (isset($_GET['error'])): ?>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: <?= json_encode([
+                            'csrf' => 'Token de seguridad inválido, intenta de nuevo.',
+                            'campos_vacios' => 'Faltan campos obligatorios por completar.',
+                            'fecha_invalida' => 'La fecha ingresada no es válida.',
+                            'creacion_fallida' => 'No se pudo registrar el jugador.',
+                            'eliminacion_fallida' => 'No se pudo eliminar el jugador.',
+                        ][$_GET['error']] ?? 'Ocurrió un error.') ?>,
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#f5c400',
+                        background: '#232323',
+                        color: '#ffffff',
+                        iconColor: '#e74c3c'
+                    }).then(() => {
+                        window.history.replaceState({}, '', '/streepsoft/jugadores/gestion');
+                    });
+                </script>
+            <?php endif; ?>
 
             <div class="card-ets">
                 <div class="card-alumno">
