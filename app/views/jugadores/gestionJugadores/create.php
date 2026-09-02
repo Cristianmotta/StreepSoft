@@ -69,7 +69,7 @@
             </p>
         <?php endif; ?>
 
-        <form action="/streepsoft/jugadores/guardar" method="POST" enctype="multipart/form-data" id="formjugador">
+        <form action="/streepsoft/jugadores/guardar" method="POST" enctype="multipart/form-data" id="formjugador" target="_top">
             
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
             
