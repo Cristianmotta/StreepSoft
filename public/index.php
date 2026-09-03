@@ -141,6 +141,7 @@ if (Auth::check()) {
             '/jugadores/deudas' => ['controller' => 'DeudaController', 'method' => 'listar'],
             '/deudas/:id/pago' => ['controller' => 'DeudaController', 'method' => 'mostrarPago'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
+            '/jugadores/editar/:id' => ['controller' => 'JugadorController', 'method' => 'editar'],
             '/perfil-jugador' => ['controller' => 'JugadorController', 'method' => 'perfil'],
             '/pagos/historial' => ['controller' => 'PagosController', 'method' => 'matriz'],
             '/perfil/administrador' => ['controller' => 'PerfilAdminController', 'method' => 'perfil'],
@@ -306,7 +307,11 @@ try {
     
     // Ejecutar el método
     if (count($parametros) > 0) {
-        call_user_func_array([$controller, $methodName], $parametros);
+        $parametrosConvertidos = [];
+        foreach ($parametros as $param) {
+            $parametrosConvertidos[] = is_numeric($param) ? (int) $param : $param;
+        }
+        call_user_func_array([$controller, $methodName], $parametrosConvertidos);
     } else {
         $controller->$methodName();
     }

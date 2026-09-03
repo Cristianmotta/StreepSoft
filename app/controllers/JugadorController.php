@@ -127,6 +127,117 @@ class JugadorController extends Controller
         ]);
     }
 
+
+    public function editar(int $id): void
+    {
+        $jugador = $this->jugadorModel->obtenerPorId($id);
+
+        if(!$jugador){
+            echo "Jugador no encontrado";
+            return;
+        }
+
+        try{
+            $categorias = $this->categoriaModel->obtenerTodas();
+            $instructores = $this->instructorModel->obtenerTodos();
+            $epsList = $this->epsModel->obtenerTodas();
+            $tiposDocumento = $this->tipoDocumentoModel->obtenerTodos();
+            $metodoPago = $this->tipoBecaModel->obtenerTodas();
+            $tipoBeca = $this->tipoBecaModel->obtenerTodas();
+        }catch (Exception $e) {
+            error_log("Editar jugador (cargar catálogos): ". $e->getMessage());
+            $categorias = [];
+            $instructores = [];
+            $epsList = [];
+            $tiposDocumento = [];
+            $metodoPago = [];
+            $tipoBeca = [];
+        }
+
+        $this->view('jugadores/gestionJugadores/edit' ,[
+            'titulo' => 'Editar Jugador',
+            'jugador' => $jugador,
+            'categorias' => $categorias,
+            'instructores' => $instructores,
+            'epsList' => $epsList,
+            'tipoDocumento' => $tiposDocumento,
+            'metodoPago' => $metodoPago,
+            'tipoBecas' => $tipoBeca,
+        ]);
+
+    }
+
+    public function actualizar(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/jugadores/gestion');
+        }
+
+        if (!$this->validateCSRFToken($_POST['_token'] ?? '')) {
+            $this->redirect('/jugadores/gestion?error=csrf');
+        }
+
+        $idJugador = (int) ($_POST['id_jugadores'] ?? 0);
+        if ($idJugador <= 0) {
+            $this->redirect('/jugadores/gestion?error=jugador_invalido');
+        }
+
+        $nombre1 = trim($_POST['nombre1'] ?? '');
+        $nombre2 = trim($_POST['nombre2'] ?? '');
+        $apellido1 = trim($_POST['apellido1'] ?? '');
+        $apellido2 = trim($_POST['apellido2'] ?? '');
+
+        $datos = [
+            'nombres'          => trim($nombre1 . ' ' . $nombre2),
+            'apellidos'        => trim($apellido1 . ' ' . $apellido2),
+            'fecha_nacimiento' => trim($_POST['fecha_nacimiento'] ?? ''),
+            'acudiente'        => trim($_POST['acudiente'] ?? ''),
+            'numero_acudiente' => trim($_POST['numero_acudiente'] ?? ''),
+            'iniciales'        => trim($_POST['iniciales'] ?? ''),
+            'id_categorias'    => (int) ($_POST['id_categorias'] ?? 0),
+            'id_eps'           => (int) ($_POST['id_eps'] ?? 0),
+            'id_instructor'    => (int) ($_POST['id_instructor'] ?? 0),
+        ];
+
+        $documentoNumero = trim($_POST['documento'] ?? '');
+        $idTipoDocumento = (int) ($_POST['id_tipo_documento'] ?? 0);
+
+        $obligatorios = ['nombres', 'apellidos', 'fecha_nacimiento', 'acudiente', 'numero_acudiente'];
+        foreach ($obligatorios as $campo) {
+            if ($datos[$campo] === '') {
+                $this->redirect('/jugadores/editar/' . $idJugador . '?error=campos_vacios');
+            }
+        }
+        if ($datos['id_categorias'] <= 0 || $datos['id_eps'] <= 0 || $datos['id_instructor'] <= 0) {
+            $this->redirect('/jugadores/editar/' . $idJugador . '?error=campos_vacios');
+        }
+
+        // La foto es opcional al editar: si no se tocó, se conserva la que ya tenía
+        try {
+            $datos['foto'] = $this->subirFotoJugador($_POST['foto_base64'] ?? null);
+        } catch (Exception $e) {
+            error_log('Actualizar jugador (foto): ' . $e->getMessage());
+            $this->redirect('/jugadores/editar/' . $idJugador . '?error=' . urlencode($e->getMessage()));
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            if (!$this->jugadorModel->actualizar($idJugador, $datos)) {
+                throw new Exception('No se pudo actualizar el jugador');
+            }
+
+            $this->documentoModel->guardarOActualizar($idJugador, $documentoNumero ?: null, $idTipoDocumento ?: null);
+
+            $this->pdo->commit();
+            $this->redirect('/jugadores/gestion?success=actualizado');
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log('Actualizar jugador: ' . $e->getMessage());
+            $this->redirect('/jugadores/editar/' . $idJugador . '?error=actualizacion_fallida');
+        }
+    }
+
     /**
      * Guardar un nuevo jugador
      * 

@@ -116,12 +116,26 @@ class Jugador extends Model
         return $this->lastInsertId();
     }
 
+    public function obtenerParaEditar(int $id): ?array
+    {
+        $sql = "
+            SELECT
+                j.*,
+                doc.documento,
+                doc.id_tipo_documento
+            FROM jugadores j
+            LEFT JOIN documentos doc ON doc.id_jugadores = j.id_jugadores
+            WHERE j.id_jugadores = ?
+            LIMIT 1
+        ";
+
+        return $this->queryOne($sql, [$id]);
+    }
+
+
+
     /**
      * Actualizar un jugador
-     * 
-     * @param int $id - ID del jugador
-     * @param array $datos - Nuevos datos
-     * @return bool - True si fue exitoso
      */
     public function actualizar(int $id, array $datos): bool
     {
@@ -138,6 +152,8 @@ class Jugador extends Model
                 id_categorias = ?,
                 id_eps = ?,
                 id_instructor = ?
+                iniciales = ?
+                foto = COALESCE(?, foto) 
             WHERE id_jugadores = ?
         ";
 
@@ -150,6 +166,8 @@ class Jugador extends Model
             $datos['id_categorias'] ?? null,
             $datos['id_eps'] ?? null,
             $datos['id_instructor'] ?? null,
+            $datos['iniciales'] ?? null,
+            $datos['foto'] ?? null,
             $id
         ]);
     }
