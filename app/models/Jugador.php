@@ -84,22 +84,20 @@ class Jugador extends Model
                 nombres,
                 apellidos,
                 fecha_nacimiento,
-                acudiente,
-                numero_acudiente,
+                id_responsable,
                 id_categorias,
                 id_eps,
                 id_instructor,
                 foto,
                 iniciales
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         $exito = $this->execute($sql, [
             $datos['nombres'],
             $datos['apellidos'],
             $datos['fecha_nacimiento'],
-            $datos['acudiente'],
-            $datos['numero_acudiente'],
+            $datos['id_responsables'] ?? null,
             $datos['id_categorias'],
             $datos['id_eps'],
             $datos['id_instructor'],
@@ -122,9 +120,15 @@ class Jugador extends Model
             SELECT
                 j.*,
                 doc.documento,
-                doc.id_tipo_documento
+                doc.id_tipo_documento,
+                r.nombres AS responsable_nombres,
+                r.apellidos AS responsable_apellidos,
+                r.id_tipo_documento AS responsable_id_tipo_documento,
+                r.identificacion AS responsable_identificacion,
+                r.numero_celular AS responsable_numero_celular
             FROM jugadores j
             LEFT JOIN documentos doc ON doc.id_jugadores = j.id_jugadores
+            LEFT JOIN responsables r ON r.id_responsable = j.id_responsable
             WHERE j.id_jugadores = ?
             LIMIT 1
         ";
@@ -147,13 +151,12 @@ class Jugador extends Model
             SET nombres = ?,
                 apellidos = ?,
                 fecha_nacimiento = ?,
-                acudiente = ?,
-                numero_acudiente = ?,
+                id_responsable = ?,
                 id_categorias = ?,
                 id_eps = ?,
-                id_instructor = ?
-                iniciales = ?
-                foto = COALESCE(?, foto) 
+                id_instructor = ?,
+                iniciales = ?,
+                foto = COALESCE(?, foto)
             WHERE id_jugadores = ?
         ";
 
@@ -161,8 +164,7 @@ class Jugador extends Model
             $datos['nombres'] ?? null,
             $datos['apellidos'] ?? null,
             $datos['fecha_nacimiento'] ?? null,
-            $datos['acudiente'] ?? null,
-            $datos['numero_acudiente'] ?? null,
+            $datos['id_responsable'] ?? null,
             $datos['id_categorias'] ?? null,
             $datos['id_eps'] ?? null,
             $datos['id_instructor'] ?? null,

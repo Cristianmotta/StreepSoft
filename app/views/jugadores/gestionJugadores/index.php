@@ -38,6 +38,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/streepsoft/public/css/jugadores/tablejugadores.css">
+    <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
     <title>Jugadores</title>
 </head>
 <body>
@@ -364,7 +365,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                                     </td>
                                     <td>
                                         <div class="table-text">
-                                            <h3><?= htmlspecialchars($jugador['acudiente']) ?></h3>
+                                            <h3><?= htmlspecialchars($jugador['responsable_nombre']) ?></h3>
                                             <p><?= htmlspecialchars($jugador['numero_acudiente']) ?></p>
                                         </div>
                                     </td>

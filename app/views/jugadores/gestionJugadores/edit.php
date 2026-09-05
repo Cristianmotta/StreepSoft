@@ -5,8 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/streepsoft/public/css/Editar/EditarJugador.css">
     <title>Jugador | Editar</title>
+    <?php if (isset($_GET['error'])): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <?php endif; ?>
 </head>
 <body>
+    <?php if (isset($_GET['error'])): ?>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: <?= json_encode([
+                    'csrf' => 'Token de seguridad inválido, intenta de nuevo.',
+                    'campos_vacios' => 'Faltan campos obligatorios por completar.',
+                    'fecha_invalida' => 'La fecha ingresada no es válida.',
+                    'actualizacion_fallida' => 'No se pudo actualizar el jugador.',
+                ][$_GET['error']] ?? 'Ocurrió un error.') ?>,
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#f5c400',
+                background: '#232323',
+                color: '#ffffff'
+            }).then(() => {
+                // Limpia el ?error=... de la URL para que no vuelva a
+                // salir el mensaje si recargas la página
+                window.history.replaceState({}, '', window.location.pathname);
+            });
+        </script>
+    <?php endif; ?>
     <div class="contenedor">
         <div class="contenedor-pagina-1">
 
@@ -43,11 +67,6 @@
                         <div class="circulo"></div>
                         <span>Acudiente</span>
                     </div>
-
-                    <div class="paso">
-                        <div class="circulo"></div>
-                        <span>pago</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -55,10 +74,11 @@
             $partesNombres = explode(' ', trim($jugador['nombres'] ?? ''), 2);
             $partesApellidos = explode(' ', trim($jugador['apellidos'] ?? ''), 2);
         ?>
-        <form action="/streepsoft/jugadores/editar/:id" id="formjugador"  method="POST" enctype="multipart/form-data" target="_top">
+        <form action="/streepsoft/jugadores/actualizar" id="formjugador"  method="POST" enctype="multipart/form-data" target="_top">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
-            <input type="hidden" name="id_jugador" value="<?=  (int) $jugador['id_jugadores'] ?>">
-        
+            <input type="hidden" name="id_jugadores" value="<?=  (int) $jugador['id_jugadores'] ?>">
+            <input type="hidden" name="id_responsable" value="<?= (int) ($jugador['id_responsable'] ?? 0) ?>">
+
             <section class="paso-formulario activo">
                 <div class="contenido-datos">
 
@@ -144,8 +164,8 @@
                             <div class="grupo">
                                 <label for="">Identificacion</label>
                                 <input type="text"
-                                    name="documento"
-                                    value="<?= htmlspecialchars($jugador['documento'] ?? '') ?>"
+                                    name="documentos"
+                                    value="<?= htmlspecialchars_decode($jugador['documentos'] ?? '') ?>"
                                     placeholder="Escribe tu Documento" required>
                             </div>
 
@@ -175,21 +195,20 @@
 
                         <input type="date"
                             name="fecha_nacimiento"
-                            value="<?= htmlspecialchars($jugadores['fecha_nacimiento'] ?? '') ?>"
+                            value="<?= htmlspecialchars($jugador['fecha_nacimiento'] ?? '') ?>"
                             required>
                     </div>
 
                     <div class="grupo">
                         <label>Edad</label>
                         <input type="text"
-                            name="edad"
-                            required>
+                            name="edad">
                     </div>
 
                     <div class="grupo">
                         <label>Sexo</label>
 
-                        <select name="tipo_documento" required>
+                        <select name="tipo_documento">
                             <option value="">Seleccione</option>
                             <option value="Femenino">Femenino</option>
                             <option value="Masculino">Masculino</option>
@@ -279,21 +298,31 @@
 
                 <div class="grid-3">
 
-                    <div class="grupo">
-                        <label for="">Acudiente</label>
+                  <div class="grupo">
+                        <label for="">Nombres del acudiente</label>
                         <input type="text"
-                            name="Acudiente"
-                            value="<?= htmlspecialchars($jugador['acudiente'] ?? '') ?>"
-                            placeholder="Nombres y apellidos">
+                            name="responsable_nombres"
+                            value="<?= htmlspecialchars($jugador['responsable_nombres'] ?? '') ?>"
+                            placeholder="Nombres">
                     </div>
 
                     <div class="grupo">
-                        <label>Tipo</label>
+                        <label for="">Apellidos del acudiente</label>
+                        <input type="text"
+                            name="responsable_apellidos"
+                            value="<?= htmlspecialchars($jugador['responsable_apellidos'] ?? '') ?>"
+                            placeholder="Apellidos">
+                    </div>
 
-                        <select name="id_tipo_documento_acudiente">
+                    <div class="grupo">
+                        <label>Tipo de documento</label>
+
+                        <select name="responsable_id_tipo_documento">
                             <option value="">Seleccione</option>
                             <?php foreach ($tipoDocumento as $td): ?>
-                                <option value="<?= (int) $td['id_tipo_documento'] ?>"><?= htmlspecialchars($td['nombre']) ?></option>
+                                <option value="<?= (int) $td['id_tipo_documento'] ?>" <?= ((int) ($jugador['responsable_id_tipo_documento'] ?? 0) === (int) $td['id_tipo_documento']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($td['nombre']) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -301,75 +330,21 @@
                     <div class="grupo">
                         <label for="">Identificacion</label>
                         <input type="text"
-                            name="Identificacion"
-                            placeholder="Escribe tu Documento" required>
+                            name="responsable_identificacion"
+                            value="<?= htmlspecialchars($jugador['responsable_identificacion'] ?? '') ?>"
+                            placeholder="Escribe tu Documento"
+                            pattern="[0-9]*"
+                            maxlength="10">
                     </div>
 
                     <div class="grupo">
                         <label for="">Numero</label>
                         <input type="text"
-                            name="Acudiente"
-                            placeholder="Telefono de contacto" required>
-                    </div>
-                </div>
-            </section>
-
-                       
-            <section class="paso-formulario">
-                <div class="titulo-seccion">
-                    <div class="fluent--money-24-filled"></div>
-                    <span>Pago de Alumno</span>
-                </div>
-
-                <div class="grid-2">
-
-                    <div class="grupo">
-                        <label for="">Matricula</label>
-                        <input type="text"
-                            name="Matricula"
-                            placeholder="$90.000" required>
-                    </div>
-
-                    <div class="grupo">
-                        <label for="">Mensualidad</label>
-                        <input type="text"
-                            name="Mensualidad"
-                            placeholder="$80.000" required>
-                    </div>
-
-                    <div class="grupo">
-                        <label for="">Fecha de pago</label>
-                        <input type="date"
-                            name="date"
-                            required>
-                    </div>
-
-                    <div class="grupo">
-                        <label>Metodo de pago</label>
-
-                           <select name="tipo_documento" id="metodoPago"  required>
-                            <option value="">Seleccione</option>
-                            <option value="Nequi">Nequi</option>
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="Efectivo">Efectivo</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo">
-                        <label>Tipo de beca</label>
-
-                           <select name="tipo_documento" required>
-                            <option value="">Seleccione</option>
-                            <option value="sin beca">sin beca</option>
-                            <option value="Media beca">Media Beca</option>
-                            <option value="Beca">Beca</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo" id="grupoComprobante" style="display: none;">
-                        <label for="comprobante">Número de comprobante</label>
-                        <input type="text" id="comprobante" name="comprobante" 
-                                placeholder="Ingrese el número de comprobante" required>
+                            name="responsable_numero_celular"
+                            value="<?= htmlspecialchars($jugador['responsable_numero_celular'] ?? '') ?>"
+                            placeholder="Telefono de contacto"
+                            pattern="[0-9]*"
+                            maxlength="10">
                     </div>
                 </div>
             </section>
