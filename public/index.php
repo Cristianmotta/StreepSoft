@@ -243,48 +243,17 @@ try {
         }
     }
 
+
+    //
+
     // Si no encontramos la ruta, mostrar 404
     if (!$rutaEncontrada) {
+    http_response_code(404);
+    require_once APP_PATH . '/views/errores/404.php';
+    exit;
+}
 
-        http_response_code(404);
-
-        echo "<h2>404 - Ruta no encontrada</h2>";
-
-        echo "<hr>";
-
-        echo "<strong>REQUEST_URI:</strong><br>";
-        echo htmlspecialchars($_SERVER['REQUEST_URI']);
-
-        echo "<br><br>";
-
-        echo "<strong>SCRIPT_NAME:</strong><br>";
-        echo htmlspecialchars($_SERVER['SCRIPT_NAME']);
-
-        echo "<br><br>";
-
-        echo "<strong>BASE_URL:</strong><br>";
-        echo htmlspecialchars(BASE_URL);
-
-        echo "<br><br>";
-
-        echo "<strong>Ruta calculada (\$uri):</strong><br>";
-        echo htmlspecialchars($uri);
-
-        echo "<br><br>";
-
-        echo "<strong>Método HTTP:</strong><br>";
-        echo htmlspecialchars($metodo);
-
-        echo "<br><br>";
-
-        echo "<strong>Rutas disponibles:</strong>";
-
-        echo "<pre>";
-        print_r(array_keys($rutas[$metodo] ?? []));
-        echo "</pre>";
-
-        exit;
-    }
+    // Si no encontramos la ruta, mostrar 404
     
     // ========================================================================
     // 5. EJECUTAR EL CONTROLADOR
@@ -327,17 +296,11 @@ try {
     }
 
 } catch (Exception $e) {
-    // Si hay un error, registrarlo
+    // Registrar el error
     error_log("Error: " . $e->getMessage());
     
-    // Mostrar el error (solo en desarrollo)
+    // Mostrar vista de error 500
     http_response_code(500);
-    echo "Error en la aplicación";
-    
-    if (ini_get('display_errors')) {
-        echo "<pre>";
-        echo htmlspecialchars($e->getMessage());
-        echo "</pre>";
-    }
+    require_once APP_PATH . '/views/errores/500.php';
+    exit;
 }
-
