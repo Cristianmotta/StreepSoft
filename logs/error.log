@@ -13711,3 +13711,11 @@ Stack trace:
 [09-Oct-2026 16:26:22 America/Bogota] Home - quickLoginDisponible: false
 [09-Oct-2026 16:26:22 America/Bogota] Home - COOKIE quick_login_data: false
 [09-Oct-2026 16:26:22 America/Bogota] Home - COOKIE logout_manual: true
+[11-Oct-2026 17:16:42 America/Bogota] Home - quickLoginDisponible: false
+[11-Oct-2026 17:16:42 America/Bogota] Home - COOKIE quick_login_data: false
+[11-Oct-2026 17:16:42 America/Bogota] Home - COOKIE logout_manual: false
+[11-Oct-2026 17:16:58 America/Bogota] Login exitoso: davidangel11222@gmail.com
+[11-Oct-2026 17:16:58 America/Bogota] Login exitoso: davidangel11222@gmail.com
+[11-Oct-2026 17:16:58 America/Bogota] Dashboard: Error obteniendo recaudación por mes: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[11-Oct-2026 17:16:58 America/Bogota] Dashboard: Error obteniendo recaudación total: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.pagos' doesn't exist
+[11-Oct-2026 17:16:59 America/Bogota] Dashboard: Error obteniendo deuda total: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monto' in 'field list'
