@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nav | streepsooft </title>
+    <title>nav | streepsoft </title>
     <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css">
 </head>
 <body>

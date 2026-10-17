@@ -422,16 +422,16 @@
                     <form action="/streepsoft/perfil/actualizar" method="POST" id="formEditarInfo">
 
                         <label for="input-nombre-completo">Nombre completo</label>
-                        <input type="text" maxlength="15" id="input-nombre-completo" name="nombre_completo"
+                        <input type="text" id="input-nombre-completo" name="nombre_completo"
                             value="<?php echo isset($admin['nombre_completo']) ? htmlspecialchars($admin['nombre_completo']) : ''; ?>"
                             pattern="[A-Za-zÀ-ÿñÑ\s]+"
-                            maxlength="50"
+                            maxlength="40"
                             minlength="10"
                             title="Solo se permiten letras y espacios, sin números ni caracteres especiales"
                             required>
 
                         <label for="input-telefono">Teléfono</label>
-                        <input type="text"  inputmode="numeric" maxlength="10" id="input-telefono" name="telefono"
+                        <input type="numeric"  inputmode="numeric" maxlength="10" id="input-telefono" name="telefono"
                             value="<?php echo isset($admin['telefono']) ? htmlspecialchars($admin['telefono']) : ''; ?>"
                             pattern="[0-9]+"
                             maxlength="10"
@@ -439,7 +439,7 @@
                             required>
 
                         <label for="input-documento">Documento de identidad</label>
-                        <input type="text" inputmode="numeric" maxlength="10" id="input-documento" name="documento_identidad"
+                        <input type="numeric" inputmode="numeric" maxlength="10" id="input-documento" name="documento_identidad"
                             value="<?php echo isset($admin['documento_identidad']) ? htmlspecialchars($admin['documento_identidad']) : ''; ?>"
                             pattern="[0-9]+"
                             maxlength="10"
