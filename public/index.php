@@ -73,6 +73,7 @@ require_once APP_PATH . '/models/Categoria.php';
 require_once APP_PATH . '/models/Instructor.php';
 require_once APP_PATH . '/models/Eps.php';
 require_once APP_PATH . '/models/TipoDocumento.php';
+require_once APP_PATH . '/models/Responsable.php';
 require_once APP_PATH . '/models/Documento.php';
 require_once APP_PATH . '/models/Deuda.php';
 require_once APP_PATH . '/models/HistorialDeuda.php';
