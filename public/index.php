@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 ini_set('session.cookie_lifetime', '0');
@@ -34,7 +35,7 @@ if (basename($base) === 'public') {
 // ============================================================================
 
 // Definir la URL base de la aplicación
-define('BASE_URL', rtrim($protocol. '://' . $host . $base, '/') . '/');
+define('BASE_URL', rtrim($protocol . '://' . $host . $base, '/') . '/');
 define('APP_PATH', __DIR__ . '/../app');
 define('CONFIG_PATH', __DIR__ . '/../config');
 
@@ -111,22 +112,22 @@ $rutas = [
     'GET' => [
         '/' => ['controller' => 'PublicController', 'method' => 'home'],
         '/home' => ['controller' => 'PublicController', 'method' => 'home'],
-        
+
         // Login
         '/login' => ['controller' => 'AuthController', 'method' => 'showLogin'],
-        
+
         // Recuperar contraseña
         '/recuperar-contrasena' => ['controller' => 'RecuperacionController', 'method' => 'showRecover'],
     ],
-    
+
     'POST' => [
         // Login (procesar)
         '/login' => ['controller' => 'AuthController', 'method' => 'login'],
-        
+
         // Logout
         '/logout' => ['controller' => 'AuthController', 'method' => 'logout'],
         '/quick-login' => ['controller' => 'QuickLoginController', 'method' => 'quickLogin'],
-    
+
         // Recuperacion de contraseña
         '/recuperacion-enviar-pin' => ['action' => 'recuperation'],
     ]
@@ -136,6 +137,9 @@ $rutas = [
 if (Auth::check()) {
     $rutasProtegidas = [
         'GET' => [
+            '/test-503' => ['controller' => 'Test503Controller', 'method' => 'error'],
+            '/test-400' => ['controller' => 'Test400Controller', 'method' => 'error'],
+            '/test-error' => ['controller' => 'TestController', 'method' => 'error'],
             '/dashboard' => ['controller' => 'DashboardController', 'method' => 'index'],
             '/nav-menu' => ['controller' => 'NavController', 'method' => 'render'],
             '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
@@ -154,7 +158,7 @@ if (Auth::check()) {
             '/instructores/crear' => ['controller' => 'InstructorController', 'method' => 'crearForm'],
             '/instructores/editar/:id' => ['controller' => 'InstructorController', 'method' => 'editarForm'],
         ],
-        
+
         'POST' => [
             '/jugadores/guardar' => ['controller' => 'JugadorController', 'method' => 'guardar'],
             '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
@@ -171,7 +175,7 @@ if (Auth::check()) {
             '/instructores/eliminar-foto' => ['controller' => 'InstructorController', 'method' => 'eliminarFoto'],
         ]
     ];
-    
+
     // Combinar rutas
     foreach ($rutasProtegidas as $metodo => $rutasMetodo) {
         if (!isset($rutas[$metodo])) {
@@ -180,12 +184,12 @@ if (Auth::check()) {
         $rutas[$metodo] = array_merge($rutas[$metodo], $rutasMetodo);
     }
 }
- 
+
 
 try {
     // Obtener el método HTTP (GET, POST, etc)
     $metodo = $_SERVER['REQUEST_METHOD'];
-    
+
     $uri = $_GET['url'] ?? '/';
 
     // Si viene en REQUEST_URI (cuando .htaccess funciona o entras directo a /public/)
@@ -196,36 +200,38 @@ try {
         $projectFolder = parse_url(BASE_URL, PHP_URL_PATH);
         $projectFolder = rtrim($projectFolder, '/');
 
-        if (!empty($projectFolder) && 
-                $projectFolder !== '/'
-                && strpos($uri, $projectFolder) === 0){
+        if (
+            !empty($projectFolder) &&
+            $projectFolder !== '/'
+            && strpos($uri, $projectFolder) === 0
+        ) {
             $uri = substr($uri, strlen($projectFolder));
         }
 
-        if (strpos($uri, '/public') === 0){
+        if (strpos($uri, '/public') === 0) {
             $uri = substr($uri, strlen('/public'));
         }
 
         $uri = trim($uri, '/');
 
-        if ($uri === ''){
+        if ($uri === '') {
             $uri = '/';
         } else {
             $uri = '/' . $uri;
         }
     }
-    
+
     $uri = '/' . trim($uri, '/');
 
     // Buscar la ruta en nuestras rutas definidas
     $rutaEncontrada = null;
     $parametros = [];
-    
+
     if (isset($rutas[$metodo])) {
         foreach ($rutas[$metodo] as $ruta => $detalles) {
             // Convertir :id a un patrón numérico y construir la regex
             $patron = '#^' . str_replace(':id', '(\d+)', $ruta) . '$#';
-            
+
             if (preg_match($patron, $uri, $matches)) {
                 $rutaEncontrada = $detalles;
                 array_shift($matches); // Remover el match completo
@@ -237,7 +243,7 @@ try {
 
     if (!empty($rutas[$_SERVER['REQUEST_METHOD']][$uri])) {
         $ruta = $rutas[$_SERVER['REQUEST_METHOD']][$uri];
-        
+
         if (isset($ruta['action']) && $ruta['action'] === 'recuperation') {
             // Ejecutar RecuperacionController.php directamente (mantiene PHPMailer intacto)
             require_once APP_PATH . '/controllers/RecuperacionController.php';
@@ -247,95 +253,55 @@ try {
 
     // Si no encontramos la ruta, mostrar 404
     if (!$rutaEncontrada) {
-
         http_response_code(404);
-
-        echo "<h2>404 - Ruta no encontrada</h2>";
-
-        echo "<hr>";
-
-        echo "<strong>REQUEST_URI:</strong><br>";
-        echo htmlspecialchars($_SERVER['REQUEST_URI']);
-
-        echo "<br><br>";
-
-        echo "<strong>SCRIPT_NAME:</strong><br>";
-        echo htmlspecialchars($_SERVER['SCRIPT_NAME']);
-
-        echo "<br><br>";
-
-        echo "<strong>BASE_URL:</strong><br>";
-        echo htmlspecialchars(BASE_URL);
-
-        echo "<br><br>";
-
-        echo "<strong>Ruta calculada (\$uri):</strong><br>";
-        echo htmlspecialchars($uri);
-
-        echo "<br><br>";
-
-        echo "<strong>Método HTTP:</strong><br>";
-        echo htmlspecialchars($metodo);
-
-        echo "<br><br>";
-
-        echo "<strong>Rutas disponibles:</strong>";
-
-        echo "<pre>";
-        print_r(array_keys($rutas[$metodo] ?? []));
-        echo "</pre>";
-
+        require_once APP_PATH . '/views/errores/404.php';
         exit;
     }
-    
-    // ========================================================================
-    // 5. EJECUTAR EL CONTROLADOR
-    // ========================================================================
-    
-    // Obtener nombre del controlador y método
-    $controllerName = $rutaEncontrada['controller'];
-    $methodName = $rutaEncontrada['method'];
-    
-    // Cargar el archivo del controlador
-    $controllerFile = APP_PATH . '/controllers/' . $controllerName . '.php';
-    
-    if (!file_exists($controllerFile)) {
-        throw new Exception("Controlador no encontrado: $controllerName");
-    }
-    
-    require_once $controllerFile;
-    
-    // Crear una instancia del controlador
-    if (!class_exists($controllerName)) {
-        throw new Exception("Clase controlador no encontrada: $controllerName");
-    }
-    
-    $controller = new $controllerName($GLOBALS['pdo']);
-    
-    // Verificar que el método existe
-    if (!method_exists($controller, $methodName)) {
-        throw new Exception("Método no encontrado: $controllerName@$methodName");
-    }
-    
-    // Ejecutar el método
-    if (count($parametros) > 0) {
-        call_user_func_array([$controller, $methodName], $parametros);
-    } else {
-        $controller->$methodName();
-    }
 
-} catch (Exception $e) {
-    // Si hay un error, registrarlo
-    error_log("Error: " . $e->getMessage());
-    
-    // Mostrar el error (solo en desarrollo)
-    http_response_code(500);
-    echo "Error en la aplicación";
-    
-    if (ini_get('display_errors')) {
-        echo "<pre>";
-        echo htmlspecialchars($e->getMessage());
-        echo "</pre>";
-    }
+// ========================================================================
+// 5. EJECUTAR EL CONTROLADOR
+// ========================================================================
+
+// Obtener nombre del controlador y método
+$controllerName = $rutaEncontrada['controller'];
+$methodName = $rutaEncontrada['method'];
+
+// Cargar el archivo del controlador
+$controllerFile = APP_PATH . '/controllers/' . $controllerName . '.php';
+
+if (!file_exists($controllerFile)) {
+    throw new Exception("Controlador no encontrado: $controllerName");
 }
 
+require_once $controllerFile;
+
+// Crear una instancia del controlador
+if (!class_exists($controllerName)) {
+    throw new Exception("Clase controlador no encontrada: $controllerName");
+}
+
+$controller = new $controllerName($GLOBALS['pdo']);
+
+// Verificar que el método existe
+if (!method_exists($controller, $methodName)) {
+    throw new Exception("Método no encontrado: $controllerName@$methodName");
+}
+
+// Ejecutar el método
+if (count($parametros) > 0) {
+    $parametrosConvertidos = [];
+    foreach ($parametros as $param) {
+        $parametrosConvertidos[] = is_numeric($param) ? (int) $param : $param;
+    }
+    call_user_func_array([$controller, $methodName], $parametrosConvertidos);
+} else {
+    $controller->$methodName();
+}
+
+  // Error en el controlador o método, mostrar 500
+   } catch (Exception $e) {
+    error_log("Error: " . $e->getMessage());
+    http_response_code(500);
+    require_once APP_PATH . '/views/errores/500.php';
+    exit;
+}
