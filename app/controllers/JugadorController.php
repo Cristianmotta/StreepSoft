@@ -61,6 +61,86 @@ class JugadorController extends Controller
         ]);
     }
 
+        /**
+     * Mostrar pantalla de Desactivación de Jugadores
+     *
+     * Se ejecuta cuando accedes a /jugadores/desactivacion
+     *
+     * NOTA: por ahora usamos datos de PRUEBA (hardcodeados).
+     * En la fase de backend reemplazaremos este array por una
+     * consulta real, ej: $this->jugadorModel->obtenerConMesesSinPago()
+     */
+    public function desactivacion(): void
+    {
+        $jugadores = [
+            [
+                'id' => 1,
+                'nombres' => 'Santiago',
+                'apellidos' => 'Rúa',
+                'iniciales' => 'SR',
+                'documento' => 'TI 1.038.221.554',
+                'categoria' => 'Sub-14',
+                'meses_sin_pago' => 3,
+                'deuda' => 270000,
+            ],
+            [
+                'id' => 2,
+                'nombres' => 'Mariana',
+                'apellidos' => 'Gil',
+                'iniciales' => 'MG',
+                'documento' => 'TI 1.041.887.220',
+                'categoria' => 'Sub-12',
+                'meses_sin_pago' => 2,
+                'deuda' => 180000,
+            ],
+            [
+                'id' => 3,
+                'nombres' => 'Juan',
+                'apellidos' => 'Restrepo',
+                'iniciales' => 'JR',
+                'documento' => 'CC 1.045.117.602',
+                'categoria' => 'Sub-20',
+                'meses_sin_pago' => 2,
+                'deuda' => 180000,
+            ],
+            [
+                'id' => 4,
+                'nombres' => 'Valentina',
+                'apellidos' => 'Franco',
+                'iniciales' => 'VF',
+                'documento' => 'TI 1.092.330.981',
+                'categoria' => 'Sub-12',
+                'meses_sin_pago' => 4,
+                'deuda' => 360000,
+            ],
+        ];
+
+        $historialCambios = [
+            [
+                'id' => 1,
+                'fecha' => '15/07/2026',
+                'realizado_por' => 'David Aguirre',
+                'jugadores_afectados' => 7,
+                'estado_aplicado' => 'Inactivo',
+                'motivo' => '3+ meses sin pagar mensualidad',
+            ],
+            [
+                'id' => 2,
+                'fecha' => '02/03/2026',
+                'realizado_por' => 'Valentina Aguirre',
+                'jugadores_afectados' => 4,
+                'estado_aplicado' => 'Retirado',
+                'motivo' => 'Fin de temporada, no renovaron matrícula',
+            ],
+        ];
+
+        $this->view('jugadores/desactivacion/desactivacion', [
+            'jugadores' => $jugadores,
+            'historialCambios' => $historialCambios,
+            'titulo' => 'Desactivación de Jugadores',
+        ]);
+    }
+
     public function deudas(): void
     {
         // Obtener solo jugadores con deuda
