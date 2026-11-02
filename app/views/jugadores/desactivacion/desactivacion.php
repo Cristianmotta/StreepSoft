@@ -1,8 +1,14 @@
 <?php
-
-/** @var array $jugadores
- * @var array $historialCambios
- */
+/** @var array $jugadores */
+/** @var array $historialCambios */
+$jugadores = is_array($jugadores ?? null) ? $jugadores : [];
+$historialCambios = is_array($historialCambios ?? null) ? $historialCambios : [];
+$categoriasDisponibles = array_values(array_unique(array_filter(array_map(
+    static fn(array $jugador): string => trim((string) ($jugador['categoria'] ?? '')),
+    $jugadores
+))));
+sort($categoriasDisponibles, SORT_NATURAL | SORT_FLAG_CASE);
+$esc = static fn($valor): string => htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -12,11 +18,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link rel="stylesheet" href="/streepsoft/public/css/jugadores/desactivacion.css">
+    <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
     <title>Desactivación de Jugadores</title>
 </head>
-
 <body>
-
     <div id="nav-card"></div>
 
     <div class="main-content">
@@ -49,29 +54,16 @@
                         </select>
                     </div>
 
-                    <div class="campo-filtro">
-                        <label for="filtroCategoria">Categoría</label>
-                        <select id="filtroCategoria">
-                            <option value="todo">Todas</option>
-                            <option value="Sub-12">Sub-12</option>
-                            <option value="Sub-14">Sub-14</option>
-                            <option value="Sub-20">Sub-20</option>
-                        </select>
+                    <div class="filtros-rapidos">
+                        <button type="button" class="btn-filtro-rapido activo" data-meses="todos">Todos los jugadores</button>
+                        <button type="button" class="btn-filtro-rapido" data-meses="1">1+ meses sin pago</button>
+                        <button type="button" class="btn-filtro-rapido" data-meses="2">2+ meses sin pago</button>
+                        <button type="button" class="btn-filtro-rapido" data-meses="3">3+ meses sin pago</button>
                     </div>
-
-                    <div class="campo-filtro campo-nombre">
-                        <label for="filtroNombre">Nombre</label>
-                        <input type="text" id="filtroNombre" placeholder="Jugador">
-                    </div>
-
-                    <button type="button" class="btn-buscar" id="btnBuscar">
-                        <i class="fi fi-rr-search"></i> Buscar
-                    </button>
                 </div>
             </div>
 
-            <div class="panel-resultados">
-
+            <section class="panel-resultados">
                 <div class="panel-resultados-header">
                     <h2>Resultados</h2>
                     <span class="resultados-contador"><?= count($jugadores) ?> jugadores en total</span>
@@ -81,320 +73,107 @@
                     <table id="tablaDesactivacion">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" id="checkTodos"></th>
+                                <th><input type="checkbox" id="checkTodos" aria-label="Seleccionar todos los jugadores visibles"></th>
                                 <th></th>
                                 <th>Jugador</th>
                                 <th>Categoría</th>
+                                <th>Estado</th>
                                 <th>Meses sin pago</th>
-                                <th>Deuda</th>
+                                <th>Deuda pendiente</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($jugadores)): ?>
-                                <tr>
-                                    <td colspan="5">No hay jugadores que cumplan este filtro.</td>
-                                </tr>
-                            <?php endif; ?>
-
-                            <?php foreach ($jugadores as $jugador): ?>
-                                <tr data-id="<?= (int)$jugador['id'] ?>">
-                                    <td>
-                                        <input type="checkbox" class="check-jugador" data-id="<?= (int)$jugador['id'] ?>">
-                                    </td>
-                                    <td>
-                                        <div class="avatar-iniciales"><?= htmlspecialchars($jugador['iniciales']) ?></div>
-                                    </td>
-                                    <td>
-                                        <div class="celda-jugador">
-                                            
+                                <tr><td colspan="7">No hay jugadores registrados o la consulta no devolvió resultados.</td></tr>
+                            <?php else: ?>
+                                <?php foreach ($jugadores as $jugador): ?>
+                                    <?php
+                                        $id = (int) ($jugador['id'] ?? 0);
+                                        $nombreCompleto = trim(($jugador['nombres'] ?? '') . ' ' . ($jugador['apellidos'] ?? ''));
+                                        $estado = strtolower((string) ($jugador['estado'] ?? 'activo'));
+                                        $estadoPermitido = in_array($estado, ['activo', 'inactivo', 'retirado'], true) ? $estado : 'activo';
+                                        $meses = (int) ($jugador['meses_sin_pago'] ?? 0);
+                                    ?>
+                                    <tr data-id="<?= $id ?>" data-meses="<?= $meses ?>" data-estado="<?= $esc($estadoPermitido) ?>">
+                                        <td>
+                                            <input type="checkbox"
+                                                   class="check-jugador"
+                                                   data-id="<?= $id ?>"
+                                                   aria-label="Seleccionar <?= $esc($nombreCompleto) ?>"
+                                                   <?= $estadoPermitido === 'retirado' ? 'disabled title="Los jugadores retirados no se modifican desde esta sección."' : '' ?>>
+                                        </td>
+                                        <td><div class="avatar-iniciales"><?= $esc($jugador['iniciales'] ?? '') ?></div></td>
+                                        <td>
                                             <div class="celda-jugador-texto">
-                                                <h3><?= htmlspecialchars($jugador['nombres'] . ' ' . $jugador['apellidos']) ?></h3>
-                                                <p><?= htmlspecialchars($jugador['documento']) ?></p>
+                                                <h3><?= $esc($nombreCompleto) ?></h3>
+                                                <p><?= $esc(($jugador['documento'] ?? '') !== '' ? $jugador['documento'] : 'Documento no registrado') ?></p>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td><?= htmlspecialchars($jugador['categoria']) ?></td>
-                                    <td><?= (int)$jugador['meses_sin_pago'] ?> meses</td>
-                                    <td class="celda-deuda">$<?= number_format($jugador['deuda'], 0, ',', '.') ?></td>
-                                </tr>
-                            <?php endforeach; ?>
+                                        </td>
+                                        <td><?= $esc($jugador['categoria'] ?? 'Sin categoría') ?></td>
+                                        <td><span class="badge-estado badge-<?= $esc($estadoPermitido) ?>"><?= $esc(ucfirst($estadoPermitido)) ?></span></td>
+                                        <td><?= $meses ?> <?= $meses === 1 ? 'mes' : 'meses' ?></td>
+                                        <td class="celda-deuda">$<?= number_format((float) ($jugador['deuda'] ?? 0), 0, ',', '.') ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="resultados-footer">
-                    Mostrando <?= min(count($jugadores), 5) ?> de <?= count($jugadores) ?> resultados · <a href="#">ver los <?= count($jugadores) ?></a>
-                </div>
-
+                <div class="resultados-footer" id="footerResultados">Selecciona jugadores activos para inactivar o inactivos para activar. Los retirados se conservan sin cambios.</div>
                 <div class="barra-seleccion oculto" id="barraSeleccion">
-                    <span id="textoSeleccion">0 Jugadores seleccionados</span>
+                    <span id="textoSeleccion">0 jugadores seleccionados</span>
                     <div class="barra-seleccion-acciones">
                         <button type="button" class="btn-secundario" id="btnCancelarSeleccion">Cancelar selección</button>
                         <button type="button" class="btn-primario" id="btnCambiarEstado">Cambiar estado</button>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
 
-        <div class="panel-historial">
-            <h2>Historial de cambios masivos</h2>
-
+        <section class="panel-historial">
+            <h2>Historial de cambios</h2>
             <div class="table-responsive">
                 <table id="tablaHistorial">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Realizado por</th>
-                            <th>Jugadores afectados</th>
-                            <th>Estado aplicado</th>
-                            <th>Motivo</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Fecha</th><th>Realizado por</th><th>Jugadores afectados</th><th>Estado aplicado</th><th>Motivo</th><th></th></tr></thead>
                     <tbody>
                         <?php if (empty($historialCambios)): ?>
-                            <tr>
-                                <td colspan="6">Todavía no se han registrado cambios masivos.</td>
-                            </tr>
+                            <tr><td colspan="6">Todavía no se han registrado cambios de estado.</td></tr>
                         <?php endif; ?>
-
                         <?php foreach ($historialCambios as $cambio): ?>
+                            <?php $estadoHistorial = strtolower((string) ($cambio['estado_aplicado'] ?? 'inactivo')); ?>
                             <tr>
-                                <td><?= htmlspecialchars($cambio['fecha']) ?></td>
-                                <td><?= htmlspecialchars($cambio['realizado_por']) ?></td>
-                                <td><?= (int)$cambio['jugadores_afectados'] ?> jugadores</td>
-                                <td>
-                                    <span class="badge-estado badge-<?= strtolower($cambio['estado_aplicado']) ?>">
-                                        <?= htmlspecialchars($cambio['estado_aplicado']) ?>
-                                    </span>
-                                </td>
-                                <td class="celda-motivo"><?= htmlspecialchars($cambio['motivo']) ?></td>
-                                <td>
-                                    <button type="button" class="btn-ver-detalle" data-cambio-id="<?= (int)$cambio['id'] ?>">
-                                        Ver detalle
-                                    </button>
-                                </td>
+                                <td><?= htmlspecialchars($cambio['fecha'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($cambio['realizado_por'] ?? 'Usuario', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= (int) ($cambio['jugadores_afectados'] ?? 0) ?> jugadores</td>
+                                <td><span class="badge-estado badge-<?= htmlspecialchars($estadoHistorial, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(ucfirst($estadoHistorial), ENT_QUOTES, 'UTF-8') ?></span></td>
+                                <td class="celda-motivo"><?= htmlspecialchars($cambio['motivo'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><button type="button" class="btn-ver-detalle" data-cambio-id="<?= (int) ($cambio['id'] ?? 0) ?>">Ver detalle</button></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
-        </div>
-
+        </section>
     </div>
 
-    <div class="modal-overlay oculto" id="modalWizard">
-        <div class="modal-box modal-wizard">
-
-            <div class="modal-header">
-                <h2>Cambiar estado a varios jugadores</h2>
-                <button type="button" class="modal-cerrar" data-cerrar-modal="modalWizard">&times;</button>
+    <div class="modal-registro" id="modalRegistro" aria-hidden="true">
+        <div class="modal-registro-contenido" role="dialog" aria-modal="true" aria-labelledby="modalRegistroTitulo">
+            <div class="modal-registro-header">
+                <h2 id="modalRegistroTitulo">Gestión de estado de jugadores</h2>
+                <button type="button" id="cerrarRegistro" class="cerrar-registro" aria-label="Cerrar ventana">&times;</button>
             </div>
-
-            <div class="wizard-pasos" id="wizardIndicador">
-                <div class="wizard-paso-indicador activo" data-paso-indicador="1">
-                    <span class="wizard-paso-numero">1</span>
-                </div>
-                <div class="wizard-linea"></div>
-                <div class="wizard-paso-indicador" data-paso-indicador="2">
-                    <span class="wizard-paso-numero">2</span>
-                </div>
-                <div class="wizard-linea"></div>
-                <div class="wizard-paso-indicador" data-paso-indicador="3">
-                    <span class="wizard-paso-numero">3</span>
-                </div>
-            </div>
-
-            <div class="modal-body">
-
-                <!-- PASO 1 -->
-                <div class="wizard-paso-contenido" data-paso="1">
-                    <h3 class="wizard-pregunta">¿A qué estado quieres cambiarlo?</h3>
-                    <p class="wizard-subtexto">5 jugadores seleccionados recibirán el mismo cambio de estado.</p>
-
-                    <label class="opcion-estado">
-                        <input type="radio" name="nuevoEstado" value="Inactivo" checked>
-                        <div class="opcion-estado-texto">
-                            <strong>Inactivo</strong>
-                            <p>El jugador no aparece en cobros activos, pero conserva su historial y puede reactivarse después.</p>
-                        </div>
-                    </label>
-
-                    <label class="opcion-estado">
-                        <input type="radio" name="nuevoEstado" value="Retirado">
-                        <div class="opcion-estado-texto">
-                            <strong>Retirado</strong>
-                            <p>El jugador se considera fuera del club de forma definitiva. Su historial se conserva.</p>
-                        </div>
-                    </label>
-
-                    <div class="campo-filtro campo-ancho">
-                        <label for="motivoCambio">Motivo del cambio</label>
-                        <select id="motivoCambio">
-                            <option value="">Selecciona un motivo</option>
-                            <option value="mora">2+ meses sin pago mensualidad</option>
-                            <option value="fin_temporada">Fin de temporada, no renovaron matrícula</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-
-                    <div class="campo-filtro campo-ancho">
-                        <label for="descripcionCambio">Descripción</label>
-                        <textarea id="descripcionCambio" rows="3" placeholder="Detalle opcional..."></textarea>
-                    </div>
-                </div>
-
-                <!-- PASO 2 -->
-                <div class="wizard-paso-contenido oculto" data-paso="2">
-                    <h3 class="wizard-pregunta">Revisa a quiénes se aplicará el cambio</h3>
-                    <p class="wizard-subtexto">Puedes quitar a algún jugador de la lista antes de confirmar.</p>
-
-                    <div class="lista-revision" id="listaRevision">
-                        <div class="item-revision" data-id="1">
-                            <div class="celda-jugador">
-                                <div class="avatar-iniciales">SR</div>
-                                <div class="celda-jugador-texto">
-                                    <h3>Santiago Rúa · Sub-14</h3>
-                                    <p>TI 1.038.221.554</p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-quitar" data-id="1">Quitar</button>
-                        </div>
-
-                        <div class="item-revision" data-id="2">
-                            <div class="celda-jugador">
-                                <div class="avatar-iniciales">MG</div>
-                                <div class="celda-jugador-texto">
-                                    <h3>Mariana Gil · Sub-12</h3>
-                                    <p>TI 1.041.887.220</p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-quitar" data-id="2">Quitar</button>
-                        </div>
-
-                        <div class="item-revision" data-id="3">
-                            <div class="celda-jugador">
-                                <div class="avatar-iniciales">JR</div>
-                                <div class="celda-jugador-texto">
-                                    <h3>Juan Restrepo · Sub-20</h3>
-                                    <p>CC 1.045.117.602</p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-quitar" data-id="3">Quitar</button>
-                        </div>
-
-                        <div class="item-revision" data-id="4">
-                            <div class="celda-jugador">
-                                <div class="avatar-iniciales">VF</div>
-                                <div class="celda-jugador-texto">
-                                    <h3>Valentina Franco · Sub-12</h3>
-                                    <p>TI 1.092.330.981</p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-quitar" data-id="4">Quitar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PASO 3 -->
-                <div class="wizard-paso-contenido oculto" data-paso="3">
-                    <h3 class="wizard-pregunta">Confirmar cambio masivo</h3>
-                    <p class="wizard-subtexto">Última revisión antes de aplicar el cambio.</p>
-
-                    <div class="resumen-confirmacion">
-                        <div class="resumen-item">
-                            <span class="resumen-etiqueta">Jugadores afectados</span>
-                            <strong id="resumenCantidad">4</strong>
-                        </div>
-                        <div class="resumen-item">
-                            <span class="resumen-etiqueta">Nuevo estado</span>
-                            <strong id="resumenEstado" class="resumen-estado-inactivo">Inactivo</strong>
-                        </div>
-                    </div>
-
-                    <label class="aviso-confirmacion">
-                        <input type="checkbox" id="checkEntendido">
-                        <span>
-                            Entiendo que este cambio se aplicará a todos los jugadores listados
-                            y quedará registrado con mi usuario, la fecha y el motivo indicado.
-                            Puedo revertir el estado individualmente después si es necesario.
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-secundario" id="btnWizardAtras">Cancelar</button>
-                <button type="button" class="btn-primario" id="btnWizardSiguiente">Continuar</button>
-            </div>
-
+            <iframe src="about:blank" class="iframe-registro" id="iframeRegistro" title="Cambiar estado de jugadores" loading="eager"></iframe>
         </div>
     </div>
 
-    <div class="modal-overlay oculto" id="modalDetalleHistorial">
-        <div class="modal-box modal-detalle-historial">
-
-            <div class="modal-header">
-                <h2 id="detalleHistorialTitulo">Historial de cambios masivos — 15/07/2026</h2>
-                <button type="button" class="modal-cerrar" data-cerrar-modal="modalDetalleHistorial">&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <div class="seccion-detalles-sup">
-                    <p class="detalle-realizado-por">
-                        Realizado por <strong id="detalleHistorialRealizadoPor">David Aguirre</strong>
-                        · <span class="badge-estado badge-inactivo" id="detalleHistorialBadge">Inactivo</span>
-                    </p>
-
-                    <h3 class="detalle-subtitulo">Motivo</h3>
-                    <p class="detalle-motivo-texto" id="detalleHistorialMotivo">
-                        Jugadores con 3 o más meses sin registrar pago, sin respuesta
-                        del acudiente tras contacto telefónico.
-                    </p>
-                </div>
-
-                <div class="seccion-jugadores-card">
-                    <h3 class="detalle-subtitulo" id="detalleHistorialContadorTitulo">Jugadores afectados (7)</h3>
-                    <div class="lista-revision" id="detalleHistorialLista">
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-secundario" data-cerrar-modal="modalDetalleHistorial">Cerrar</button>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="modal-overlay oculto" id="modalCambioCompletado">
-        <div class="modal-box modal-completado">
-
-            <div class="modal-header modal-header-simple">
-                <h2>Cambio completado</h2>
-                <button type="button" class="modal-cerrar" data-cerrar-modal="modalCambioCompletado">&times;</button>
-            </div>
-
-            <div class="modal-body modal-body-centrado">
-                <div class="icono-exito">
-                    <i class="fi fi-rr-check"></i>
-                </div>
-                <p class="completado-resumen">Cambio aplicado a <strong>5 jugadores</strong></p>
-                <p class="completado-detalle">
-                    Los jugadores seleccionados ahora están marcados como Inactivo.
-                    Puedes revisar el detalle en el historial de cambios masivos.
-                </p>
-            </div>
-
-            <div class="modal-footer modal-footer-centrado">
-                <button type="button" class="btn-primario" data-cerrar-modal="modalCambioCompletado">Entendido</button>
-            </div>
-
-        </div>
-    </div>
-
+    <script src="/streepsoft/public/js/jugadores/desactivacion.js"></script> 
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
+<<<<<<< HEAD
+=======
     <script src="/streepsoft/public/js/Jugadores/desactivacion.js"></script>
+>>>>>>> upstream/developer
 </body>
 
 </html>

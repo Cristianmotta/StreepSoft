@@ -1,539 +1,413 @@
-document.addEventListener('DOMContentLoaded', () => {
+/*
+ * Navegación del modal principal de desactivación y sus vistas internas.
+ * El backend valida y registra los cambios; el iframe solo coordina la interfaz.
+ */
+(function () {
+    'use strict';
 
-    // 
-    // 1. REFERENCIAS AL DOM
-    // 
-    // Buscamos una sola vez los elementos que vamos a usar
-    // varias veces, y los guardamos en una constante.
-    // Esto evita repetir document.getElementById(...) por todo
-    // el archivo, y es más rápido para el navegador.
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-    const btnCambiarEstado = document.getElementById('btnCambiarEstado');
-    const modalWizard = document.getElementById('modalWizard');
+    // ------------------- Página principal -------------------
+    function iniciarPaginaPrincipal() {
+        const modal = $('#modalRegistro');
+        const iframe = $('#iframeRegistro');
+        const tituloModal = $('#modalRegistroTitulo');
+        if (!modal || !iframe) return;
 
+        // Alias internos -> rutas reales registradas en public/index.php.
+        const vistasPermitidas = new Map([
+            ['desactivar', '/streepsoft/jugadores/desactivacion/desactivar'],
+            ['confirmacion', '/streepsoft/jugadores/desactivacion/confirmacion'],
+            ['historial', '/streepsoft/jugadores/desactivacion/historial'],
+            ['inactivos', '/streepsoft/jugadores/inactivos']
+        ]);
 
-    // 
-    // 2. SISTEMA GENÉRICO DE MODALES
-    // 
+        function abrirVista(ruta, titulo, parametros = {}) {
+            const rutaReal = vistasPermitidas.get(String(ruta));
+            if (!rutaReal) {
+                console.error('Vista de desactivación no permitida:', ruta);
+                return;
+            }
 
-    function abrirModal(modal) {
-        modal.classList.remove('oculto');
-    }
-
-    function cerrarModal(modal) {
-        modal.classList.add('oculto');
-    }
-
-    // Busca TODOS los botones que tengan el atributo data-cerrar-modal,
-    // sin importar en qué modal estén ni cuántos existan.
-    const botonesCerrar = document.querySelectorAll('[data-cerrar-modal]');
-
-    botonesCerrar.forEach((boton) => {
-        boton.addEventListener('click', () => {
-            // dataset.cerrarModal lee el valor del atributo
-            // data-cerrar-modal="modalWizard" -> "modalWizard"
-            const idModal = boton.dataset.cerrarModal;
-            const modal = document.getElementById(idModal);
-            cerrarModal(modal);
-        });
-    });
-
-    // 
-    // 3. SELECCIÓN DE JUGADORES (checkboxes)
-    // 
-
-    const checkTodos = document.getElementById('checkTodos');
-    const checksJugador = document.querySelectorAll('.check-jugador');
-    const panelResultados = document.querySelector('.panel-resultados');
-    const barraSeleccion = document.getElementById('barraSeleccion');
-    const textoSeleccion = document.getElementById('textoSeleccion');
-    const btnCancelarSeleccion = document.getElementById('btnCancelarSeleccion');
-
-    // Le pregunta al DOM, en el momento, cuáles checkboxes están marcados.
-    // No guardamos esto en una variable aparte: así nunca se desincroniza.
-    function obtenerSeleccionados() {
-        return Array.from(checksJugador).filter((check) => {
-            const fila = check.closest('tr');
-            return check.checked && fila.style.display !== 'none';
-        });
-    }
-
-    function actualizarBarraSeleccion() {
-        const seleccionados = obtenerSeleccionados();
-        const cantidad = seleccionados.length;
-
-        textoSeleccion.textContent = `${cantidad} Jugadores seleccionados`;
-
-        if (cantidad > 0) {
-            barraSeleccion.classList.remove('oculto');
-        } else {
-            barraSeleccion.classList.add('oculto');
+            const url = new URL(rutaReal, window.location.origin);
+            Object.entries(parametros).forEach(([clave, valor]) => {
+                if (valor !== undefined && valor !== null) {
+                    url.searchParams.set(clave, typeof valor === 'string' ? valor : JSON.stringify(valor));
+                }
+            });
+            if (tituloModal) tituloModal.textContent = titulo || 'Gestión de desactivación';
+            modal.classList.add('activo');
+            modal.setAttribute('aria-hidden', 'false');
+            iframe.src = url.href;
         }
 
-        // "Seleccionar todos" debe verse marcado SOLO si
-        // la cantidad de marcados es igual al total de filas VISIBLES.
-        const visibles = Array.from(checksJugador).filter(
-            (check) => check.closest('tr').style.display !== 'none'
-        ).length;
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            modal.setAttribute('aria-hidden', 'true');
+            iframe.src = 'about:blank';
+        }
 
-        checkTodos.checked = cantidad > 0 && cantidad === visibles;
-    }
+        $('#cerrarRegistro')?.addEventListener('click', cerrarModal);
+        modal.addEventListener('click', (evento) => {
+            if (evento.target === modal) cerrarModal();
+        });
+        document.addEventListener('keydown', (evento) => {
+            if (evento.key === 'Escape' && modal.classList.contains('activo')) cerrarModal();
+        });
 
-    // Cada checkbox de fila avisa cuando cambia
-    checksJugador.forEach((check) => {
-        check.addEventListener('change', actualizarBarraSeleccion);
-    });
+        window.addEventListener('message', (evento) => {
+            // Solo aceptamos órdenes del iframe que está abierto en este modal.
+            if (evento.source !== iframe.contentWindow) return;
 
-    // El checkbox maestro marca/desmarca solo a los visibles
-    checkTodos.addEventListener('change', () => {
-        checksJugador.forEach((check) => {
-            const fila = check.closest('tr');
-            if (fila.style.display !== 'none') {
-                check.checked = checkTodos.checked;
+            const mensaje = evento.data;
+            if (!mensaje || typeof mensaje !== 'object') return;
+
+            if (mensaje.tipo === 'cerrar-modal-principal') {
+                const recargar = mensaje.recargar === true;
+                cerrarModal();
+                if (recargar) window.location.reload();
+                return;
+            }
+
+            if (mensaje.tipo === 'abrir-vista' && typeof mensaje.ruta === 'string') {
+                // Las vistas internas solicitan navegación; el iframe no se anida.
+                abrirVista(mensaje.ruta, mensaje.titulo, mensaje.parametros || {});
             }
         });
-        actualizarBarraSeleccion();
-    });
 
-    // "Cancelar selección" limpia todo
-    btnCancelarSeleccion.addEventListener('click', () => {
-        checksJugador.forEach((check) => {
-            check.checked = false;
+        const checks = $$('.check-jugador');
+        const checkTodos = $('#checkTodos');
+        const barra = $('#barraSeleccion');
+        const textoSeleccion = $('#textoSeleccion');
+        const btnCambiarEstado = $('#btnCambiarEstado');
+        const filas = $$('#tablaDesactivacion tbody tr[data-id]');
+
+        function seleccionados() {
+            return checks.filter((check) => check.checked && !check.closest('tr').hidden);
+        }
+        function actualizarSeleccion() {
+            const cantidad = seleccionados().length;
+            if (textoSeleccion) textoSeleccion.textContent = `${cantidad} jugador${cantidad === 1 ? '' : 'es'} seleccionado${cantidad === 1 ? '' : 's'}`;
+            barra?.classList.toggle('oculto', cantidad === 0);
+            if (checkTodos) {
+                const visibles = checks.filter((check) => !check.closest('tr').hidden);
+                checkTodos.checked = visibles.length > 0 && visibles.every((check) => check.checked);
+                checkTodos.indeterminate = visibles.some((check) => check.checked) && !checkTodos.checked;
+            }
+        }
+        checks.forEach((check) => check.addEventListener('change', actualizarSeleccion));
+        checkTodos?.addEventListener('change', () => {
+            checks.forEach((check) => {
+                if (!check.closest('tr').hidden) check.checked = checkTodos.checked;
+            });
+            actualizarSeleccion();
         });
-        actualizarBarraSeleccion();
-    });
+        $('#btnCancelarSeleccion')?.addEventListener('click', () => {
+            checks.forEach((check) => { check.checked = false; });
+            actualizarSeleccion();
+        });
 
-    // 
-    // 3.b FILTROS: NOMBRE, CATEGORÍA Y MESES SIN PAGO
-    // 
-    // Filtra en el cliente las filas ya renderizadas. Cada filtro solo
-    // resta cuando tiene un valor distinto al de por defecto; así se
-    // puede filtrar por uno solo o combinarlos.
-    //
-    // Cuando el backend traiga datos reales, estos filtros pueden
-    // mantenerse igual o moverse a una consulta al servidor.
+        $('#btnVerInactivos')?.addEventListener('click', () => {
+            abrirVista('inactivos', 'Jugadores inactivos');
+        });
 
-    const buscadorNombre = document.getElementById('filtroNombre');
-    const btnBuscar = document.getElementById('btnBuscar');
-    const filtroCategoria = document.getElementById('filtroCategoria');
-    const sinPagoDesde = document.getElementById('sinPagoDesde');
-    const botonesFiltroRapido = document.querySelectorAll('.btn-filtro-rapido');
-    const tbodyDesactivacion = document.querySelector('#tablaDesactivacion tbody');
-    const resultadosContador = document.querySelector('.resultados-contador');
-    const resultadosFooter = document.querySelector('.resultados-footer');
+        btnCambiarEstado?.addEventListener('click', () => {
+            const jugadores = seleccionados().map((check) => {
+                const fila = check.closest('tr');
+                return {
+                    id: check.dataset.id,
+                    iniciales: $('.avatar-iniciales', fila)?.textContent.trim() || '',
+                    nombreCompleto: $('.celda-jugador-texto h3', fila)?.textContent.trim() || '',
+                    documento: $('.celda-jugador-texto p', fila)?.textContent.trim() || '',
+                    categoria: fila.children[3]?.textContent.trim() || ''
+                };
+            });
+            if (!jugadores.length) {
+                window.alert('Selecciona al menos un jugador para continuar.');
+                return;
+            }
+            abrirVista('desactivar', 'Cambiar estado a varios jugadores', { jugadores: jugadores });
+        });
 
-    // Guardamos los textos originales para restaurarlos cuando no haya filtros
-    const contadorOriginal = resultadosContador ? resultadosContador.textContent : '';
-    const footerOriginal = resultadosFooter ? resultadosFooter.innerHTML : '';
+        $('#btnBuscar')?.addEventListener('click', filtrarTabla);
+        $('#buscarJugador')?.addEventListener('input', filtrarTabla);
+        $('#sinPagoDesde')?.addEventListener('change', filtrarTabla);
+        $('#filtroCategoria')?.addEventListener('change', filtrarTabla);
+        $('#filtroEstado')?.addEventListener('change', filtrarTabla);
+        $$('.btn-filtro-rapido').forEach((boton) => boton.addEventListener('click', () => {
+            $$('.btn-filtro-rapido').forEach((otro) => otro.classList.toggle('activo', otro === boton));
+            $('#sinPagoDesde').value = boton.dataset.meses;
+            filtrarTabla();
+        }));
 
-    // Quita tildes y pasa a minúsculas: "Rúa" y "rua" deben coincidir
-    function normalizarTexto(texto) {
-        return (texto || '')
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .trim();
-    }
-
-    // Solo las filas reales de jugadores (tienen data-id)
-    function obtenerFilasJugadores() {
-        return Array.from(tbodyDesactivacion.querySelectorAll('tr[data-id]'));
-    }
-
-    function mostrarFilaSinResultados(mostrar) {
-        let fila = tbodyDesactivacion.querySelector('.fila-sin-resultados');
-
-        if (!fila && mostrar) {
-            fila = document.createElement('tr');
-            fila.className = 'fila-sin-resultados';
-            fila.innerHTML = '<td colspan="6">No se encontraron jugadores con esos filtros.</td>';
-            tbodyDesactivacion.appendChild(fila);
+        function filtrarTabla() {
+            const texto = ($('#buscarJugador')?.value || '').trim().toLocaleLowerCase('es');
+            const filtroMeses = $('#sinPagoDesde')?.value || 'todos';
+            const mesesMinimos = Number(filtroMeses);
+            const categoria = $('#filtroCategoria')?.value || 'todo';
+            const estado = $('#filtroEstado')?.value || 'todo';
+            let visibles = 0;
+            filas.forEach((fila) => {
+                const contenido = fila.textContent.toLocaleLowerCase('es');
+                const meses = Number(fila.dataset.meses || 0);
+                const categoriaFila = fila.children[3]?.textContent.trim() || '';
+                const cumpleMeses = filtroMeses === 'todos' || meses >= mesesMinimos;
+                const estadoFila = (fila.dataset.estado || '').toLowerCase();
+                const cumpleEstado = estado === 'todo' || estadoFila === estado;
+                const mostrar = contenido.includes(texto) && cumpleMeses && cumpleEstado && (categoria === 'todo' || categoriaFila === categoria);
+                fila.hidden = !mostrar;
+                const check = $('.check-jugador', fila);
+                if (!mostrar && check) check.checked = false;
+                if (mostrar) visibles++;
+            });
+            const contador = $('#contadorResultados');
+            if (contador) contador.textContent = `${visibles} jugador${visibles === 1 ? '' : 'es'} coincide${visibles === 1 ? '' : 'n'} con los filtros`;
+            actualizarSeleccion();
         }
 
-        if (fila) {
-            fila.style.display = mostrar ? '' : 'none';
-        }
+        $$('.btn-ver-detalle').forEach((boton) => {
+            boton.addEventListener('click', () => {
+                abrirVista('historial', 'Detalle del historial', { id: boton.dataset.cambioId || '0' });
+            });
+        });
+
+        // Mostrar todos los jugadores al abrir; el filtro de mora es opcional.
+        filtrarTabla();
     }
 
-    function filtrarJugadores() {
-        const termino = normalizarTexto(buscadorNombre.value);
-        const categoriaSeleccionada = filtroCategoria.value;
-        const mesesSeleccionados = sinPagoDesde.value;
-        const mesesMinimos = mesesSeleccionados === 'todos'
-            ? 0
-            : parseInt(mesesSeleccionados, 10);
+    // ------------------- Vista de registro / wizard -------------------
+    function iniciarVistaRegistro() {
+        const listaRevision = $('#listaRevision');
+        const btnSiguiente = $('#btnWizardSiguiente');
+        if (!listaRevision || !btnSiguiente) return;
 
-        const filas = obtenerFilasJugadores();
+        const params = new URLSearchParams(window.location.search);
+        let jugadores = [];
+        try {
+            jugadores = JSON.parse(params.get('jugadores') || '[]');
+            if (!Array.isArray(jugadores)) jugadores = [];
+        } catch (_) { jugadores = []; }
+        // No inventar un jugador de respaldo: el backend debe recibir solo IDs seleccionados.
 
-        let visibles = 0;
+        const subtitulo = $('#wizardSubtitulo');
+        const pasosContenido = $$('.wizard-paso-contenido');
+        const pasosIndicador = $$('.wizard-paso-indicador');
+        const btnAtras = $('#btnWizardAtras');
+        const checkEntendido = $('#checkEntendido');
+        const radiosEstado = $$('input[name="nuevoEstado"]');
+        let pasoActual = 1;
 
-        filas.forEach((fila) => {
-            const nombre = normalizarTexto(
-                fila.querySelector('.celda-jugador-texto h3')?.textContent
-            );
-            const documento = normalizarTexto(
-                fila.querySelector('.celda-jugador-texto p')?.textContent
-            );
-            const categoria = (fila.children[3]?.textContent || '').trim();
-            const meses = parseInt(fila.children[4]?.textContent || '0', 10);
-
-            const coincideNombre = termino === ''
-                || nombre.includes(termino)
-                || documento.includes(termino);
-            const coincideCategoria = categoriaSeleccionada === 'todo'
-                || categoria === categoriaSeleccionada;
-            const coincideMeses = meses >= mesesMinimos;
-
-            const coincide = coincideNombre && coincideCategoria && coincideMeses;
-
-            fila.style.display = coincide ? '' : 'none';
-
-            if (coincide) {
-                visibles++;
+        function escapar(texto) {
+            return String(texto ?? '').replace(/[&<>"']/g, (caracter) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caracter]));
+        }
+        function pintarJugadores() {
+            listaRevision.innerHTML = '';
+            jugadores.forEach((jugador) => {
+                const item = document.createElement('div');
+                item.className = 'item-revision';
+                item.dataset.id = jugador.id;
+                item.innerHTML = `<div class="celda-jugador"><div class="avatar-iniciales">${escapar(jugador.iniciales)}</div><div class="celda-jugador-texto"><h3>${escapar(jugador.nombreCompleto)} · ${escapar(jugador.categoria)}</h3><p>${escapar(jugador.documento)}</p></div></div><button type="button" class="btn-quitar" data-id="${escapar(jugador.id)}">Quitar</button>`;
+                listaRevision.appendChild(item);
+            });
+            actualizarCantidad();
+        }
+        function actualizarCantidad() {
+            if (subtitulo) subtitulo.textContent = `${jugadores.length} jugador${jugadores.length === 1 ? '' : 'es'} seleccionados recibirán el mismo cambio.`;
+            $('#resumenCantidad').textContent = String(jugadores.length);
+        }
+        function estadoSeleccionado() {
+            return $('input[name="nuevoEstado"]:checked')?.value || 'Inactivo';
+        }
+        function actualizarResumen() {
+            const estado = estadoSeleccionado();
+            const elemento = $('#resumenEstado');
+            elemento.textContent = estado;
+            elemento.classList.toggle('resumen-estado-retirado', estado === 'Retirado');
+            elemento.classList.toggle('resumen-estado-activo', estado === 'Activo');
+            elemento.classList.toggle('resumen-estado-inactivo', estado === 'Inactivo');
+            $('#resumenMotivo').textContent = $('#motivoCambio').value || 'Sin motivo seleccionado';
+        }
+        function mostrarPaso(numero) {
+            pasoActual = numero;
+            pasosContenido.forEach((paso) => paso.classList.toggle('oculto', Number(paso.dataset.paso) !== numero));
+            pasosIndicador.forEach((indicador) => {
+                const n = Number(indicador.dataset.pasoIndicador);
+                indicador.classList.toggle('activo', n === numero);
+                indicador.classList.toggle('completado', n < numero);
+            });
+            btnAtras.textContent = numero === 1 ? 'Cancelar' : 'Atrás';
+            btnSiguiente.textContent = numero === 3 ? 'Confirmar cambio' : 'Continuar';
+            btnSiguiente.disabled = (numero === 3 && !checkEntendido.checked) || jugadores.length === 0;
+            if (numero === 3) actualizarResumen();
+        }
+        listaRevision.addEventListener('click', (evento) => {
+            const boton = evento.target.closest('.btn-quitar');
+            if (!boton) return;
+            jugadores = jugadores.filter((jugador) => String(jugador.id) !== String(boton.dataset.id));
+            pintarJugadores();
+            btnSiguiente.disabled = jugadores.length === 0;
+        });
+        radiosEstado.forEach((radio) => radio.addEventListener('change', actualizarResumen));
+        $('#motivoCambio').addEventListener('change', actualizarResumen);
+        checkEntendido.addEventListener('change', () => mostrarPaso(pasoActual));
+        btnAtras.addEventListener('click', () => {
+            if (pasoActual === 1) {
+                window.parent.postMessage({ tipo: 'cerrar-modal-principal' }, '*');
             } else {
-                // Una fila oculta no puede quedar seleccionada
-                const check = fila.querySelector('.check-jugador');
-                if (check) check.checked = false;
+                mostrarPaso(pasoActual - 1);
             }
         });
-
-        // Si la tabla no tiene jugadores, la vista ya muestra su propio aviso
-        if (filas.length > 0) {
-            mostrarFilaSinResultados(visibles === 0);
-        }
-
-        // Hay filtros activos cuando alguno deja su valor por defecto.
-        // Al volver todos a por defecto, se restaura el texto original.
-        const hayFiltrosActivos = termino !== ''
-            || categoriaSeleccionada !== 'todo'
-            || mesesSeleccionados !== 'todos';
-
-        if (resultadosContador) {
-            resultadosContador.textContent = hayFiltrosActivos
-                ? `${visibles} de ${filas.length} jugadores`
-                : contadorOriginal;
-        }
-
-        if (resultadosFooter) {
-            resultadosFooter.innerHTML = hayFiltrosActivos
-                ? `Mostrando ${visibles} de ${filas.length} resultados`
-                : footerOriginal;
-        }
-
-        actualizarBarraSeleccion();
-    }
-
-    // Busca mientras se escribe...
-    buscadorNombre.addEventListener('input', filtrarJugadores);
-
-    // ...y también con el botón "Buscar" o al presionar Enter
-    btnBuscar.addEventListener('click', filtrarJugadores);
-
-    buscadorNombre.addEventListener('keydown', (evento) => {
-        if (evento.key === 'Enter') {
-            evento.preventDefault();
-            filtrarJugadores();
-        }
-    });
-
-    // Marca como activo el botón rápido que coincide con el select
-    function sincronizarBotonRapido() {
-        botonesFiltroRapido.forEach((boton) => {
-            boton.classList.toggle(
-                'activo',
-                boton.dataset.meses === sinPagoDesde.value
-            );
-        });
-    }
-
-    // Al cambiar la categoría, se filtra al instante
-    filtroCategoria.addEventListener('change', filtrarJugadores);
-
-    // El select "Sin pago desde" y los botones rápidos son el mismo filtro:
-    // se mantienen sincronizados y ambos disparan el filtrado
-    sinPagoDesde.addEventListener('change', () => {
-        sincronizarBotonRapido();
-        filtrarJugadores();
-    });
-
-    botonesFiltroRapido.forEach((boton) => {
-        boton.addEventListener('click', () => {
-            sinPagoDesde.value = boton.dataset.meses;
-            sincronizarBotonRapido();
-            filtrarJugadores();
-        });
-    });
-
-    // 
-    // 4. CONSTRUIR EL WIZARD CON LA SELECCIÓN REAL
-    // 
-
-    const wizardSubtitulo = document.querySelector('[data-paso="1"] .wizard-subtexto');
-    const listaRevision = document.getElementById('listaRevision');
-    const resumenCantidad = document.getElementById('resumenCantidad');
-
-    // Lee, directamente de la fila de la tabla, los datos que
-    // necesitamos mostrar en el wizard.
-    function obtenerDatosDesdeFila(check) {
-        const fila = check.closest('tr');
-        return {
-            id: check.dataset.id,
-            iniciales: fila.querySelector('.avatar-iniciales').textContent.trim(),
-            nombreCompleto: fila.querySelector('.celda-jugador-texto h3').textContent.trim(),
-            documento: fila.querySelector('.celda-jugador-texto p').textContent.trim(),
-            categoria: fila.children[2].textContent.trim(),
-        };
-    }
-
-    // Crea el HTML de un solo item de la lista de revisión (Paso 2)
-    function crearItemRevision(jugador) {
-        const item = document.createElement('div');
-        item.className = 'item-revision';
-        item.dataset.id = jugador.id;
-
-        item.innerHTML = `
-            <div class="celda-jugador">
-                <div class="avatar-iniciales">${jugador.iniciales}</div>
-                <div class="celda-jugador-texto">
-                    <h3>${jugador.nombreCompleto} · ${jugador.categoria}</h3>
-                    <p>${jugador.documento}</p>
-                </div>
-            </div>
-            <button type="button" class="btn-quitar" data-id="${jugador.id}">Quitar</button>
-        `;
-
-        return item;
-    }
-
-    function actualizarContadorWizard() {
-        const cantidad = listaRevision.querySelectorAll('.item-revision').length;
-        resumenCantidad.textContent = cantidad;
-        wizardSubtitulo.textContent = `${cantidad} jugadores seleccionados recibirán el mismo cambio de estado.`;
-    }
-
-    // Se ejecuta CADA VEZ que se abre el wizard: limpia el Paso 2
-    // y lo reconstruye desde cero con la selección actual.
-    function construirWizardDesdeSeleccion() {
-        listaRevision.innerHTML = '';
-
-        obtenerSeleccionados().forEach((check) => {
-            const jugador = obtenerDatosDesdeFila(check);
-            listaRevision.appendChild(crearItemRevision(jugador));
-        });
-
-        actualizarContadorWizard();
-    }
-
-    // "Quitar" dentro de la lista de revisión:
-    listaRevision.addEventListener('click', (evento) => {
-        const boton = evento.target.closest('.btn-quitar');
-        if (!boton) return; // el clic fue en otra parte del item, ignorar
-
-        const id = boton.dataset.id;
-
-        boton.closest('.item-revision').remove();
-        actualizarContadorWizard();
-
-        // Mantenemos sincronizada la tabla original: si lo quitas
-        // del wizard, también se desmarca su checkbox de verdad.
-        const checkOriginal = document.querySelector(`.check-jugador[data-id="${id}"]`);
-        if (checkOriginal) {
-            checkOriginal.checked = false;
-            actualizarBarraSeleccion();
-        }
-    });
-
-    // 
-    // 5. NAVEGACIÓN DEL WIZARD (pasos 1 → 2 → 3)
-    // 
-
-    const pasosContenido = document.querySelectorAll('.wizard-paso-contenido');
-    const pasosIndicador = document.querySelectorAll('.wizard-paso-indicador');
-    const btnWizardAtras = document.getElementById('btnWizardAtras');
-    const btnWizardSiguiente = document.getElementById('btnWizardSiguiente');
-    const radiosEstado = document.querySelectorAll('input[name="nuevoEstado"]');
-    const resumenEstado = document.getElementById('resumenEstado');
-    const checkEntendido = document.getElementById('checkEntendido');
-    const modalCambioCompletado = document.getElementById('modalCambioCompletado');
-
-    let pasoActual = 1;
-
-    // Deja visible SOLO el contenido del paso indicado,
-    // y actualiza el indicador de círculos a juego.
-    function mostrarPaso(numero) {
-        pasoActual = numero;
-
-        pasosContenido.forEach((contenido) => {
-            const esEsePaso = Number(contenido.dataset.paso) === numero;
-            contenido.classList.toggle('oculto', !esEsePaso);
-        });
-
-        pasosIndicador.forEach((indicador) => {
-            const numeroIndicador = Number(indicador.dataset.pasoIndicador);
-            indicador.classList.remove('activo', 'completado');
-            if (numeroIndicador === numero) {
-                indicador.classList.add('activo');
-            } else if (numeroIndicador < numero) {
-                indicador.classList.add('completado');
+        btnSiguiente.addEventListener('click', () => {
+            if (pasoActual === 1) {
+                if (!$('#motivoCambio').value) {
+                    window.alert('Selecciona el motivo del cambio para continuar.');
+                    return;
+                }
+                if (!jugadores.length) {
+                    window.alert('Debe quedar al menos un jugador en la lista.');
+                    return;
+                }
+                mostrarPaso(2);
+            } else if (pasoActual === 2) {
+                if (!jugadores.length) {
+                    window.alert('Debe quedar al menos un jugador en la lista.');
+                    return;
+                }
+                mostrarPaso(3);
+            } else {
+                if (!checkEntendido.checked) return;
+                guardarCambioMasivo();
             }
         });
+        async function guardarCambioMasivo() {
+            btnSiguiente.disabled = true;
+            const token = $('#csrfTokenDesactivacion')?.value || '';
+            if (!token) {
+                window.alert('No se encontró el token de seguridad. Cierra este modal, recarga la página y vuelve a intentarlo. No se ha guardado ningún cambio.');
+                btnSiguiente.disabled = false;
+                return;
+            }
+            const payload = new URLSearchParams();
+            payload.set('_token', token);
+            payload.set('jugadores', JSON.stringify(jugadores.map((jugador) => Number(jugador.id))));
+            payload.set('estado', estadoSeleccionado().toLowerCase());
+            payload.set('motivo', $('#motivoCambio')?.value || '');
+            payload.set('descripcion', $('#descripcionCambio')?.value || '');
 
-        actualizarFooterWizard();
-    }
-
-    // Decide qué dicen los botones del pie, y si "Confirmar" está bloqueado
-    function actualizarFooterWizard() {
-        if (pasoActual === 1) {
-            btnWizardAtras.textContent = 'Cancelar';
-            btnWizardSiguiente.textContent = 'Continuar';
-            btnWizardSiguiente.disabled = false;
-        } else if (pasoActual === 2) {
-            btnWizardAtras.textContent = 'Atrás';
-            btnWizardSiguiente.textContent = 'Continuar';
-            btnWizardSiguiente.disabled = false;
-        } else {
-            btnWizardAtras.textContent = 'Atrás';
-            btnWizardSiguiente.textContent = 'Confirmar cambio';
-            btnWizardSiguiente.disabled = !checkEntendido.checked;
+            try {
+                const respuesta = await fetch('/streepsoft/jugadores/desactivacion/aplicar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: payload.toString()
+                });
+                const tipoContenido = respuesta.headers.get('content-type') || '';
+                if (!tipoContenido.includes('application/json')) {
+                    throw new Error('El servidor no devolvió una respuesta válida. La sesión puede haber expirado: recarga la página e inicia sesión de nuevo. No se ha confirmado el cambio.');
+                }
+                const resultado = await respuesta.json();
+                if (!respuesta.ok || !resultado.ok) {
+                    throw new Error(resultado.mensaje || 'No se pudo guardar el cambio.');
+                }
+                window.parent.postMessage({
+                    tipo: 'abrir-vista',
+                    ruta: 'confirmacion',
+                    titulo: 'Cambio completado',
+                    parametros: { cantidad: resultado.cantidad, estado: resultado.estado }
+                }, window.location.origin);
+            } catch (error) {
+                window.alert(error.message || 'Ocurrió un error al guardar el cambio.');
+                btnSiguiente.disabled = false;
+                mostrarPaso(pasoActual);
+            }
         }
-    }
 
-    // Refleja en el Paso 3 cuál radio quedó marcado en el Paso 1
-    function actualizarResumenEstado() {
-        const radioMarcado = document.querySelector('input[name="nuevoEstado"]:checked');
-        const estado = radioMarcado.value;
-
-        resumenEstado.textContent = estado;
-        resumenEstado.classList.remove('resumen-estado-inactivo', 'resumen-estado-retirado');
-        resumenEstado.classList.add(
-            estado === 'Retirado' ? 'resumen-estado-retirado' : 'resumen-estado-inactivo'
-        );
-    }
-
-    radiosEstado.forEach((radio) => {
-        radio.addEventListener('change', actualizarResumenEstado);
-    });
-
-    // El checkbox de confirmación habilita/deshabilita "Confirmar cambio"
-    checkEntendido.addEventListener('change', actualizarFooterWizard);
-
-    btnWizardAtras.addEventListener('click', () => {
-        if (pasoActual === 1) {
-            cerrarModal(modalWizard);
-        } else {
-            mostrarPaso(pasoActual - 1);
-        }
-    });
-
-    btnWizardSiguiente.addEventListener('click', () => {
-        if (pasoActual < 3) {
-            mostrarPaso(pasoActual + 1);
-        } else {
-            // Estábamos en el Paso 3: esto es la confirmación final
-            cerrarModal(modalWizard);
-            abrirModal(modalCambioCompletado);
-            mostrarPaso(1); // deja el wizard listo para la próxima apertura
-        }
-    });
-
-    // 
-    // 6. MODAL DE DETALLE DEL HISTORIAL
-    // 
-
-    const botonesVerDetalle = document.querySelectorAll('.btn-ver-detalle');
-    const detalleHistorialTitulo = document.getElementById('detalleHistorialTitulo');
-    const detalleHistorialRealizadoPor = document.getElementById('detalleHistorialRealizadoPor');
-    const detalleHistorialBadge = document.getElementById('detalleHistorialBadge');
-    const detalleHistorialMotivo = document.getElementById('detalleHistorialMotivo');
-    const detalleHistorialContadorTitulo = document.getElementById('detalleHistorialContadorTitulo');
-    const detalleHistorialLista = document.getElementById('detalleHistorialLista');
-
-    // NOTA: esto es data de PRUEBA, igual que $jugadores en el controlador.
-    // En la fase de backend, esto se reemplaza por una consulta real
-    // que traiga el detalle del cambio masivo según su id.
-    const detalleHistorialData = {
-        '1': {
-            fecha: '15/07/2026',
-            realizadoPor: 'David Aguirre',
-            estado: 'Inactivo',
-            motivoLargo: 'Jugadores con 3 o más meses sin registrar pago, sin respuesta del acudiente tras contacto telefónico.',
-            jugadores: [
-                { iniciales: 'SR', nombreCompleto: 'Santiago Rúa', categoria: 'Sub-14', documento: 'TI 1.038.221.554' },
-                { iniciales: 'MG', nombreCompleto: 'Mariana Gil', categoria: 'Sub-12', documento: 'TI 1.041.887.220' },
-                { iniciales: 'JR', nombreCompleto: 'Juan Restrepo', categoria: 'Sub-20', documento: 'CC 1.045.117.602' },
-                { iniciales: 'AC', nombreCompleto: 'Andrés Castaño', categoria: 'Sub-14', documento: 'TI 1.055.221.586' },
-                { iniciales: 'VF', nombreCompleto: 'Valentina Franco', categoria: 'Sub-12', documento: 'TI 1.092.330.981' },
-            ],
-        },
-        '2': {
-            fecha: '02/03/2026',
-            realizadoPor: 'Valentina Aguirre',
-            estado: 'Retirado',
-            motivoLargo: 'Fin de temporada: los jugadores listados no renovaron matrícula para el nuevo ciclo.',
-            jugadores: [
-                { iniciales: 'JD', nombreCompleto: 'Jugador Demo 1', categoria: 'Sub-16', documento: 'TI 1.000.000.001' },
-                { iniciales: 'JD', nombreCompleto: 'Jugador Demo 2', categoria: 'Sub-16', documento: 'TI 1.000.000.002' },
-                { iniciales: 'JD', nombreCompleto: 'Jugador Demo 3', categoria: 'Sub-16', documento: 'TI 1.000.000.003' },
-                { iniciales: 'JD', nombreCompleto: 'Jugador Demo 4', categoria: 'Sub-16', documento: 'TI 1.000.000.004' },
-            ],
-        },
-    };
-
-    function crearItemDetalle(jugador) {
-        const item = document.createElement('div');
-        item.className = 'item-revision';
-
-        item.innerHTML = `
-            <div class="celda-jugador">
-                <div class="celda-jugador-texto">
-                    <h3>${jugador.nombreCompleto} · ${jugador.categoria}</h3>
-                    <p>${jugador.documento}</p>
-                </div>
-            </div>
-            <button type="button" class="btn-reactivar">Reactivar</button>
-        `;
-
-        return item;
-    }
-
-    function abrirDetalleHistorial(cambioId) {
-        const datos = detalleHistorialData[cambioId];
-        if (!datos) return; // por seguridad, si el id no existe en nuestra data de prueba
-
-        detalleHistorialTitulo.textContent = `Historial de cambios masivos — ${datos.fecha}`;
-        detalleHistorialRealizadoPor.textContent = datos.realizadoPor;
-        detalleHistorialMotivo.textContent = datos.motivoLargo;
-
-        detalleHistorialBadge.textContent = datos.estado;
-        detalleHistorialBadge.className = `badge-estado badge-${datos.estado.toLowerCase()}`;
-
-        detalleHistorialContadorTitulo.textContent = `Jugadores afectados (${datos.jugadores.length})`;
-
-        detalleHistorialLista.innerHTML = '';
-        datos.jugadores.forEach((jugador) => {
-            detalleHistorialLista.appendChild(crearItemDetalle(jugador));
-        });
-
-        const modalDetalleHistorial = document.getElementById('modalDetalleHistorial');
-        abrirModal(modalDetalleHistorial);
-    }
-
-    botonesVerDetalle.forEach((boton) => {
-        boton.addEventListener('click', () => {
-            abrirDetalleHistorial(boton.dataset.cambioId);
-        });
-    });
-
-
-    // 
-    // ABRIR EL WIZARD 
-    // 
-    btnCambiarEstado.addEventListener('click', () => {
-        construirWizardDesdeSeleccion();
-        checkEntendido.checked = false;
+        pintarJugadores();
         mostrarPaso(1);
-        actualizarResumenEstado();
-        abrirModal(modalWizard);
-    });
+    }
 
-});
+    // ------------------- Vista de resultado -------------------
+    function iniciarVistaResultado() {
+        const boton = $('#btnEntendido');
+        if (!boton) return;
+        const params = new URLSearchParams(window.location.search);
+        const cantidad = Number(params.get('cantidad') || 0);
+        const estado = params.get('estado') || 'Inactivo';
+        $('#cantidadAfectados').textContent = `${cantidad} jugador${cantidad === 1 ? '' : 'es'}`;
+        $('#estadoAplicado').textContent = estado;
+        boton.addEventListener('click', () => window.parent.postMessage({ tipo: 'cerrar-modal-principal', recargar: true }, window.location.origin));
+    }
+
+    // ------------------- Vista de historial / detalle -------------------
+    function iniciarVistaHistorial() {
+        const lista = $('#detalleHistorialLista');
+        const token = $('#csrfTokenReactivacion')?.value || '';
+        (lista ? $$('.btn-reactivar', lista) : []).forEach((boton) => {
+            boton.addEventListener('click', async () => {
+                const idJugador = boton.dataset.jugadorId;
+                if (!idJugador) return;
+                if (!window.confirm('¿Deseas reactivar este jugador?')) return;
+
+                boton.disabled = true;
+                if (!token) {
+                    window.alert('No se encontró el token de seguridad. Cierra el detalle, recarga la página y vuelve a intentarlo.');
+                    boton.disabled = false;
+                    return;
+                }
+
+                const payload = new URLSearchParams();
+                payload.set('_token', token);
+                payload.set('id_jugadores', idJugador);
+                try {
+                    const respuesta = await fetch('/streepsoft/jugadores/desactivacion/reactivar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: payload.toString()
+                    });
+                    // Leer primero como texto para detectar respuestas HTML de error
+                    // (ruta inexistente, redirección al login o error PHP).
+                    const textoRespuesta = await respuesta.text();
+                    let resultado;
+                    try {
+                        resultado = JSON.parse(textoRespuesta);
+                    } catch (parseError) {
+                        const pareceHtml = /<!doctype html|<html|<br\s*\/?/i.test(textoRespuesta);
+                        throw new Error(pareceHtml
+                            ? 'El servidor devolvió HTML en lugar de JSON. Comprueba la ruta de reactivación, que exista JugadorController::reactivarJugador y que la sesión siga activa.'
+                            : 'El servidor devolvió una respuesta no válida al reactivar el jugador.');
+                    }
+                    if (!respuesta.ok || !resultado.ok) {
+                        throw new Error(resultado.mensaje || 'No se pudo reactivar el jugador.');
+                    }
+                    const activo = document.createElement('span');
+                    activo.className = 'badge-estado badge-activo';
+                    activo.textContent = 'Activo';
+                    boton.replaceWith(activo);
+                } catch (error) {
+                    window.alert(error.message || 'Error al reactivar el jugador.');
+                    boton.disabled = false;
+                }
+            });
+        });
+
+        $('#btnCerrarDetalle')?.addEventListener('click', () => {
+            window.parent.postMessage({ tipo: 'cerrar-modal-principal' }, window.location.origin);
+        });
+        $('#btnVolverMenu')?.addEventListener('click', () => {
+            window.parent.postMessage({ tipo: 'cerrar-modal-principal' }, window.location.origin);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        iniciarPaginaPrincipal();
+        iniciarVistaRegistro();
+        iniciarVistaResultado();
+        iniciarVistaHistorial();
+    });
+})();

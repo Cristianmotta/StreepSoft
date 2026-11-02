@@ -14,7 +14,7 @@
     <div class="main-content">
         <div class="card-body">
             <div class="text-card">
-                <h1>Bienvenido a Instructores </h1>
+                <h1>Registro | Instructores </h1>
             </div>
 
             <div class="card-ets">

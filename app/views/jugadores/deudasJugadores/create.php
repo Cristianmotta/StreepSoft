@@ -30,7 +30,10 @@ $fechaLimiteTexto = $fechaLimiteObj ? $fechaLimiteObj->format('d/m/Y') : '-';
         </p>
     <?php endif; ?>
 
-    <form action="/streepsoft/deudas/registrar-pago" method="POST" target="_top">
+    <form action="/streepsoft/deudas/registrar-pago" method="POST" target="_top" id="formRegistrarPago">
+        <input type="hidden" id="nombreJugadorPago" value="<?= htmlspecialchars(trim(($deuda['nombres'] ?? '') . ' ' . ($deuda['apellidos'] ?? '')), ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" id="mesPago" value="<?= htmlspecialchars($deuda['mes'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" id="anioPago" value="<?= (int) ($deuda['anio'] ?? date('Y')) ?>">
         <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
         <input type="hidden" name="id_deudas" value="<?= (int) $deuda['id_deudas'] ?>">
 
@@ -156,5 +159,75 @@ $fechaLimiteTexto = $fechaLimiteObj ? $fechaLimiteObj->format('d/m/Y') : '-';
 
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/streepsoft/public/js/nuevo/pago.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const formulario = document.getElementById('formRegistrarPago');
+
+        if (!formulario) return;
+
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Evitar confirmaciones duplicadas.
+            if (formulario.dataset.confirmando === 'true') return;
+
+            const nombreJugador = <?= json_encode(
+                trim(($deuda['nombres'] ?? '') . ' ' . ($deuda['apellidos'] ?? '')),
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+            ) ?>;
+
+            const mes = <?= json_encode(
+                $deuda['mes'] ?? '',
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+            ) ?>;
+
+            const anio = <?= (int) ($deuda['anio'] ?? date('Y')) ?>;
+
+            const nombreUsuario = <?= json_encode(
+                $_SESSION['usuario']['nombre_completo']
+                    ?? $_SESSION['usuario']['usuario']
+                    ?? 'Administrador',
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+            ) ?>;
+
+            // Swal.escapeHtml fue eliminado en SweetAlert2 v11.
+            // Esta funcion cumple el mismo proposito con APIs nativas del navegador.
+            const esc = (txt) => {
+                const d = document.createElement('div');
+                d.appendChild(document.createTextNode(String(txt)));
+                return d.innerHTML;
+            };
+
+            Swal.fire({
+                icon: 'question',
+                title: '¿Confirmar pago?',
+                html: `
+                    <p><strong>¡${esc(nombreUsuario)}!</strong></p>
+                    <p>¿Desea realizar el pago de
+                    <strong>${esc(mes)} de ${anio}</strong>
+                    del jugador
+                    <strong>${esc(nombreJugador)}</strong>?</p>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Sí, registrar pago',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true,
+                background: '#242424',
+                color: '#ffffff',
+                confirmButtonColor: '#d6a000',
+                cancelButtonColor: '#555555',
+                focusCancel: true,
+                allowOutsideClick: false
+            }).then((resultado) => {
+                if (resultado.isConfirmed) {
+                    formulario.dataset.confirmando = 'true';
+                    formulario.submit();
+                }
+            });
+        });
+    });
+</script>
 </body>

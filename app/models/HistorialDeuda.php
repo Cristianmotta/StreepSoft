@@ -77,11 +77,84 @@ class HistorialDeuda extends Model
     public function obtenerPorJugador(int $idJugador): array
     {
         $sql = "
-            SELECT * FROM historial_deuda
-            WHERE id_jugadores = ?
-            ORDER BY fecha_pago DESC
+            SELECT
+                h.id_historial,
+                h.id_jugadores,
+                h.mes,
+                h.anio,
+                h.matricula,
+                h.totalidad,
+                h.fecha_limite_pago,
+                h.fecha_pago,
+                h.concepto,
+                h.descuento_porcentaje,
+                h.valor_pagado,
+                mp.tipo_metodo_pago AS metodo_pago
+            FROM historial_deuda h
+            LEFT JOIN metodo_pago mp
+                ON mp.id_metodo_pago = h.id_metodo_pago
+            WHERE h.id_jugadores = ?
+            ORDER BY h.fecha_pago DESC, h.id_historial DESC
         ";
+
         return $this->query($sql, [$idJugador]);
+    }
+
+
+    /** Obtiene un pago histórico por su identificador para editarlo. */
+    public function obtenerPorId(int $idHistorial): ?array
+    {
+        $sql = "
+            SELECT
+                h.*,
+                j.nombres,
+                j.apellidos,
+                j.foto,
+                c.nombre AS categoria,
+                mp.tipo_metodo_pago AS metodo_pago
+            FROM historial_deuda h
+            INNER JOIN jugadores j
+                ON j.id_jugadores = h.id_jugadores
+            LEFT JOIN categorias c
+                ON c.id_categorias = j.id_categorias
+            LEFT JOIN metodo_pago mp
+                ON mp.id_metodo_pago = h.id_metodo_pago
+            WHERE h.id_historial = ?
+            LIMIT 1
+        ";
+
+        return $this->queryOne($sql, [$idHistorial]);
+    }
+
+    /** Actualiza los datos editables de un pago ya archivado. */
+    public function actualizar(int $idHistorial, array $datos): bool
+    {
+        $sql = "
+            UPDATE historial_deuda
+            SET
+                matricula = ?,
+                totalidad = ?,
+                fecha_limite_pago = ?,
+                fecha_pago = ?,
+                id_metodo_pago = ?,
+                concepto = ?,
+                descuento_porcentaje = ?,
+                valor_pagado = ?
+            WHERE id_historial = ?
+            LIMIT 1
+        ";
+
+        return $this->execute($sql, [
+            $datos['matricula'],
+            $datos['totalidad'],
+            $datos['fecha_limite_pago'],
+            $datos['fecha_pago'],
+            $datos['id_metodo_pago'],
+            $datos['concepto'],
+            $datos['descuento_porcentaje'],
+            $datos['valor_pagado'],
+            $idHistorial,
+        ]);
     }
 
     /** ¿Ya existe un pago archivado de este jugador para ese mes/año? */

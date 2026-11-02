@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('../hamburguesa/hamburguer.css');
 
 body {
@@ -5,19 +6,22 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #141414;
     color: #ffffff;
+    margin: 20px;
 }
 
 /* Estilos para el panel de filtros */
 .panel-filtro {
-    background: #000000;
-    border: 1px solid #D09E10;
+    background: #1A1A1A;
+    border-top: 2px solid #D09E10;
+    border-bottom: 2px solid #D09E10;
     border-radius: 10px;
-    padding: 18px 20px;
+    padding: 8px 9px;
     margin-top: 20px;
 }
 
 .panel-filtro-header {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: baseline;
     flex-wrap: wrap;
@@ -35,10 +39,16 @@ body {
     font-size: 0.85rem;
 }
 
+.panel-filtros{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .filtros-rapidos {
     display: flex;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 5px;
+    margin-top: 25px;
     flex-wrap: wrap;
 }
 
@@ -47,7 +57,8 @@ body {
     border: 1px solid #444;
     color: #ccc;
     border-radius: 20px;
-    padding: 6px 16px;
+    padding: 2px 12px;
+    height: 30px;
     cursor: pointer;
     font-size: 0.85rem;
 }
@@ -61,8 +72,8 @@ body {
 .filtros-avanzados {
     display: flex;
     align-items: flex-end;
-    gap: 16px;
-    margin-top: 18px;
+    gap: 5px;
+    margin-top: 5px;
     flex-wrap: wrap;
 }
 
@@ -70,6 +81,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-bottom: 8px;
 }
 
 .campo-filtro label {
@@ -83,7 +95,8 @@ body {
     border: 1px solid #444;
     color: #fff;
     border-radius: 6px;
-    padding: 8px 10px;
+    padding: 5px 15px;
+    height: 35px;
     font-size: 0.9rem;
 }
 
@@ -91,21 +104,50 @@ body {
     min-width: 160px;
 }
 
-.btn-buscar {
-    background: #D09E10;
+.buscar{
+    width: 180px;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+    background: #c1bdbd;
+    border-radius: 10px;
+    border: 1px solid #303030;
+    overflow: hidden;
+}
+
+.buscar input{
+    flex: 1;
+    background: transparent;
+    color: #000000;
     border: none;
-    color: #141414;
-    font-weight: 600;
-    border-radius: 6px;
-    padding: 9px 20px;
-    cursor: pointer;
+    outline: none;
+    padding: 0 9px;
+    font-size: 14px;
+    font-family: "Poppins", sans-serif;
+}
+
+.buscar button{
+    width: 25px;
+    height: 100%;
+    border: none;
+    background: #c1bdbd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.buscar:focus-within{
+    border-color: #D09E10;
+    box-shadow: 0 0 2px #D09E10;
 }
 
 /* Estilos para la tabla de jugadores */
 
 .panel-resultados {
-    background: #000000;
-    border: 1px solid #D09E10;
+    background: #161616;
+    border-left: 10px solid #D09E10;
+    border-right: 5px solid #D09E10;
     border-radius: 10px;
     padding: 18px 20px;
     margin-top: 20px;
@@ -122,7 +164,16 @@ body {
 
 .panel-resultados-header h2 {
     margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
     font-size: 1.2rem;
+}
+
+.panel-resultados-header span{
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-size: 0.8rem;
 }
 
 .resultados-contador {
@@ -142,8 +193,9 @@ body {
 
 #tablaDesactivacion th {
     text-align: left;
-    color: #999;
-    font-weight: 500;
+    color: #FFFFFF;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
     font-size: 0.8rem;
     padding: 10px 8px;
     border-bottom: 1px solid #2b2b2b;
@@ -213,14 +265,14 @@ body {
     position: fixed;
     bottom: 20px;
     left: 52.5%;
-    transform: translateX(-50%); /* Centra la barra horizontalmente */
+    transform: translateX(-53%); /* Centra la barra horizontalmente */
     width: calc(100% - 40px);
     max-width: 1200px;
     z-index: 1000;
     background: #000000;
     border: 1px solid #D09E10;
     border-radius: 8px;
-    padding: 12px 18px;
+    padding: 12px 9px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -256,16 +308,27 @@ body {
 /* Historial de cambios */
 
 .panel-historial {
-    background: #000000;
-    border: 1px solid #D09E10;
+    background: #161616;
+    border-left: 10px solid #D09E10;
+    border-right: 5px solid #D09E10;
     border-radius: 10px;
     padding: 18px 20px;
     margin-top: 20px;
+    position: relative;
 }
 
 .panel-historial h2 {
-    margin: 0 0 14px;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
     font-size: 1.2rem;
+}
+
+.panel-historial span {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 #tablaHistorial {
@@ -295,9 +358,9 @@ body {
 
 .badge-estado {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 4px 5px;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 15px;
     font-weight: 600;
 }
 
@@ -317,6 +380,11 @@ body {
     color: #D09E10;
     cursor: pointer;
     font-size: 0.85rem;
+    transition: color 0.5s ease;
+}
+
+.btn-ver-detalle:hover{
+    cursor: pointer;
     text-decoration: underline;
 }
 
@@ -561,7 +629,7 @@ body {
 /* Reutilizables para el modal de detalle */
 .detalle-realizado-por {
     color: #ccc;
-    font-size: 0.9rem;
+    font-size: 15px;
     margin-top: 4px;
 }
 
@@ -573,18 +641,20 @@ body {
 .detalle-motivo-texto {
     color: #999;
     font-size: 0.85rem;
-    margin: 0;
+    margin: 0px;
+    margin-bottom: 9px;
+    line-height: 1.4;
 }
 
 .btn-reactivar {
     background: transparent;
     border: none;
-    color: #4caf50; 
+    color: #4caf50;
     font-size: 0.8rem;
-    font-weight: 600; 
+    font-weight: 600;
     cursor: pointer;
     padding: 0;
-    margin-left: 15px; 
+    margin-left: 15px;
 }
 
 /* Modal de éxito */
@@ -625,7 +695,7 @@ body {
     font-size: 1.15rem;
     font-weight: 700;
     margin: 0 0 10px;
-    text-align: center; 
+    text-align: center;
 }
 
 .completado-detalle {
@@ -633,7 +703,7 @@ body {
     font-size: 0.88rem;
     line-height: 1.5;
     margin: 0;
-    text-align: center; 
+    text-align: center;
 }
 
 .modal-completado .modal-footer-centrado {
@@ -641,7 +711,7 @@ body {
     border-top: 1px solid #2b2b2b;
     margin-top: 0;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
 }
 
 .modal-completado .modal-footer-centrado .btn-primario {
@@ -653,20 +723,20 @@ body {
 
 .modal-detalle-historial .modal-header {
     padding: 18px 5px 18px 5px;
-    border-bottom: 1px solid #2b2b2b; 
+    border-bottom: 1px solid #2b2b2b;
 }
 
 .modal-detalle-historial .modal-footer {
     padding: 16px 24px;
-    border-top: 1px solid #2b2b2b; 
+    border-top: 1px solid #2b2b2b;
 }
 
 .modal-detalle-historial .modal-body {
-    padding: 24px 24px 1px 24px; 
+    padding: 24px 24px 1px 24px;
 }
 
 .seccion-detalles-sup {
-    margin-bottom: 24px; 
+    margin-bottom: 24px;
 }
 
 .detalle-realizado-por {
@@ -680,19 +750,24 @@ body {
     font-size: 0.95rem;
 }
 
+.detalle-subtitulo-1 {
+    margin: 0 0 8px 0;
+    font-size: 17px;
+}
+
 .detalle-motivo-texto {
-    color: #999;
+color: #999;
     font-size: 0.85rem;
-    margin: 0;
+    margin: 0px 0px 10px 0px;
     line-height: 1.4;
 }
 
 .seccion-jugadores-card {
-    background: #141414; 
+    background: #141414;
     border: 1px solid #2b2b2b;
     border-radius: 10px;
     padding: 10px 1px 1px 8px;
-    box-shadow: 0 4px 15px rgb(121 108 26 / 50%)
+    box-shadow: 0 0px 3px rgb(121 108 26 / 50%)
 }
 
 .seccion-jugadores-card .detalle-subtitulo {
@@ -702,7 +777,7 @@ body {
 .seccion-jugadores-card .lista-revision {
     max-height: 220px;
     overflow-y: auto;
-    border: none; 
+    border: none;
     padding: 0;
 }
 
@@ -718,3 +793,93 @@ body {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ===== Modal general de prueba: siempre hay un solo overlay y un solo iframe ===== */
+.modal-registro {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, .78);
+    z-index: 2000;
+}
+
+.modal-registro.activo {
+    display: flex;
+}
+
+.modal-registro-contenido {
+    display: flex;
+    flex-direction: column;
+    width: min(980px, 96vw);
+    height: min(760px, 92vh);
+    min-height: 360px;
+    background: #090909;
+    border: 1px solid #D09E10;
+    border-radius: 12px;
+    box-shadow: 0 18px 70px rgba(0, 0, 0, .65);
+    overflow: hidden;
+}
+
+.modal-registro-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex: 0 0 auto;
+    padding: 12px 18px;
+    background: #050505;
+    border-bottom: 1px solid #383018;
+}
+
+.modal-registro-header h2 {
+    margin: 0;
+    color: #D09E10;
+    font-size: 1rem;
+}
+
+.cerrar-registro {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid #555;
+    background: transparent;
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cerrar-registro:hover {
+    background: #292929;
+    border-color: #D09E10;
+}
+
+.iframe-registro {
+    display: block;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    border: 0;
+    background: #090909;
+}
+
+.basil--search-solid {
+  display: inline-block;
+  width: 2em;
+  height: 1.5em;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' fill-rule='evenodd' d='M14.385 15.446a6.751 6.751 0 1 1 1.06-1.06l5.156 5.155a.75.75 0 1 1-1.06 1.06zM6.46 13.884a5.25 5.25 0 1 1 7.43-.005l-.005.005l-.005.004a5.25 5.25 0 0 1-7.42-.004' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-color: #D09E10;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+

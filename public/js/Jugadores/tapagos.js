@@ -292,8 +292,13 @@ if (tbody) {
     tbody.addEventListener("click", (e) => {
         const botonPerfil = e.target.closest(".btn-historial");
         if (botonPerfil) {
-            const id = botonPerfil.dataset.idJugador;
-            window.location.href = "/streepsoft/" + id;
+            const id = Number(botonPerfil.dataset.idJugador);
+            if (!Number.isInteger(id) || id <= 0) {
+                console.error("No se encontró un ID de jugador válido para abrir el historial.");
+                return;
+            }
+
+            window.location.href = `/streepsoft/jugadores/deudas/historial/${id}`;
         }
     });
 }

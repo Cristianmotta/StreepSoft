@@ -1,104 +1,84 @@
-const ctxCategorias = document.getElementById('graficaCategorias');
+(() => {
+    const canvas = document.getElementById('graficaCategorias');
+    const leyenda = document.getElementById('leyendaCategorias');
+    if (!canvas || typeof Chart === 'undefined') return;
 
-const categorias = [
-    'Sub 10',
-    'Sub 12',
-    'Sub 15',
-    'Sub 17',
-    'Sub 20'
-];
+    const filas = Array.isArray(window.DASHBOARD_CATEGORIAS)
+        ? window.DASHBOARD_CATEGORIAS
+        : [];
+    const categorias = filas.map(fila => String(fila.categoria || 'Sin categoría'));
+    const cantidades = filas.map(fila => Number(fila.total || 0));
+    const colores = ['#D09E10', '#FFE000', '#B88B08', '#806000', '#777777', '#A67C00', '#C5A028'];
+    const total = cantidades.reduce((suma, valor) => suma + valor, 0);
 
-const cantidades = [
-    13,
-    17,
-    16,
-    15,
-    20
-];
+    if (leyenda) leyenda.replaceChildren();
 
-const colores = [
-    '#D09E10',
-    '#FFE000',
-    '#B88B08',
-    '#806000',
-    '#777777'
-];
+    if (categorias.length === 0) {
+        if (leyenda) {
+            const mensaje = document.createElement('p');
+            mensaje.className = 'sin-datos-categorias';
+            mensaje.textContent = 'No hay jugadores activos registrados para mostrar por categoría.';
+            leyenda.appendChild(mensaje);
+        }
+        return;
+    }
 
-const total = cantidades.reduce((a, b) => a + b, 0);
+    // Si el dashboard inicializa este script más de una vez, elimina la gráfica anterior.
+    if (Chart.getChart(canvas)) {
+        Chart.getChart(canvas).destroy();
+    }
 
-new Chart(ctxCategorias, {
-    type: 'doughnut',
-
-    data: {
-        labels: categorias,
-
-        datasets: [{
-            data: cantidades,
-
-            backgroundColor: colores,
-
-            borderWidth: 0,
-
-            hoverOffset: 0
-        }]
-    },
-
-    options: {
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        cutout: '55%',
-
-        plugins: {
-            legend: {
-                display: false
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-
-                        const valor = context.raw;
-
-                        const porcentaje =
-                            ((valor / total) * 100).toFixed(0);
-
-                        return ` ${valor} jugadores (${porcentaje}%)`;
+    new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: categorias,
+            datasets: [{
+                data: cantidades,
+                backgroundColor: categorias.map((_, i) => colores[i % colores.length]),
+                borderWidth: 0,
+                hoverOffset: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '55%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: context => {
+                            const valor = Number(context.raw || 0);
+                            const porcentaje = total > 0 ? ((valor / total) * 100).toFixed(0) : '0';
+                            return ` ${valor} jugadores (${porcentaje}%)`;
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
 
-const leyenda = document.getElementById('leyendaCategorias');
+    if (!leyenda) return;
 
-categorias.forEach((categoria, index) => {
+    filas.forEach((fila, index) => {
+        const cantidad = Number(fila.total || 0);
+        const porcentaje = total > 0 ? ((cantidad / total) * 100).toFixed(0) : '0';
+        const item = document.createElement('div');
+        item.classList.add('item-categoria');
 
-    const cantidad = cantidades[index];
+        const color = document.createElement('span');
+        color.className = 'color-categoria';
+        color.style.background = colores[index % colores.length];
 
-    const porcentaje =
-        ((cantidad / total) * 100).toFixed(0);
+        const nombre = document.createElement('span');
+        nombre.className = 'nombre-categoria';
+        nombre.textContent = String(fila.categoria || 'Sin categoría');
 
-    const item = document.createElement('div');
+        const cantidadTexto = document.createElement('span');
+        cantidadTexto.className = 'cantidad-categoria';
+        cantidadTexto.textContent = `${cantidad} (${porcentaje}%)`;
 
-    item.classList.add('item-categoria');
-
-    item.innerHTML = `
-        <span 
-            class="color-categoria"
-            style="background: ${colores[index]}"
-        ></span>
-
-        <span class="nombre-categoria">
-            ${categoria}
-        </span>
-
-        <span class="cantidad-categoria">
-            ${cantidad} (${porcentaje}%)
-        </span>
-    `;
-
-    leyenda.appendChild(item);
-});
+        item.append(color, nombre, cantidadTexto);
+        leyenda.appendChild(item);
+    });
+})();

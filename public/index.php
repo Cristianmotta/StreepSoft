@@ -82,6 +82,7 @@ require_once APP_PATH . '/models/MetodoPago.php';
 require_once APP_PATH . '/models/TipoBeca.php';
 require_once APP_PATH . '/models/Actividad.php';
 require_once APP_PATH . '/models/Configuracion.php';
+require_once APP_PATH . '/models/CambioEstadoJugador.php';
 
 // Verificar si la sesion expiro por timeout
 SessionTimeout::check();
@@ -144,9 +145,14 @@ if (Auth::check()) {
             '/nav-menu' => ['controller' => 'NavController', 'method' => 'render'],
             '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
             '/jugadores/deudas' => ['controller' => 'DeudaController', 'method' => 'listar'],
+            '/jugadores/deudas/historial/:id' => ['controller' => 'DeudaController', 'method' => 'historialJugador'],
+            '/jugadores/deudas/historial/editar/:id' => ['controller' => 'DeudaController', 'method' => 'editarPagoHistorial'],
             '/deudas/:id/pago' => ['controller' => 'DeudaController', 'method' => 'mostrarPago'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],
             '/jugadores/desactivacion' => ['controller' => 'JugadorController', 'method' => 'desactivacion'],
+            '/jugadores/desactivacion/desactivar' => ['controller' => 'JugadorController', 'method' => 'vistaDesactivar'],
+            '/jugadores/desactivacion/confirmacion' => ['controller' => 'JugadorController', 'method' => 'vistaConfirmacion'],
+            '/jugadores/desactivacion/historial' => ['controller' => 'JugadorController', 'method' => 'detalleHistorial'],
             '/perfil-jugador' => ['controller' => 'JugadorController', 'method' => 'perfil'],
             '/pagos/historial' => ['controller' => 'PagosController', 'method' => 'matriz'],
             '/perfil/administrador' => ['controller' => 'PerfilAdminController', 'method' => 'perfil'],
@@ -163,7 +169,10 @@ if (Auth::check()) {
             '/jugadores/guardar' => ['controller' => 'JugadorController', 'method' => 'guardar'],
             '/jugadores/eliminar/:id' => ['controller' => 'JugadorController', 'method' => 'eliminar'],
             '/jugadores/actualizar' => ['controller' => 'JugadorController', 'method' => 'actualizar'],
+            '/jugadores/desactivacion/aplicar' => ['controller' => 'JugadorController', 'method' => 'aplicarCambioMasivo'],
+            '/jugadores/desactivacion/reactivar' => ['controller' => 'JugadorController', 'method' => 'reactivarJugador'],
             '/deudas/registrar-pago' => ['controller' => 'DeudaController', 'method' => 'registrarPago'],
+            '/jugadores/deudas/historial/actualizar/:id' => ['controller' => 'DeudaController', 'method' => 'actualizarPagoHistorial'],
             '/deudas/generar-proximas' => ['controller' => 'GeneradorDeudasController', 'method' => 'generarProximas'],
             '/deudas/actualizar-moras' => ['controller' => 'GeneradorDeudasController', 'method' => 'actualizarMoras'],
             '/perfil/actualizar' => ['controller' => 'PerfilAdminController', 'method' => 'actualizarPerfil'],

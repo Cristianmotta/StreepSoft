@@ -34,7 +34,7 @@
                     <img src="/streepsoft/public/Image/menu.png" alt="hamburguesa" class="navbar-icon-1">
                 </button>
                 <div class="navbar-logo">
-                    <img src="/streepsoft/public/Image/CopColombiaInternacional.png" alt="logo">
+                    <img src="/streepsoft/public/Image/logo.png" alt="logo">
                 </div>
             </div>
         </nav>
@@ -188,7 +188,7 @@
 
         <form method="POST" action="/streepsoft/logout" class="sidebar-footer" onsubmit="return confirm('¿Realmente deseas cerrar sesión?');">
             <input type="hidden" name="_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
-            <button class="cerrar-sesion">
+            <button class="cerrar-sesion players-btn">
 
                 <span class="sidebar-icon">
                     <svg viewBox="0 0 24 24">
