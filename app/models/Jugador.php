@@ -9,7 +9,7 @@ class Jugador extends Model
 {
     /**
      * Obtener todos los jugadores
-     * 
+     * a
      */
 
     public function obtenerTodos(): array
@@ -20,6 +20,23 @@ class Jugador extends Model
             ORDER BY apellidos, nombres
         ";
         
+        return $this->query($sql);
+    }
+
+    /**
+     * Jugadores visibles en la tabla principal de Gestión.
+     * Los inactivos se gestionan desde Desactivación y no aparecen aquí.
+     * Los retirados se conservan visibles, sin modificar su lógica actual.
+     */
+    public function obtenerVisiblesGestion(): array
+    {
+        $sql = "
+            SELECT *
+            FROM vista_jugadores
+            WHERE CAST(LOWER(estado) AS BINARY) <> CAST('inactivo' AS BINARY)
+            ORDER BY apellidos, nombres
+        ";
+
         return $this->query($sql);
     }
 
@@ -36,6 +53,27 @@ class Jugador extends Model
             LIMIT 1
         ";
         
+        return $this->queryOne($sql, [$id]);
+    }
+
+    /** Datos básicos del jugador para la cabecera de su historial de pagos. */
+    public function obtenerParaHistorial(int $id): ?array
+    {
+        $sql = "
+            SELECT
+                j.id_jugadores,
+                j.nombres,
+                j.apellidos,
+                j.foto,
+                j.iniciales,
+                j.estado,
+                c.nombre AS categoria
+            FROM jugadores j
+            LEFT JOIN categorias c ON c.id_categorias = j.id_categorias
+            WHERE j.id_jugadores = ?
+            LIMIT 1
+        ";
+
         return $this->queryOne($sql, [$id]);
     }
 
@@ -97,7 +135,7 @@ class Jugador extends Model
             $datos['nombres'],
             $datos['apellidos'],
             $datos['fecha_nacimiento'],
-            $datos['id_responsables'] ?? null,
+            $datos['id_responsable'] ?? null,
             $datos['id_categorias'],
             $datos['id_eps'],
             $datos['id_instructor'],

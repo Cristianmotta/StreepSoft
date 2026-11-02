@@ -1,5 +1,6 @@
 <?php
 /** @var array $jugadores */
+/** @var array $jugadoresVisibles */
 
 $totalAlumnos = count($jugadores);
 $totalActivos = 0;
@@ -44,7 +45,7 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
     <div class="main-content">
         <div class="card-body">
             <div class="text-card">
-                <h1>Bienvenido a Jugadores | Alumnos</h1>
+                <h1>Registro | Jugadores </h1>
             </div>
             <?php if (isset($_GET['success'])): ?>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -311,14 +312,14 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($jugadores)): ?>
+                                <?php if (empty($jugadoresVisibles)): ?>
                                     <tr>
-                                        <td colspan="8" style="margin: auto; position: relative; left: 170px;">
-                                            No hay Jugadores Registrados Gracias.
+                                        <td colspan="10" style="text-align: center;">
+                                            No hay jugadores activos o retirados para mostrar.
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php  foreach ($jugadores as $jugador): ?>
+                                <?php foreach ($jugadoresVisibles as $jugador): ?>
                                 <tr data-beca="<?= htmlspecialchars($jugador['tipo_beca'] ?? '') ?>" data-estado="<?= htmlspecialchars($jugador['estado'] ?? '') ?>" data-pago="<?= htmlspecialchars($jugador['pago'] ?? '') ?>">
                                     <td>
                                         <div class="foto">
@@ -488,6 +489,3 @@ $pct = fn($n) => $totalAlumnos > 0 ? round($n / $totalAlumnos * 100, 1) : 0;
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
 </body>
 </html>
-
-
-

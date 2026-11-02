@@ -20,6 +20,7 @@ class JugadorController extends Controller
     private Deuda $deudaModel;
     private MetodoPago $metodoPagoModel;
     private TipoBeca $tipoBecaModel;
+    private CambioEstadoJugador $cambioEstadoModel;
 
     /**
      * Constructor
@@ -36,6 +37,7 @@ class JugadorController extends Controller
         $this->deudaModel = new Deuda($pdo);
         $this->metodoPagoModel = new MetodoPago($pdo);
         $this->tipoBecaModel = new TipoBeca($pdo);
+        $this->cambioEstadoModel = new CambioEstadoJugador($pdo);
     }
 
     /**
@@ -46,99 +48,159 @@ class JugadorController extends Controller
     public function gestion(): void
     {
         // Obtener todos los jugadores del modelo
+        // Las consultas se aíslan para que un fallo al filtrar la tabla
+        // no borre también los datos utilizados por los contadores.
         try {
+            // Todos los registros se conservan para los contadores estadísticos.
             $jugadores = $this->jugadorModel->obtenerTodos();
-        } catch (Exception $e) {
-            error_log("Gestion jugadiores: " . $e->getMessage());
+        } catch (Throwable $e) {
+            error_log("Gestión de jugadores (contadores): " . $e->getMessage());
             $jugadores = [];
         }
-        
 
-        // Enviar datos a la vista
+        try {
+            // La tabla principal omite los inactivos, que se reactivan desde Desactivación.
+            $jugadoresVisibles = $this->jugadorModel->obtenerVisiblesGestion();
+        } catch (Throwable $e) {
+            error_log("Gestión de jugadores (tabla visible): " . $e->getMessage());
+            $jugadoresVisibles = [];
+        }
+
         $this->view('jugadores/gestionJugadores/index', [
             'jugadores' => $jugadores,
+            'jugadoresVisibles' => $jugadoresVisibles,
             'titulo' => 'Gestión de Jugadores'
         ]);
     }
 
         /**
-     * Mostrar pantalla de Desactivación de Jugadores
-     *
-     * Se ejecuta cuando accedes a /jugadores/desactivacion
-     *
-     * NOTA: por ahora usamos datos de PRUEBA (hardcodeados).
-     * En la fase de backend reemplazaremos este array por una
-     * consulta real, ej: $this->jugadorModel->obtenerConMesesSinPago()
+     * Muestra todos los jugadores registrados y el historial de cambios de estado.
+     * La lista incluye activos, inactivos y retirados; la mora no limita los resultados.
      */
     public function desactivacion(): void
     {
-        $jugadores = [
-            [
-                'id' => 1,
-                'nombres' => 'Santiago',
-                'apellidos' => 'Rúa',
-                'iniciales' => 'SR',
-                'documento' => 'TI 1.038.221.554',
-                'categoria' => 'Sub-14',
-                'meses_sin_pago' => 3,
-                'deuda' => 270000,
-            ],
-            [
-                'id' => 2,
-                'nombres' => 'Mariana',
-                'apellidos' => 'Gil',
-                'iniciales' => 'MG',
-                'documento' => 'TI 1.041.887.220',
-                'categoria' => 'Sub-12',
-                'meses_sin_pago' => 2,
-                'deuda' => 180000,
-            ],
-            [
-                'id' => 3,
-                'nombres' => 'Juan',
-                'apellidos' => 'Restrepo',
-                'iniciales' => 'JR',
-                'documento' => 'CC 1.045.117.602',
-                'categoria' => 'Sub-20',
-                'meses_sin_pago' => 2,
-                'deuda' => 180000,
-            ],
-            [
-                'id' => 4,
-                'nombres' => 'Valentina',
-                'apellidos' => 'Franco',
-                'iniciales' => 'VF',
-                'documento' => 'TI 1.092.330.981',
-                'categoria' => 'Sub-12',
-                'meses_sin_pago' => 4,
-                'deuda' => 360000,
-            ],
-        ];
-
-        $historialCambios = [
-            [
-                'id' => 1,
-                'fecha' => '15/07/2026',
-                'realizado_por' => 'David Aguirre',
-                'jugadores_afectados' => 7,
-                'estado_aplicado' => 'Inactivo',
-                'motivo' => '3+ meses sin pagar mensualidad',
-            ],
-            [
-                'id' => 2,
-                'fecha' => '02/03/2026',
-                'realizado_por' => 'Valentina Aguirre',
-                'jugadores_afectados' => 4,
-                'estado_aplicado' => 'Retirado',
-                'motivo' => 'Fin de temporada, no renovaron matrícula',
-            ],
-        ];
+        try {
+            $jugadores = $this->cambioEstadoModel->obtenerTodosLosJugadores();
+            $historialCambios = $this->cambioEstadoModel->obtenerHistorialCambios();
+        } catch (Throwable $e) {
+            error_log('Desactivación de jugadores: ' . $e->getMessage());
+            $jugadores = [];
+            $historialCambios = [];
+        }
 
         $this->view('jugadores/desactivacion/desactivacion', [
             'jugadores' => $jugadores,
             'historialCambios' => $historialCambios,
             'titulo' => 'Desactivación de Jugadores',
         ]);
+    }
+
+    /** Carga el asistente dentro del iframe del modal principal. */
+    public function vistaDesactivar(): void
+    {
+        $this->view('jugadores/desactivacion/desactivar', [
+            'titulo' => 'Cambiar estado a jugadores',
+        ]);
+    }
+
+    /** Carga la confirmación final tras aplicar correctamente el cambio. */
+    public function vistaConfirmacion(): void
+    {
+        $this->view('jugadores/desactivacion/confirmacion', [
+            'titulo' => 'Cambio completado',
+        ]);
+    }
+
+    /** Muestra el detalle guardado de un cambio masivo. */
+    public function detalleHistorial(): void
+    {
+        $idCambio = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0;
+        $cambio = $idCambio > 0 ? $this->cambioEstadoModel->obtenerCambio($idCambio) : null;
+        $jugadoresCambio = $cambio ? $this->cambioEstadoModel->obtenerJugadoresCambio($idCambio) : [];
+
+        $this->view('jugadores/desactivacion/historial', [
+            'titulo' => 'Detalle del historial',
+            'cambio' => $cambio,
+            'jugadoresCambio' => $jugadoresCambio,
+        ]);
+    }
+
+    /** Endpoint POST que persiste un cambio masivo con CSRF y transacción. */
+    public function aplicarCambioMasivo(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json(['ok' => false, 'mensaje' => 'Método no permitido.'], 405);
+        }
+        if (!$this->validateCSRFToken((string) ($_POST['_token'] ?? ''))) {
+            $this->json(['ok' => false, 'mensaje' => 'La sesión de seguridad expiró. Recarga la página e inténtalo de nuevo.'], 403);
+        }
+
+        $ids = json_decode((string) ($_POST['jugadores'] ?? '[]'), true);
+        if (!is_array($ids)) {
+            $this->json(['ok' => false, 'mensaje' => 'La lista de jugadores no es válida.'], 422);
+        }
+
+        try {
+            $resultado = $this->cambioEstadoModel->aplicarCambioMasivo(
+                $ids,
+                (int) (Auth::id() ?? 0),
+                (string) ($_POST['estado'] ?? ''),
+                (string) ($_POST['motivo'] ?? ''),
+                isset($_POST['descripcion']) ? (string) $_POST['descripcion'] : null
+            );
+            $this->json(['ok' => true] + $resultado);
+        } catch (InvalidArgumentException $e) {
+            $this->json(['ok' => false, 'mensaje' => $e->getMessage()], 422);
+        } catch (Throwable $e) {
+            error_log('JugadorController::aplicarCambioMasivo: ' . $e->getMessage());
+            $mensaje = $e instanceof RuntimeException
+                ? $e->getMessage()
+                : 'No se pudo guardar el cambio de estado. Revisa el registro de errores.';
+            $this->json(['ok' => false, 'mensaje' => $mensaje], 500);
+        }
+    }
+
+    /**
+     * Reactiva un jugador desde el detalle del historial.
+     * Restaura su ficha y sus deudas en una única transacción del modelo.
+     */
+    public function reactivarJugador(): void
+    {
+        if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+            $this->json(['ok' => false, 'mensaje' => 'Método no permitido.'], 405);
+        }
+
+        if (!$this->validateCSRFToken((string) ($_POST['_token'] ?? ''))) {
+            $this->json([
+                'ok' => false,
+                'mensaje' => 'La sesión de seguridad expiró. Recarga la página e inténtalo de nuevo.',
+            ], 403);
+        }
+
+        $idJugador = filter_var($_POST['id_jugadores'] ?? null, FILTER_VALIDATE_INT);
+        if (!$idJugador || $idJugador <= 0) {
+            $this->json(['ok' => false, 'mensaje' => 'El identificador del jugador no es válido.'], 422);
+        }
+
+        try {
+            $resultado = $this->cambioEstadoModel->aplicarCambioMasivo(
+                [(int) $idJugador],
+                (int) (Auth::id() ?? 0),
+                'activo',
+                'Reactivación de jugador',
+                'Reactivación individual desde el detalle del historial.'
+            );
+
+            $this->json(['ok' => true] + $resultado);
+        } catch (InvalidArgumentException $e) {
+            $this->json(['ok' => false, 'mensaje' => $e->getMessage()], 422);
+        } catch (Throwable $e) {
+            error_log('JugadorController::reactivarJugador: ' . $e->getMessage());
+            $mensaje = $e instanceof RuntimeException
+                ? $e->getMessage()
+                : 'No se pudo reactivar el jugador ni restaurar sus deudas. Revisa el registro de errores.';
+            $this->json(['ok' => false, 'mensaje' => $mensaje], 500);
+        }
     }
 
     public function deudas(): void

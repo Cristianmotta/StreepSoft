@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="text-alumno">
-                        <h2>$<?= number_format((float) $resumen['total_general'], 0, ',', '.') ?></h2>
+                        <h2>$<?= number_format((float) $resumen['total_general'], 0, ',', '.') ?> cop</h2>
                         <h3>Total de Pagos</h3>
                         <p><?= (int) $resumen['total_alumnos'] ?> alumnos</p>
                     </div>
@@ -175,7 +175,7 @@
                         <table id="tablaJugadores">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>Foto</th>
                                     <th>Nombres</th>
                                     <th>Monto del ciclo</th>
                                     <th>Fecha limite</th>
@@ -212,11 +212,17 @@
                                             'pagado' => false
                                         ];
 
-                                        $iniciales = strtoupper(mb_substr($deuda['nombres'] ?? '', 0, 1) . mb_substr($deuda['apellidos'] ?? '', 0, 1));
-                                            $nombreCompleto = trim(($deuda['nombres'] ?? '') . ' ' . ($deuda['apellidos'] ?? ''));
-                                            $subtitulo = trim(($deuda['categoria'] ?? '') . ' . ' . ($deuda['tipo_beca'] ?? ''), ' .');
+                                        $iniciales = strtoupper(
+                                            mb_substr((string) ($deuda['nombres'] ?? ''), 0, 1) .
+                                            mb_substr((string) ($deuda['apellidos'] ?? ''), 0, 1)
+                                        );
+                                        $nombreCompleto = trim(($deuda['nombres'] ?? '') . ' ' . ($deuda['apellidos'] ?? ''));
+                                        $subtitulo = trim(($deuda['categoria'] ?? '') . ' . ' . ($deuda['tipo_beca'] ?? ''), ' .');
+                                        $fotoJugador = trim((string) ($deuda['foto'] ?? ''));
+                                        $rutaFotoJugador = $fotoJugador !== ''
+                                            ? '/streepsoft/public/Image/jugadores/' . rawurlencode(basename($fotoJugador))
+                                            : '';
 
-                                        $nombreCompleto = trim($deuda['nombres'] . ' ' . $deuda['apellidos']);
                                         $subtitulo = trim(($deuda['categoria'] ?? '') . ' . ' . ($deuda['tipo_beca'] ?? ''), ' .');
 
                                         $fechaLimiteObj = date_create($deuda['fecha_limite_pago']);
@@ -236,9 +242,20 @@
                                     ?>
                                 <tr data-estado="<?= htmlspecialchars($estado) ?>" data-pago="<?= htmlspecialchars($deuda['pago'] ?? 'pendiente') ?>">
                                     <td>
-                                        <div class="foto">
-                                            <p><?=  htmlspecialchars($iniciales) ?></p>
-                                            <div class="<?=  $config['foto'] ?>"></div>
+                                        <div class="foto-estado-wrapper" aria-label="Foto y estado de <?= htmlspecialchars($nombreCompleto, ENT_QUOTES, 'UTF-8') ?>">
+                                            <div class="foto">
+                                                <?php if ($rutaFotoJugador !== ''): ?>
+                                                    <img
+                                                        src="<?= htmlspecialchars($rutaFotoJugador, ENT_QUOTES, 'UTF-8') ?>"
+                                                        alt="Foto de <?= htmlspecialchars($nombreCompleto, ENT_QUOTES, 'UTF-8') ?>"
+                                                        class="foto-jugador"
+                                                        loading="lazy"
+                                                        onerror="this.hidden=true; this.parentElement.querySelector('.foto-iniciales').hidden=false;"
+                                                    >
+                                                <?php endif; ?>
+                                                <span class="foto-iniciales" <?= $rutaFotoJugador !== '' ? 'hidden' : '' ?>><?= htmlspecialchars($iniciales, ENT_QUOTES, 'UTF-8') ?></span>
+                                            </div>
+                                            <span class="<?= htmlspecialchars($config['foto'], ENT_QUOTES, 'UTF-8') ?>" aria-hidden="true"></span>
                                         </div>
                                     </td>
                                     <td>
@@ -294,6 +311,17 @@
                                                         pagado 
                                                     </button>
                                                 </div>
+                                            <?php elseif (($estado ?? '') === 'vigente'): ?>
+                                                <div class="Registro-pago-pagado">
+                                                    <button
+                                                        class="btn-pago-vigente"
+                                                        type="button"
+                                                        disabled
+                                                        title="Este pago está vigente. El botón se activará cuando el estado cambie a Pendiente o Mora."
+                                                        aria-label="Pago vigente — no disponible aún">
+                                                        Vigente
+                                                    </button>
+                                                </div>
                                             <?php else: ?>
                                                 <div class="Registro-pago">
                                                     <button class="btn-pago" type="button" data-id-deuda="<?= (int) $deuda['id_deudas'] ?>">
@@ -320,8 +348,7 @@
                                             </button>
 
                                             <div class="menu-acciones">
-                                                <button class="btn-editar-historial" type="button">Editar</button>
-                                                <button class="btn-historial" type="button">Historial</button>
+                                                <button class="btn-historial" type="button" data-id-jugador="<?= (int) $deuda['id_jugadores'] ?>">Historial</button>
                                             </div>
                                         </div>
                                     </td>

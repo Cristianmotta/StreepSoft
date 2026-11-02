@@ -36,8 +36,8 @@
 
                     <div class="info">
                         <h2>Total de <span>Jugadores</span> </h2>
-                        <h3>5</h3>
-                        <p>0 este mes </p>
+                        <h3><?= number_format((int)($totalJugadores ?? 0), 0, ',', '.') ?></h3>
+                        <p>+ <?= number_format((int)($jugadoresNuevosMes ?? 0), 0, ',', '.') ?> este mes </p>
                     </div>
                 </div>
 
@@ -47,8 +47,8 @@
                     </div>
                     <div class="info">
                         <h2>Pagos del <span>Mes</span></h2>
-                        <h3>$1.000.000</h3>
-                        <p> %1.5 vs este mes</p>
+                        <h3>$<?= number_format((float)($pagosMesActual ?? 0), 0, ',', '.') ?></h3>
+                        <p> <?= htmlspecialchars($variacionPagosTexto ?? 'Sin comparación disponible', ENT_QUOTES, 'UTF-8') ?></p>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
 
                     <div class="info">
                         <h2>Jugadores en <span>Mora</span></h2>
-                        <h3>3</h3>
+                        <h3><?= number_format((int)($jugadoresEnMora ?? 0), 0, ',', '.') ?></h3>
                         <p>0.1 vs este mes </p>
                     </div>
                 </div>
@@ -84,12 +84,12 @@
                             <h3>Ingresos <span>mensulaes</span></h3>
 
                             <div class="select-wrapper">
-                                <select class="custom-select">
-                                    <button>
-                                        <selectedcontent></selectedcontent>
-                                    </button>
-                                    <option value="2026"> 2026</option>
-                                    <option value="2025"> 2025 </option>
+                                <select class="custom-select" id="anioIngresos" aria-label="Año de ingresos">
+                                    <?php foreach (($aniosDisponibles ?? [(int) date('Y')]) as $anio): ?>
+                                        <option value="<?= (int) $anio ?>" <?= (int) $anio === (int) ($anioActual ?? date('Y')) ? 'selected' : '' ?>>
+                                            <?= (int) $anio ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
 
                         <div class="card-certi">
                             <div class="card-certificado">
-                                <div class="basil--document-outline"></div>
+                                <div class="at-icons--file-document"></div>
                                 <div class="text-certificado">
                                     <h3>Certidicado Medico</h3>
                                 </div>
@@ -116,7 +116,7 @@
                             </div>
 
                             <div class="card-certificado">
-                                <div class="basil--document-outline"></div>
+                                <div class="at-icons--file-document"></div>
                                 <div class="text-certificado">
                                     <h3>Autorizaciones</h3>
                                 </div>
@@ -126,7 +126,7 @@
                             </div>
 
                             <div class="card-certificado">
-                                <div class="basil--document-outline"></div>
+                                <div class="at-icons--file-document"></div>
                                 <div class="text-certificado">
                                     <h3>Foto Actulizadas</h3>
                                 </div>
@@ -171,92 +171,75 @@
                         <div class="tabla-pagos-container">
                             <table class="tabla-pagos">
                                 <tbody>
-                                    <tr>
-                                        <td class="jugador">
-                                            <img src="/streepsoft/public/Image/usuario.png" alt="Juan Perez">
+                                    <?php if (!empty($deudasRecientes)): ?>
+                                        <?php foreach ($deudasRecientes as $deuda): ?>
+                                            <?php
+                                                $nombreDeuda = trim(
+                                                    (string) ($deuda['nombres'] ?? '') . ' ' .
+                                                    (string) ($deuda['apellidos'] ?? '')
+                                                );
+                                                if ($nombreDeuda === '') {
+                                                    $nombreDeuda = 'Jugador no disponible';
+                                                }
 
-                                            <div class="datos-jugador">
-                                                <span class="nombre">Juan Perez</span>
-                                                <span class="categoria">Sub 17</span>
-                                            </div>
-                                        </td>
+                                                $categoriaDeuda = trim((string) ($deuda['categoria'] ?? ''));
+                                                $periodoDeuda = trim(
+                                                    (string) ($deuda['mes'] ?? '') . ' ' .
+                                                    (string) ($deuda['anio'] ?? '')
+                                                );
+                                                $fotoDeuda = trim((string) ($deuda['foto'] ?? ''));
+                                                $fotoUrl = $fotoDeuda !== ''
+                                                    ? '/streepsoft/public/Image/jugadores/' . rawurlencode($fotoDeuda)
+                                                    : '/streepsoft/public/Image/usuario.png';
 
-                                        <td class="pago">
-                                            $80.000
-                                        </td>
-
-                                        <td class="fecha">
-                                            12 may 2026
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td class="jugador">
-                                            <img src="/streepsoft/public/Image/usuario.png" alt="Luis Martinez">
-
-                                            <div class="datos-jugador">
-                                                <span class="nombre">Luis Martinez</span>
-                                                <span class="categoria">Sub 15</span>
-                                            </div>
-                                        </td>
-
-                                        <td class="pago">
-                                            $80.000
-                                        </td>
-
-                                        <td class="fecha">
-                                            12 may 2026
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td class="jugador">
-                                            <img src="/streepsoft/public/Image/usuario.png" alt="Juan Nuñes">
-
-                                            <div class="datos-jugador">
-                                                <span class="nombre">Juan Nuñes</span>
-                                                <span class="categoria">Sub 20</span>
-                                            </div>
-                                        </td>
-
-                                        <td class="pago">
-                                            $80.000
-                                        </td>
-
-                                        <td class="fecha">
-                                            12 may 2026
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td class="jugador">
-                                            <img src="/streepsoft/public/Image/usuario.png" alt="Andres Rodriguez">
-
-                                            <div class="datos-jugador">
-                                                <span class="nombre">Andres Rodriguez</span>
-                                                <span class="categoria">Sub 12</span>
-                                            </div>
-                                        </td>
-
-                                        <td class="pago">
-                                            $80.000
-                                        </td>
-
-                                        <td class="fecha">
-                                            12 may 2026
-                                        </td>
-                                    </tr>
-
+                                                $fechaLimiteObj = !empty($deuda['fecha_limite_pago'])
+                                                    ? date_create((string) $deuda['fecha_limite_pago'])
+                                                    : false;
+                                                $mesesCortos = [
+                                                    1 => 'ene', 2 => 'feb', 3 => 'mar', 4 => 'abr',
+                                                    5 => 'may', 6 => 'jun', 7 => 'jul', 8 => 'ago',
+                                                    9 => 'sep', 10 => 'oct', 11 => 'nov', 12 => 'dic'
+                                                ];
+                                                $fechaLimiteTexto = $fechaLimiteObj
+                                                    ? $fechaLimiteObj->format('d') . ' ' .
+                                                        $mesesCortos[(int) $fechaLimiteObj->format('n')] . ' ' .
+                                                        $fechaLimiteObj->format('Y')
+                                                    : '-';
+                                            ?>
+                                            <tr>
+                                                <td class="jugador">
+                                                    <img
+                                                        src="<?= htmlspecialchars($fotoUrl, ENT_QUOTES, 'UTF-8') ?>"
+                                                        alt="<?= htmlspecialchars($nombreDeuda, ENT_QUOTES, 'UTF-8') ?>"
+                                                        onerror="this.onerror=null;this.src='/streepsoft/public/Image/usuario.png';"
+                                                    >
+                                                    <div class="datos-jugador">
+                                                        <span class="nombre"><?= htmlspecialchars($nombreDeuda, ENT_QUOTES, 'UTF-8') ?></span>
+                                                        <span class="categoria"><?= htmlspecialchars(trim($categoriaDeuda) ? : 'Sin categoría', ENT_QUOTES, 'UTF-8') ?></span>
+                                                    </div>
+                                                </td>
+                                                <td class="pago">
+                                                    $<?= number_format((float) ($deuda['totalidad'] ?? 0), 0, ',', '.') ?>
+                                                </td>
+                                                <td class="fecha">
+                                                    <?= htmlspecialchars($fechaLimiteTexto, ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="3" style="text-align:center; padding:18px; color:#aaa;">
+                                                No hay deudas registradas actualmente.
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
 
 
                             <!-- BOTÓN FINAL -->
 
-                            <a href="#" class="ver-pagos">
+                            <a href="/streepsoft/jugadores/deudas" class="ver-pagos">
                                 <span>Ver Todos los pagos</span>
 
                                 <span class="flecha">›</span>
@@ -269,8 +252,24 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
-        <script src="/streepsoft/public/js/dashboard/estadistica.js"></script>
-        <script src="/streepsoft/public/js/dashboard/grafica.js"></script>
+        <script>
+            // Datos calculados por DashboardController desde historial_deuda.
+            // Se publican antes de cargar estadistica.js para que Chart.js
+            // consuma únicamente ingresos realmente registrados.
+            window.DASHBOARD_INGRESOS = <?= json_encode(
+                $ingresosPorAnio ?? [],
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE
+            ) ?: '{}' ?>;
+
+            // Distribución real de jugadores activos por categoría,
+            // consultada por DashboardController desde Estadistica.
+            window.DASHBOARD_CATEGORIAS = <?= json_encode(
+                $jugadoresPorCategoria ?? [],
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE
+            ) ?: '[]' ?>;
+        </script>
+        <script src="/streepsoft/public/js/dashboard/estadistica.js?v=20261030-2"></script>
+        <script src="/streepsoft/public/js/dashboard/grafica.js?v=20261031-1"></script>
         <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
         <script src="/streepsoft/public/js/timer/time.js"></script>
         <script>
@@ -290,6 +289,7 @@
         <script src="/streepsoft/public/js/navbar/script.js"></script>
             <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
             <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
+
 
 </body>
 

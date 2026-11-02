@@ -54,6 +54,28 @@ class Deuda extends Model
         return $filas;
     }
 
+
+    /**
+     * Obtiene la próxima deuda vigente del jugador para mostrarla en la
+     * cabecera de su historial. Si no hay deuda futura, devuelve la más
+     * próxima pendiente disponible.
+     */
+    public function obtenerSiguientePorJugador(int $idJugador): ?array
+    {
+        $sql = "
+            SELECT id_deudas, mes, anio, fecha_limite_pago, totalidad
+            FROM deudas
+            WHERE id_jugadores = ?
+            ORDER BY
+                CASE WHEN fecha_limite_pago >= CURDATE() THEN 0 ELSE 1 END,
+                fecha_limite_pago ASC,
+                id_deudas ASC
+            LIMIT 1
+        ";
+
+        return $this->queryOne($sql, [$idJugador]);
+    }
+
     public function obtenerPorId(int $id): ?array
     {
         $sql = "

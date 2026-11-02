@@ -16,6 +16,7 @@ class Auth {
     {
         $_SESSION['usuario'] = [
             'id' => $datos['id'] ?? null,
+            'nombre_completo' => $datos['nombre_completo'] ?? null,
             'usuario' => $datos['usuario'] ?? null,
             'email' => $datos['email'] ?? null,
             'rol' => $datos['rol'] ?? 'usuario'

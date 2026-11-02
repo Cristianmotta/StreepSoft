@@ -38,6 +38,7 @@ body {
     flex-direction: row;
     gap: 2px;
     border-radius: 5px;
+    border-right: 1px solid #D09E10;
 }
 
 .icon-circle{

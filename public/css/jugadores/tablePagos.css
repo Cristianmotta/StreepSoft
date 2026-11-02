@@ -647,6 +647,7 @@ tbody td{
 }
 
 .foto{
+    position: relative;
     width: 45px;
     height: 45px;
     border: 2px solid #D09E10;
@@ -656,13 +657,52 @@ tbody td{
     justify-content: center;
     align-items: center;
     margin: auto;
+    overflow: hidden;
+    flex: 0 0 45px;
 }
 
-.foto p{
+.foto .foto-jugador{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.foto .foto-iniciales{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D09E10;
     font-family: "Poppins", sans-serif;
     font-size: 14px;
-    font-weight: 500;
-    margin-left: 10px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.foto .ci,
+.foto .ci-p,
+.foto .ci-m{
+    position: absolute;
+    top: auto;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.foto .foto-jugador{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: inherit;
 }
 
 .estado{
@@ -1084,4 +1124,52 @@ tbody td{
         display: flex;
         justify-content: center;
     }
+}
+
+/* Indicador de estado fuera del círculo de la fotografía (Deudas de jugadores) */
+.foto-estado-wrapper {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    margin: auto;
+    flex: 0 0 45px;
+    overflow: visible;
+}
+
+.foto-estado-wrapper .foto {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.foto-estado-wrapper .foto .foto-jugador {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+.foto-estado-wrapper .foto .foto-iniciales[hidden] {
+    display: none !important;
+}
+
+.foto-estado-wrapper > .ci,
+.foto-estado-wrapper > .ci-p,
+.foto-estado-wrapper > .ci-m {
+    position: absolute;
+    top: auto;
+    left: auto;
+    right: -3px;
+    bottom: -3px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #222222;
+    border-radius: 50%;
+    z-index: 5;
+    display: block;
 }
