@@ -37,21 +37,42 @@ $esc = static fn($valor): string => htmlspecialchars((string) $valor, ENT_QUOTES
                     <p class="panel-filtro-nota">Define la condición y luego selecciona a quiénes aplicar el cambio</p>
                 </div>
 
-                <div class="filtros-rapidos">
-                    <button type="button" class="btn-filtro-rapido" data-meses="2">2+ meses sin pago</button>
-                    <button type="button" class="btn-filtro-rapido" data-meses="3">3+ meses sin pago</button>
-                    <button type="button" class="btn-filtro-rapido" data-meses="1">1+ meses sin pago</button>
-                </div>
+                <div class="panel-filtros">
+                    <div class="filtros-avanzados">
+                        <div class="campo-filtro">
+                            <div class="buscar">
+                                <button>
+                                    <div class="basil--search-solid"></div>
+                                </button>
+                                    
+                                <input type="text" 
+                                    id="buscarJugador"
+                                    placeholder="Buscar alumno"
+                                    autocomplete="off">
+                            </div>    
+                        </div>
 
-                <div class="filtros-avanzados">
-                    <div class="campo-filtro">
-                        <label for="sinPagoDesde">Sin pago desde</label>
-                        <select id="sinPagoDesde">
-                            <option value="todos" selected>Todos</option>
-                            <option value="1">Hace 1 mes</option>
-                            <option value="2">Hace 2 meses</option>
-                            <option value="3">Hace 3 meses</option>
-                        </select>
+                        <div class="campo-filtro">
+                            <label for="filtroCategoria">Categoría</label>
+                            <select id="filtroCategoria">
+                                <option value="todo">Todas</option>
+                                <?php foreach ($categoriasDisponibles as $categoria): ?>
+                                    <option value="<?= $esc($categoria) ?>"><?= $esc($categoria) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="campo-filtro">
+                            <label for="filtroEstado">Estado actual</label>
+                            <select id="filtroEstado">
+                                <option value="todo">Todos los estados</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                                <option value="retirado">Retirado</option>
+                            </select>
+                        </div>
+
+
                     </div>
 
                     <div class="filtros-rapidos">
@@ -65,8 +86,10 @@ $esc = static fn($valor): string => htmlspecialchars((string) $valor, ENT_QUOTES
 
             <section class="panel-resultados">
                 <div class="panel-resultados-header">
-                    <h2>Resultados</h2>
-                    <span class="resultados-contador"><?= count($jugadores) ?> jugadores en total</span>
+                    <h2>Jugadores registrados</h2>
+                    <span class="resultados-contador" id="contadorResultados">
+                        <?= count($jugadores) ?> jugador<?= count($jugadores) === 1 ? '' : 'es' ?> registrados
+                    </span>
                 </div>
 
                 <div class="table-responsive">
@@ -170,10 +193,6 @@ $esc = static fn($valor): string => htmlspecialchars((string) $valor, ENT_QUOTES
     <script src="/streepsoft/public/js/jugadores/desactivacion.js"></script> 
     <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
-<<<<<<< HEAD
-=======
-    <script src="/streepsoft/public/js/Jugadores/desactivacion.js"></script>
->>>>>>> upstream/developer
 </body>
 
 </html>
