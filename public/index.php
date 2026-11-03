@@ -157,6 +157,8 @@ if (Auth::check()) {
             '/instructores/listar' => ['controller' => 'InstructorController', 'method' => 'listar'],
             '/instructores/crear' => ['controller' => 'InstructorController', 'method' => 'crearForm'],
             '/instructores/editar/:id' => ['controller' => 'InstructorController', 'method' => 'editarForm'],
+            '/documentos' => ['controller' => 'DocumentoController', 'method' => 'verificacion'],
+            '/documentos/gestionar/:id' => ['controller' => 'DocumentoController', 'method' => 'gestionar'],
         ],
 
         'POST' => [

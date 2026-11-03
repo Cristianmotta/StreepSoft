@@ -12,9 +12,28 @@ class DocumentoController extends Controller
         $this->jugadorModel = new Jugador($pdo);
     }
 
-    
+    //Vista principal del modulo Documentos | Alumnos (por ahora con datos quemados en la vista)
+
+    public function verificacion(): void
+    {
+        $this->view('documentos/verificacion', [
+            'titulo' => 'Documentos | Alumnos'
+        ]);
+    }
+
+    //Detalle de documentos de un alumno (boton "Gestionar"), por ahora con datos quemados en la vista
+
+    public function gestionar(int $id): void
+    {
+        $this->view('documentos/gestionar', [
+            'alumnoId' => $id,
+            'titulo' => 'Documentos del alumno'
+        ]);
+    }
+
+
      //Ver documentos de un jugador
-     
+
     public function ver(int $id): void
     {
         $jugador = $this->jugadorModel->obtenerPorId($id);

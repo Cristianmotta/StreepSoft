@@ -150,7 +150,7 @@
 
             </a>
 
-            <a href="#" class="sidebar-link" title="Documentos">
+            <a href="/streepsoft/documentos" class="sidebar-link" title="Documentos">
 
                 <span class="sidebar-icon">
                     <svg viewBox="0 0 24 24">
