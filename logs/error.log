@@ -15118,3 +15118,39 @@ Stack trace:
 [02-Nov-2026 15:26:57 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
 [02-Nov-2026 15:26:57 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
 [02-Nov-2026 15:26:57 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:24 America/Bogota] Desactivación de jugadores: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'streepsoft.deuda_inactivos' doesn't exist
+[03-Nov-2026 14:47:47 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:47:47 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:50:49 America/Bogota] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:50:49 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:50:52 America/Bogota] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:50:52 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:50:57 America/Bogota] Logout manual: karitolcortes2008@gmail.com - Cookies limpiadas
+[03-Nov-2026 14:50:57 America/Bogota] Logout: karitolcortes2008@gmail.com
+[03-Nov-2026 14:50:57 America/Bogota] Home - quickLoginDisponible: false
+[03-Nov-2026 14:50:57 America/Bogota] Home - COOKIE quick_login_data: false
+[03-Nov-2026 14:50:57 America/Bogota] Home - COOKIE logout_manual: true
+[03-Nov-2026 14:51:03 America/Bogota] Login exitoso: karitolcortes2008@gmail.com
+[03-Nov-2026 14:51:03 America/Bogota] Login exitoso: karitolcortes2008@gmail.com
+[03-Nov-2026 14:51:03 America/Bogota] Cookie logout_manual limpiada (usuario logueado nuevamente)
+[03-Nov-2026 14:51:03 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:07 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Warning:  Undefined array key "numero_acudiente" in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\jugadores\gestionJugadores\index.php on line 369
+[03-Nov-2026 14:51:07 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:12 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:31 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:33 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:37 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:50 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:51:57 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
+[03-Nov-2026 14:54:17 America/Bogota] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\streepsoft\app\views\navegacion\navegacion.php on line 23
