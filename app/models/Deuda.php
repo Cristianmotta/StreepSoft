@@ -13,6 +13,7 @@ class Deuda extends Model
                 d.id_deudas,
                 d.id_jugadores,
                 d.matricula,
+                d.mensualidad,
                 d.mes,
                 d.anio,
                 d.totalidad,
@@ -63,7 +64,7 @@ class Deuda extends Model
     public function obtenerSiguientePorJugador(int $idJugador): ?array
     {
         $sql = "
-            SELECT id_deudas, mes, anio, fecha_limite_pago, totalidad
+            SELECT id_deudas, mes, anio, fecha_limite_pago, matricula, mensualidad, totalidad
             FROM deudas
             WHERE id_jugadores = ?
             ORDER BY
@@ -137,19 +138,24 @@ class Deuda extends Model
             $fechaLimite = (new Configuracion($this->pdo))->calcularFechaLimite($anio, $mes);
         }
 
+        $matricula = max(0, (float) ($datos['matricula'] ?? 0));
+        $mensualidad = max(0, (float) ($datos['mensualidad'] ?? ($datos['totalidad'] ?? 0)));
+        $totalidad = round($matricula + $mensualidad, 2);
+
         $sql = "
             INSERT INTO deudas (
-                id_jugadores, matricula, mes, anio, totalidad,
+                id_jugadores, matricula, mensualidad, mes, anio, totalidad,
                 fecha_limite_pago, id_tipo_becas, pago
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pendiente')
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')
         ";
 
         $exito = $this->execute($sql, [
             $datos['id_jugadores'],
-            $datos['matricula'] ?? 0,
+            $matricula,
+            $mensualidad,
             $datos['mes'],
             $datos['anio'],
-            $datos['totalidad'],
+            $totalidad,
             $fechaLimite,
             $datos['id_tipo_becas'],
         ]);
@@ -177,7 +183,8 @@ class Deuda extends Model
         }
 
         $matricula = max(0, (float) ($datos['matricula'] ?? 0));
-        $mensualidad = max(0, (float) ($datos['totalidad'] ?? 0));
+        // La mensualidad se recibe y se guarda por separado.
+        $mensualidad = max(0, (float) ($datos['mensualidad'] ?? 0));
         $totalInicial = round($matricula + $mensualidad, 2);
 
         if ($totalInicial <= 0) {
@@ -196,6 +203,7 @@ class Deuda extends Model
             INSERT INTO deudas (
                 id_jugadores,
                 matricula,
+                mensualidad,
                 mes,
                 anio,
                 totalidad,
@@ -206,12 +214,13 @@ class Deuda extends Model
                 concepto,
                 valor_pagado,
                 pago
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pagado')
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pagado')
         ";
 
         $exito = $this->execute($sql, [
             $datos['id_jugadores'],
             $matricula,
+            $mensualidad,
             $datos['mes'],
             $datos['anio'],
             $totalInicial,
@@ -390,9 +399,11 @@ class Deuda extends Model
         }
 
         // El siguiente mes es solamente mensualidad: la matrícula no se repite.
+        // El campo mensualidad ya está separado: no se vuelve a calcular
+        // restando matrícula al total, evitando errores de importes.
         $mensualidad = max(
             0,
-            (float) $deuda['totalidad'] - (float) ($deuda['matricula'] ?? 0)
+            (float) ($deuda['mensualidad'] ?? ((float) $deuda['totalidad'] - (float) ($deuda['matricula'] ?? 0)))
         );
 
         // Día de cobro configurable desde la tabla configuracion.
@@ -418,6 +429,7 @@ class Deuda extends Model
             INSERT INTO deudas (
                 id_jugadores,
                 matricula,
+                mensualidad,
                 mes,
                 anio,
                 totalidad,
@@ -425,11 +437,12 @@ class Deuda extends Model
                 id_tipo_becas,
                 pago,
                 concepto
-            ) VALUES (?, 0, ?, ?, ?, ?, ?, 'pendiente', ?)
+            ) VALUES (?, 0, ?, ?, ?, ?, ?, ?, 'pendiente', ?)
         ";
 
         $exito = $this->execute($sql, [
             $idJugador,
+            $mensualidad,
             $nombreMesSiguiente,
             $anioSiguiente,
             $mensualidad,

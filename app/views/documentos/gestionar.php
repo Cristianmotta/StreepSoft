@@ -385,6 +385,7 @@ if (count($faltanSubir) > 0) {
         const DATOS_TARJETA = <?= json_encode($datosTarjeta, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
     </script>
 
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/documentos/gestionar.js"></script>
 </body>

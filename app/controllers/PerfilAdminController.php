@@ -34,12 +34,12 @@ class PerfilAdminController extends Controller
     public function guardarConfiguracionPagos(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/perfil/administrador');
+            $this->redirect(url('perfil/administrador'));
             return;
         }
 
         if (!$this->validateCSRFToken($_POST['_token'] ?? '')){
-            $this->redirect('/perfil/administrador?error=csrf');
+            $this->redirect(url('perfil/administrador?error=csrf'));
             return;
         }
 
@@ -47,12 +47,12 @@ class PerfilAdminController extends Controller
         $diasGracia = (int) ($_POST['dias_gracia'] ?? 0);
 
         if ($diaCobro < 1 || $diaCobro > 31){
-            $this->redirect('/perfil/administrador?error=dia_invalido');
+            $this->redirect(url('perfil/administrador?error=dia_invalido'));
             return;
         }
 
         if ($diasGracia < 0 || $diasGracia > 30){
-            $this->redirect('/perfil/administrador?error=gracia_invalida');
+            $this->redirect(url('perfil/administrador?error=gracia_invalida'));
             return;
         }
 
@@ -68,11 +68,11 @@ class PerfilAdminController extends Controller
             }
         } catch (Throwable $e) {
             error_log('PerfilAdminController::guardarConfiguracionPagos - ' . $e->getMessage());
-            $this->redirect('/perfil/administrador?error=configuracion_guardado');
+            $this->redirect(url('perfil/administrador?error=configuracion_guardado'));
             return;
         }
 
-        $this->redirect('/perfil/administrador?success=configuracion_guardada');
+        $this->redirect(url('perfil/administrador?success=configuracion_guardada&dia_cobro=' . $diaCobro . '&dias_gracia=' . $diasGracia));
     }
 
 

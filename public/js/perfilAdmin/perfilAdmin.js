@@ -1,4 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const parametrosURL = new URLSearchParams(window.location.search);
+
+
+    // --- Confirmación de configuración de pagos ---
+   const formConfiguracionPagos = document.getElementById('formConfiguracionPagos');
+    const selectDiaCobro = document.getElementById('selectDiaCobro');
+    const selectDiasGracia = document.getElementById('selectDiasGracia');
+
+    formConfiguracionPagos?.addEventListener('submit', function (evento) {
+        evento.preventDefault();
+
+        if (formConfiguracionPagos.dataset.confirmando === 'true') return;
+
+        const dia = Number(selectDiaCobro.value);
+        const gracia = Number(selectDiasGracia.value);
+
+        Swal.fire({
+            icon: 'info',
+            title: 'Configuración de pago',
+            html: `
+                <p>
+                    Los pagos se harán el día
+                    <strong>${dia}</strong> de cada mes,
+                    con <strong>${gracia}</strong>
+                    ${gracia === 1 ? 'día' : 'días'} de gracia.
+                </p>
+                <p>¿Deseas guardar esta configuración?</p>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            background: '#232323',
+            color: '#ffffff',
+            confirmButtonColor: '#D09E10',
+            cancelButtonColor: '#555555',
+            allowOutsideClick: false
+        }).then(function (resultado) {
+
+            if (resultado.isConfirmed) {
+                formConfiguracionPagos.dataset.confirmando = 'true';
+                formConfiguracionPagos.submit();
+            }
+
+        });
+    });
+
+    if (parametrosURL.get('success') === 'configuracion_guardada') {
+        const dia = Number(parametrosURL.get('dia_cobro') ?? selectDiaCobro?.value ?? 2);
+        const gracia = Number(parametrosURL.get('dias_gracia') ?? selectDiasGracia?.value ?? 3);
+
+        document.getElementById('mensajeConfiguracionGuardada')?.remove();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Configuración de pago realizada',
+            html: `
+                <p>
+                    Los pagos se harán el día
+                    <strong>${dia}</strong> de cada mes,
+                    con <strong>${gracia}</strong>
+                    ${gracia === 1 ? 'día' : 'días'} de gracia.
+                </p>
+            `,
+            confirmButtonText: 'Aceptar',
+            background: '#232323',
+            color: '#ffffff',
+            confirmButtonColor: '#D09E10',
+            allowOutsideClick: false
+        });
+    }
 
     // --- Modal: Editar información ---
     // Buscamos en la página la ventana del modal y los botones mediante sus ID o Clases
@@ -25,10 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cancelarModalEditarInfo?.addEventListener('click', ocultarModalEditarInfo);
 
-    const parametrosURL = new URLSearchParams(window.location.search);
+    // Abrir el modal de edición de perfil solo para errores propios de ese formulario.
+    const erroresEdicionPerfil = [
+        'campos_vacios',
+        'nombre_invalido',
+        'telefono_invalido',
+        'documento_invalido',
+        'actualizacion_fallida',
+        'foto_no_enviada',
+        'foto_no_guardada',
+        'foto_invalida'
+    ];
 
-    // Si hay un error, se abre el modal
-    if (parametrosURL.has('error')) {
+    if (erroresEdicionPerfil.includes(parametrosURL.get('error'))) {
         abrirModalEditarInfo();
     }
 

@@ -349,21 +349,25 @@
                 <div class="grid-2">
 
                     <div class="grupo">
-                        <label for="">Matricula</label>
+                        <label for="matriculaJugador">Matrícula (COP)</label>
                         <input type="text"
+                            id="matriculaJugador"
                             inputmode="numeric"
+                            autocomplete="off"
                             name="Matricula"
-                            maxlength="10"
-                            placeholder="$90.000" required>
+                            maxlength="15"
+                            placeholder="$80.000" required>
                     </div>
 
                     <div class="grupo">
-                        <label for="">Mensualidad</label>
+                        <label for="mensualidadJugador">Mensualidad (COP)</label>
                         <input type="text"
+                            id="mensualidadJugador"
                             inputmode="numeric"
+                            autocomplete="off"
                             name="Mensualidad"
-                            maxlength="10"
-                            placeholder="$80.000" required>
+                            maxlength="15"
+                            placeholder="$90.000" required>
                     </div>
 
                     <div class="grupo">
@@ -401,16 +405,28 @@
                         </select>
                     </div>
 
-                    <div class="grupo" id="grupoComprobante" style="display: none;">
+                    <div class="grupo" id="grupoComprobante" style="display: none; margin-bottom: 16px;">
                         <label for="comprobante">Número de comprobante</label>
                         <input type="text" id="comprobante" name="comprobante" maxlength="10" 
                                 placeholder="Ingrese el número de comprobante" required>
+                    </div>
+
+                    <div class="grupo resumen-pago-inicial" style="grid-column: 1 / -1; padding: 14px 16px; border: 1px solid #d6a000; border-radius: 10px; background: rgba(214,160,0,.07); margin-top: 12px;">
+                        <p style="margin: 0 0 8px; font-weight: 600;">Resumen de inscripción</p>
+                        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                            <span>Matrícula: <strong id="resumenMatricula">$0</strong></span>
+                            <span aria-hidden="true">+</span>
+                            <span>Mensualidad: <strong id="resumenMensualidad">$0</strong></span>
+                            <span aria-hidden="true">=</span>
+                            <span>Total a pagar: <strong id="resumenTotalInicial" style="font-size:1.15rem; color:#d6a000;">$0</strong></span>
+                        </div>
+                        <small style="display:block; margin-top:6px; opacity:.75;">Total = matrícula + mensualidad. Los importes se guardan por separado.</small>
                     </div>
                 </div>
             </section>
 
 
-            <footer class="acciones">
+            <footer class="acciones" style="margin-top: 12px;">
                 <button type="button"
                         class="btn btn-cancelar"
                         id="cerrarRegistro">   

@@ -28,6 +28,7 @@ class CambioEstadoJugador extends Model
                 )) AS documento,
                 COALESCE(c.nombre, 'Sin categoría') AS categoria,
                 LOWER(j.estado) AS estado,
+                ji.fecha_inactivacion AS fecha_desactivacion,
                 COALESCE(d.pago, 'sin_deuda') AS pago,
                 CASE
                     WHEN d.pago IN ('pendiente', 'mora') AND d.fecha_limite_pago <= CURDATE()
@@ -40,6 +41,8 @@ class CambioEstadoJugador extends Model
                 END AS deuda
             FROM jugadores j
             LEFT JOIN categorias c ON c.id_categorias = j.id_categorias
+            LEFT JOIN jugadores_inactivos ji
+                ON ji.id_jugadores = j.id_jugadores
             LEFT JOIN (
                 SELECT id_jugadores, MAX(id_deudas) AS id_deudas
                 FROM (
@@ -343,6 +346,7 @@ class CambioEstadoJugador extends Model
         'id_deudas',
         'id_jugadores',
         'matricula',
+        'mensualidad',
         'mes',
         'anio',
         'totalidad',
