@@ -9,6 +9,10 @@ $nombreJugador = trim(($pago['nombres'] ?? '') . ' ' . ($pago['apellidos'] ?? ''
 $fechaLimite = !empty($pago['fecha_limite_pago']) ? date('Y-m-d', strtotime($pago['fecha_limite_pago'])) : '';
 $fechaPago = !empty($pago['fecha_pago']) ? date('Y-m-d', strtotime($pago['fecha_pago'])) : '';
 $descuentoActual = (int) ($pago['descuento_porcentaje'] ?? 0);
+$matriculaActual = (float) ($pago['matricula'] ?? 0);
+$mensualidadActual = (float) ($pago['mensualidad'] ?? max(0, (float) ($pago['totalidad'] ?? 0) - $matriculaActual));
+$totalActual = $matriculaActual + $mensualidadActual;
+$valorCalculadoActual = round($totalActual * (1 - ($descuentoActual / 100)), 2);
 $errores = [
     'csrf' => 'La sesión de seguridad expiró. Recarga la página e inténtalo de nuevo.',
     'datos' => 'Revisa los importes, las fechas y el descuento. Hay algún valor inválido.',
@@ -42,19 +46,19 @@ $errores = [
                     <div class="registro">
                         <p>Matrícula (COP)</p>
                         <div class="card-info">
-                            <input class="input-pago" type="number" name="matricula" min="0" step="0.01" required value="<?= $esc(number_format((float) ($pago['matricula'] ?? 0), 2, '.', '')) ?>">
+                            <input class="input-pago" type="number" name="matricula" min="0" step="1" required value="<?= $esc(number_format((float) ($pago['matricula'] ?? 0), 2, '.', '')) ?>">
                         </div>
                     </div>
                     <div class="registro">
-                        <p>Total del periodo (COP)</p>
+                        <p>Mensualidad (COP)</p>
                         <div class="card-info">
-                            <input class="input-pago" type="number" name="totalidad" min="0" step="0.01" required value="<?= $esc(number_format((float) ($pago['totalidad'] ?? 0), 2, '.', '')) ?>">
+                            <input class="input-pago" type="number" id="mensualidadHistorial" name="mensualidad" min="0" step="1" required value="<?= $esc(number_format($mensualidadActual, 0, '.', '')) ?>">
                         </div>
                     </div>
                     <div class="registro">
-                        <p>Valor realmente pagado (COP)</p>
+                        <p>Valor calculado a guardar (COP)</p>
                         <div class="card-info">
-                            <input class="input-pago" type="number" name="valor_pagado" min="0" step="0.01" required value="<?= $esc(number_format((float) ($pago['valor_pagado'] ?? 0), 2, '.', '')) ?>">
+                            <input class="input-pago" type="text" id="valorPagadoCalculadoHistorial" readonly value="<?= $esc(number_format($valorCalculadoActual, 0, ',', '.')) ?>">
                         </div>
                     </div>
                     <div class="registro">
@@ -130,3 +134,36 @@ $errores = [
     }
 </script>
 <?php endif; ?>
+
+<script>
+(() => {
+    const matricula = document.querySelector('input[name="matricula"]');
+    const mensualidad = document.getElementById('mensualidadHistorial');
+    const descuento = document.querySelector('select[name="descuento_porcentaje"]');
+    const valorCalculado = document.getElementById('valorPagadoCalculadoHistorial');
+
+    if (!matricula || !mensualidad || !descuento || !valorCalculado) return;
+
+    const formatoCOP = new Intl.NumberFormat('es-CO', {
+        maximumFractionDigits: 0
+    });
+
+    const actualizarValor = () => {
+        const valorMatricula = Math.max(0, Number(matricula.value) || 0);
+        const valorMensualidad = Math.max(0, Number(mensualidad.value) || 0);
+        const porcentajeDescuento = Math.min(100, Math.max(0, Number(descuento.value) || 0));
+
+        // Total bruto = matrícula + mensualidad.
+        // Valor guardado = total bruto menos el descuento aplicado.
+        const totalBruto = valorMatricula + valorMensualidad;
+        const totalConDescuento = totalBruto * (1 - porcentajeDescuento / 100);
+
+        valorCalculado.value = formatoCOP.format(Math.round(totalConDescuento));
+    };
+
+    matricula.addEventListener('input', actualizarValor);
+    mensualidad.addEventListener('input', actualizarValor);
+    descuento.addEventListener('change', actualizarValor);
+    actualizarValor();
+})();
+</script>

@@ -15,7 +15,6 @@
         const tituloModal = $('#modalRegistroTitulo');
         if (!modal || !iframe) return;
 
-        // Alias internos -> rutas reales registradas en public/index.php.
         const vistasPermitidas = new Map([
             ['desactivar', '/streepsoft/jugadores/desactivacion/desactivar'],
             ['confirmacion', '/streepsoft/jugadores/desactivacion/confirmacion'],
@@ -29,7 +28,6 @@
                 console.error('Vista de desactivación no permitida:', ruta);
                 return;
             }
-
             const url = new URL(rutaReal, window.location.origin);
             Object.entries(parametros).forEach(([clave, valor]) => {
                 if (valor !== undefined && valor !== null) {
@@ -57,23 +55,166 @@
         });
 
         window.addEventListener('message', (evento) => {
-            // Solo aceptamos órdenes del iframe que está abierto en este modal.
             if (evento.source !== iframe.contentWindow) return;
-
             const mensaje = evento.data;
             if (!mensaje || typeof mensaje !== 'object') return;
-
             if (mensaje.tipo === 'cerrar-modal-principal') {
                 const recargar = mensaje.recargar === true;
                 cerrarModal();
                 if (recargar) window.location.reload();
                 return;
             }
-
             if (mensaje.tipo === 'abrir-vista' && typeof mensaje.ruta === 'string') {
-                // Las vistas internas solicitan navegación; el iframe no se anida.
                 abrirVista(mensaje.ruta, mensaje.titulo, mensaje.parametros || {});
             }
+        });
+
+        // Paginación independiente para cada tabla. Las filas que no coinciden
+        // con los filtros siguen ocultas aunque cambie la página.
+        function crearPaginador(config) {
+            const filas = config.filas;
+            const info = $(config.info);
+            const contenedorNumeros = $(config.numeros);
+            const anterior = $(config.anterior);
+            const siguiente = $(config.siguiente);
+            const selectorCantidad = $(config.cantidad);
+            const estadoVacio = config.estadoVacio ? $(config.estadoVacio) : null;
+
+            let filasFiltradas = [...filas];
+            let paginaActual = 1;
+            let porPagina = Number(selectorCantidad?.value || 5);
+            let filasPagina = [];
+
+            function crearBotonNumero(numero, activo = false) {
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.className = `pagina-numero${activo ? ' activo' : ''}`;
+                boton.textContent = String(numero);
+                boton.setAttribute('aria-label', `Ir a la página ${numero}`);
+                if (activo) boton.setAttribute('aria-current', 'page');
+                boton.addEventListener('click', () => {
+                    paginaActual = numero;
+                    renderizar();
+                });
+                return boton;
+            }
+
+            function renderizarNumeros(totalPaginas, totalRegistros) {
+                if (!contenedorNumeros) return;
+                contenedorNumeros.innerHTML = '';
+
+                // Si hay registros, siempre mostramos al menos el número 1.
+                // Al filtrar puede quedar una sola página: la paginación debe
+                // seguir visible aunque Anterior/Siguiente estén deshabilitados.
+                if (totalRegistros === 0) return;
+
+                let paginas = [];
+                if (totalPaginas <= 7) {
+                    paginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
+                } else {
+                    const conjunto = new Set([1, totalPaginas, paginaActual, paginaActual - 1, paginaActual + 1]);
+                    if (paginaActual <= 3) [2, 3, 4].forEach(n => conjunto.add(n));
+                    if (paginaActual >= totalPaginas - 2) [totalPaginas - 3, totalPaginas - 2, totalPaginas - 1].forEach(n => conjunto.add(n));
+                    paginas = [...conjunto].filter(n => n >= 1 && n <= totalPaginas).sort((a, b) => a - b);
+                }
+
+                let anteriorNumero = 0;
+                paginas.forEach((numero) => {
+                    if (anteriorNumero && numero - anteriorNumero > 1) {
+                        const puntos = document.createElement('span');
+                        puntos.className = 'pagina-puntos';
+                        puntos.textContent = '…';
+                        contenedorNumeros.appendChild(puntos);
+                    }
+                    contenedorNumeros.appendChild(crearBotonNumero(numero, numero === paginaActual));
+                    anteriorNumero = numero;
+                });
+            }
+
+            function renderizar() {
+                const total = filasFiltradas.length;
+                const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+                paginaActual = Math.min(Math.max(1, paginaActual), totalPaginas);
+                const inicio = (paginaActual - 1) * porPagina;
+                const fin = Math.min(inicio + porPagina, total);
+                filasPagina = filasFiltradas.slice(inicio, fin);
+
+                filas.forEach(fila => { fila.hidden = true; });
+                filasPagina.forEach(fila => { fila.hidden = false; });
+                if (estadoVacio) estadoVacio.hidden = total !== 0;
+
+                if (info) {
+                    const desde = total === 0 ? 0 : inicio + 1;
+                    info.textContent = `Mostrando ${desde} - ${fin} de ${total} ${config.etiqueta}`;
+                }
+                if (anterior) anterior.disabled = paginaActual <= 1 || total === 0;
+                if (siguiente) siguiente.disabled = paginaActual >= totalPaginas || total === 0;
+                renderizarNumeros(totalPaginas, total);
+                if (typeof config.alRenderizar === 'function') config.alRenderizar();
+            }
+
+            anterior?.addEventListener('click', () => {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    renderizar();
+                }
+            });
+            siguiente?.addEventListener('click', () => {
+                const totalPaginas = Math.max(1, Math.ceil(filasFiltradas.length / porPagina));
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    renderizar();
+                }
+            });
+            selectorCantidad?.addEventListener('change', () => {
+                const valor = Number(selectorCantidad.value);
+                porPagina = [5, 10, 15, 20].includes(valor) ? valor : 5;
+                paginaActual = 1;
+                renderizar();
+            });
+
+            renderizar();
+            return {
+                establecerFilas(lista, reiniciar = true) {
+                    filasFiltradas = Array.isArray(lista) ? lista : [];
+                    if (reiniciar) paginaActual = 1;
+                    renderizar();
+                },
+                incluyeEnFiltro(fila) {
+                    return filasFiltradas.includes(fila);
+                },
+                obtenerFilasPagina() {
+                    return [...filasPagina];
+                }
+            };
+        }
+
+        const filasJugadores = $$('#tablaDesactivacion tbody tr[data-id]');
+        const filasHistorial = $$('#tablaHistorial tbody tr[data-row-historial]');
+        let paginadorJugadores = null;
+        paginadorJugadores = crearPaginador({
+            filas: filasJugadores,
+            info: '#infoRegistrosJugadores',
+            numeros: '#numerosPaginasJugadores',
+            anterior: '#btnAnteriorJugadores',
+            siguiente: '#btnSiguienteJugadores',
+            cantidad: '#cantidadRegistrosJugadores',
+            estadoVacio: '#estadoVacioJugadores',
+            etiqueta: 'Jugadores',
+            alRenderizar: () => {
+                // Al cambiar de página, actualizar el estado de Seleccionar todos.
+                if (paginadorJugadores) actualizarSeleccion();
+            }
+        });
+        const paginadorHistorial = crearPaginador({
+            filas: filasHistorial,
+            info: '#infoRegistrosHistorial',
+            numeros: '#numerosPaginasHistorial',
+            anterior: '#btnAnteriorHistorial',
+            siguiente: '#btnSiguienteHistorial',
+            cantidad: '#cantidadRegistrosHistorial',
+            estadoVacio: '#estadoVacioHistorial',
+            etiqueta: 'Cambios'
         });
 
         const checks = $$('.check-jugador');
@@ -81,25 +222,31 @@
         const barra = $('#barraSeleccion');
         const textoSeleccion = $('#textoSeleccion');
         const btnCambiarEstado = $('#btnCambiarEstado');
-        const filas = $$('#tablaDesactivacion tbody tr[data-id]');
 
         function seleccionados() {
-            return checks.filter((check) => check.checked && !check.closest('tr').hidden);
+            // Incluye selecciones hechas en otras páginas, pero descarta filas
+            // que hayan dejado de coincidir con los filtros actuales.
+            return checks.filter((check) => check.checked && paginadorJugadores.incluyeEnFiltro(check.closest('tr')));
         }
+
         function actualizarSeleccion() {
             const cantidad = seleccionados().length;
             if (textoSeleccion) textoSeleccion.textContent = `${cantidad} jugador${cantidad === 1 ? '' : 'es'} seleccionado${cantidad === 1 ? '' : 's'}`;
             barra?.classList.toggle('oculto', cantidad === 0);
             if (checkTodos) {
-                const visibles = checks.filter((check) => !check.closest('tr').hidden);
-                checkTodos.checked = visibles.length > 0 && visibles.every((check) => check.checked);
-                checkTodos.indeterminate = visibles.some((check) => check.checked) && !checkTodos.checked;
+                const visibles = paginadorJugadores.obtenerFilasPagina()
+                    .map(fila => $('.check-jugador', fila))
+                    .filter(check => check && !check.disabled);
+                checkTodos.checked = visibles.length > 0 && visibles.every(check => check.checked);
+                checkTodos.indeterminate = visibles.some(check => check.checked) && !checkTodos.checked;
             }
         }
+
         checks.forEach((check) => check.addEventListener('change', actualizarSeleccion));
         checkTodos?.addEventListener('change', () => {
-            checks.forEach((check) => {
-                if (!check.closest('tr').hidden) check.checked = checkTodos.checked;
+            paginadorJugadores.obtenerFilasPagina().forEach((fila) => {
+                const check = $('.check-jugador', fila);
+                if (check && !check.disabled) check.checked = checkTodos.checked;
             });
             actualizarSeleccion();
         });
@@ -130,39 +277,106 @@
             abrirVista('desactivar', 'Cambiar estado a varios jugadores', { jugadores: jugadores });
         });
 
-        $('#btnBuscar')?.addEventListener('click', filtrarTabla);
+        let filtroMesesActivo = 'todos';
         $('#buscarJugador')?.addEventListener('input', filtrarTabla);
-        $('#sinPagoDesde')?.addEventListener('change', filtrarTabla);
         $('#filtroCategoria')?.addEventListener('change', filtrarTabla);
         $('#filtroEstado')?.addEventListener('change', filtrarTabla);
         $$('.btn-filtro-rapido').forEach((boton) => boton.addEventListener('click', () => {
             $$('.btn-filtro-rapido').forEach((otro) => otro.classList.toggle('activo', otro === boton));
-            $('#sinPagoDesde').value = boton.dataset.meses;
+            filtroMesesActivo = boton.dataset.meses || 'todos';
             filtrarTabla();
         }));
 
+        // Permite reconocer fechas escritas como 23/09/2026, 23-09-2026,
+        // 23.09.2026 o incluso una parte como 23/09 o 09/2026.
+        function obtenerDigitosFecha(valor) {
+            return String(valor ?? '').replace(/\D/g, '');
+        }
+
+        // Convierte fechas de la base de datos (YYYY-MM-DD o datetime) y
+        // fechas visibles (DD/MM/YYYY) a DDMMYYYY para comparar con el buscador.
+        function normalizarFechaParaBusqueda(valor) {
+            const texto = String(valor ?? '').trim();
+            if (!texto) return '';
+
+            let coincidencia = texto.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+            if (coincidencia) {
+                const dia = coincidencia[1].padStart(2, '0');
+                const mes = coincidencia[2].padStart(2, '0');
+                const anio = coincidencia[3];
+                return `${dia}${mes}${anio}`;
+            }
+
+            coincidencia = texto.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (coincidencia) {
+                const anio = coincidencia[1];
+                const mes = coincidencia[2].padStart(2, '0');
+                const dia = coincidencia[3].padStart(2, '0');
+                return `${dia}${mes}${anio}`;
+            }
+
+            return obtenerDigitosFecha(texto);
+        }
+
+        function esBusquedaDeFecha(valor) {
+            const texto = String(valor ?? '').trim();
+            const digitos = obtenerDigitosFecha(texto);
+            return texto !== '' && /^[\d\s/.:-]+$/.test(texto)
+                && digitos.length >= 4 && digitos.length <= 8;
+        }
+
+        function coincideFecha(fecha, digitosBuscados) {
+            if (!digitosBuscados) return false;
+            const fechaNormalizada = normalizarFechaParaBusqueda(fecha);
+            return fechaNormalizada.includes(digitosBuscados);
+        }
+
         function filtrarTabla() {
-            const texto = ($('#buscarJugador')?.value || '').trim().toLocaleLowerCase('es');
-            const filtroMeses = $('#sinPagoDesde')?.value || 'todos';
+            const textoOriginal = ($('#buscarJugador')?.value || '').trim();
+            const texto = textoOriginal.toLocaleLowerCase('es');
+            const busquedaFecha = esBusquedaDeFecha(textoOriginal);
+            const digitosFecha = obtenerDigitosFecha(textoOriginal);
+            const filtroMeses = filtroMesesActivo;
             const mesesMinimos = Number(filtroMeses);
             const categoria = $('#filtroCategoria')?.value || 'todo';
             const estado = $('#filtroEstado')?.value || 'todo';
-            let visibles = 0;
-            filas.forEach((fila) => {
+            const coincidencias = [];
+
+            filasJugadores.forEach((fila) => {
                 const contenido = fila.textContent.toLocaleLowerCase('es');
+                const fechaFila = fila.lastElementChild?.textContent || '';
+                const coincideTexto = texto === ''
+                    || contenido.includes(texto)
+                    || (busquedaFecha && coincideFecha(fechaFila, digitosFecha));
                 const meses = Number(fila.dataset.meses || 0);
                 const categoriaFila = fila.children[3]?.textContent.trim() || '';
                 const cumpleMeses = filtroMeses === 'todos' || meses >= mesesMinimos;
                 const estadoFila = (fila.dataset.estado || '').toLowerCase();
                 const cumpleEstado = estado === 'todo' || estadoFila === estado;
-                const mostrar = contenido.includes(texto) && cumpleMeses && cumpleEstado && (categoria === 'todo' || categoriaFila === categoria);
-                fila.hidden = !mostrar;
-                const check = $('.check-jugador', fila);
-                if (!mostrar && check) check.checked = false;
-                if (mostrar) visibles++;
+                const mostrar = coincideTexto && cumpleMeses && cumpleEstado
+                    && (categoria === 'todo' || categoriaFila === categoria);
+
+                if (mostrar) {
+                    coincidencias.push(fila);
+                } else {
+                    const check = $('.check-jugador', fila);
+                    if (check) check.checked = false;
+                }
             });
+
+            // La misma búsqueda por fecha también filtra el historial de cambios.
+            // Si se busca por nombre u otro texto, el historial permanece completo.
+            const coincidenciasHistorial = busquedaFecha
+                ? filasHistorial.filter((fila) => {
+                    const fecha = fila.dataset.fecha || $('td:first-child', fila)?.textContent || '';
+                    return coincideFecha(fecha, digitosFecha);
+                })
+                : filasHistorial;
+
             const contador = $('#contadorResultados');
-            if (contador) contador.textContent = `${visibles} jugador${visibles === 1 ? '' : 'es'} coincide${visibles === 1 ? '' : 'n'} con los filtros`;
+            if (contador) contador.textContent = `${coincidencias.length} jugador${coincidencias.length === 1 ? '' : 'es'} coincide${coincidencias.length === 1 ? '' : 'n'} con los filtros`;
+            paginadorJugadores.establecerFilas(coincidencias, true);
+            paginadorHistorial.establecerFilas(coincidenciasHistorial, true);
             actualizarSeleccion();
         }
 

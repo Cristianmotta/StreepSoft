@@ -132,8 +132,8 @@ if (!empty($proximaDeuda['fecha_limite_pago'])) {
                                             $fechaPago = $fechaPagoObj ? $fechaPagoObj->format('d-m-Y') : '-';
                                             $matricula = (float) ($pago['matricula'] ?? 0);
                                             $totalCiclo = (float) ($pago['totalidad'] ?? 0);
-                                            // En la inscripción, totalidad incluye matrícula + mensualidad.
-                                            $mensualidad = max(0, $totalCiclo - $matricula);
+                                            // La mensualidad se almacena separada; fallback para datos antiguos.
+                                            $mensualidad = (float) ($pago['mensualidad'] ?? max(0, $totalCiclo - $matricula));
                                             $totalPagado = (float) ($pago['valor_pagado'] ?? $totalCiclo);
                                             $concepto = trim((string) ($pago['concepto'] ?? ''));
                                             if ($concepto === '') {

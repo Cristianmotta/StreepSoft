@@ -265,13 +265,14 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <?php
+                                            $valorMatricula = (float) ($deuda['matricula'] ?? 0);
+                                            $valorMensualidad = (float) ($deuda['mensualidad'] ?? max(0, (float) ($deuda['totalidad'] ?? 0) - $valorMatricula));
+                                            $valorTotalDeuda = $valorMatricula + $valorMensualidad;
+                                        ?>
                                         <div class="table-text">
-                                            <h3>$<?=  number_format((float) $deuda['totalidad'], 0,',', '.') ?></h3>
-                                            <?php if ((float) $deuda['matricula'] > 0): ?>
-                                            <p>+ matricula ($<?= number_format((float) $deuda['matricula'], 0, ',', '.') ?>)</p>
-                                            <?php else: ?>
-                                                <p></p>
-                                            <?php endif; ?>
+                                            <h3>$<?= number_format($valorTotalDeuda, 0, ',', '.') ?></h3>
+                                            <p>Matrícula $<?= number_format($valorMatricula, 0, ',', '.') ?> + Mensualidad $<?= number_format($valorMensualidad, 0, ',', '.') ?></p>
                                         </div>
                                     </td>
                                     <td>

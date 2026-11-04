@@ -544,17 +544,20 @@ class JugadorController extends Controller
                 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
             ];
             
+            $totalInicial = $matricula + $mensualidad;
+
             $idDeuda = $this->deudaModel->crearInicial([
                 'id_jugadores' => $idJugador,
                 'matricula' => $matricula,
+                'mensualidad' => $mensualidad,
                 'mes' => $mesesEs[(int) $fechaPagoObj->format('n')],
                 'anio' => $fechaPagoObj->format('Y'),
-                'totalidad' => $mensualidad,
+                'totalidad' => $totalInicial,
                 'fecha_pago' => $fechaPago,
                 'id_metodo_pago' => $idMetodoPago,
                 'id_tipo_becas' => $idTipoBecas,
                 'concepto' => 'Matrícula y mensualidad de inscripción',
-                'valor_pagado' => $matricula + $mensualidad,
+                'valor_pagado' => $totalInicial,
             ]);
             
             if ($idDeuda === 0) {
@@ -571,9 +574,13 @@ class JugadorController extends Controller
         }
     }
 
+    /**
+     * Convierte importes escritos en formato colombiano (80.000 o $80.000)
+     * a un número entero de pesos. En este formulario COP no usa centavos.
+     */
     private function limpiarMonto(string $valor): float
     {
-        $limpio = preg_replace('/[^0-9\.]/', '', $valor); 
+        $limpio = preg_replace('/[^0-9]/', '', $valor);
         return $limpio === '' ? 0.0 : (float) $limpio;
     }
 
