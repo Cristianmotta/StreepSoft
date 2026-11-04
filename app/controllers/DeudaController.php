@@ -131,8 +131,7 @@ class DeudaController extends Controller
         $fechaLimite = trim((string) ($_POST['fecha_limite_pago'] ?? ''));
         $fechaPago = trim((string) ($_POST['fecha_pago'] ?? ''));
         $matriculaRaw = trim((string) ($_POST['matricula'] ?? ''));
-        $totalidadRaw = trim((string) ($_POST['totalidad'] ?? ''));
-        $valorPagadoRaw = trim((string) ($_POST['valor_pagado'] ?? ''));
+        $mensualidadRaw = trim((string) ($_POST['mensualidad'] ?? ''));
         $metodoRaw = trim((string) ($_POST['id_metodo_pago'] ?? ''));
         $concepto = trim((string) ($_POST['concepto'] ?? ''));
         $descuento = filter_var($_POST['descuento_porcentaje'] ?? 0, FILTER_VALIDATE_INT);
@@ -152,11 +151,9 @@ class DeudaController extends Controller
             !$fechaValida($fechaLimite)
             || !$fechaValida($fechaPago)
             || !is_numeric($matriculaRaw)
-            || !is_numeric($totalidadRaw)
-            || !is_numeric($valorPagadoRaw)
+            || !is_numeric($mensualidadRaw)
             || (float) $matriculaRaw < 0
-            || (float) $totalidadRaw < 0
-            || (float) $valorPagadoRaw < 0
+            || (float) $mensualidadRaw < 0
             || $descuento === false
             || $descuento < 0
             || $descuento > 100
@@ -178,15 +175,22 @@ class DeudaController extends Controller
         }
 
         try {
+            $matricula = round((float) $matriculaRaw, 2);
+            $mensualidad = round((float) $mensualidadRaw, 2);
+            $totalidad = round($matricula + $mensualidad, 2);
+            // El importe efectivamente guardado se calcula en servidor: suma menos descuento.
+            $valorPagado = round($totalidad * (1 - ((int) $descuento / 100)), 2);
+
             $actualizado = $this->historialModel->actualizar($id, [
-                'matricula' => round((float) $matriculaRaw, 2),
-                'totalidad' => round((float) $totalidadRaw, 2),
+                'matricula' => $matricula,
+                'mensualidad' => $mensualidad,
+                'totalidad' => $totalidad,
                 'fecha_limite_pago' => $fechaLimite,
                 'fecha_pago' => $fechaPago,
                 'id_metodo_pago' => $idMetodoPago,
                 'concepto' => $concepto !== '' ? $concepto : null,
                 'descuento_porcentaje' => $descuento,
-                'valor_pagado' => round((float) $valorPagadoRaw, 2),
+                'valor_pagado' => $valorPagado,
             ]);
 
             if (!$actualizado) {

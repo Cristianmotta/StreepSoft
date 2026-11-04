@@ -287,3 +287,47 @@ if (metodoPago && grupoComprobante) {
         }
     });
 }
+
+// Importes COP del paso de inscripción: se muestran con separador de miles
+// y el total se calcula con la operación matrícula + mensualidad.
+(function configurarResumenPagoInicial() {
+    const inputMatricula = document.getElementById('matriculaJugador');
+    const inputMensualidad = document.getElementById('mensualidadJugador');
+    const salidaMatricula = document.getElementById('resumenMatricula');
+    const salidaMensualidad = document.getElementById('resumenMensualidad');
+    const salidaTotal = document.getElementById('resumenTotalInicial');
+
+    if (!inputMatricula || !inputMensualidad || !salidaMatricula || !salidaMensualidad || !salidaTotal) {
+        return;
+    }
+
+    const soloDigitos = (valor) => String(valor || '').replace(/\D/g, '');
+    const aNumero = (valor) => Number(soloDigitos(valor) || 0);
+    const formatoCOP = (valor) => '$' + Number(valor || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 });
+
+    const formatearCampo = (campo) => {
+        const digitos = soloDigitos(campo.value);
+        campo.value = digitos ? Number(digitos).toLocaleString('es-CO', { maximumFractionDigits: 0 }) : '';
+    };
+
+    const actualizarResumen = () => {
+        const matricula = aNumero(inputMatricula.value);
+        const mensualidad = aNumero(inputMensualidad.value);
+        salidaMatricula.textContent = formatoCOP(matricula);
+        salidaMensualidad.textContent = formatoCOP(mensualidad);
+        salidaTotal.textContent = formatoCOP(matricula + mensualidad);
+    };
+
+    [inputMatricula, inputMensualidad].forEach((campo) => {
+        campo.addEventListener('input', () => {
+            formatearCampo(campo);
+            actualizarResumen();
+        });
+        campo.addEventListener('blur', () => {
+            formatearCampo(campo);
+            actualizarResumen();
+        });
+    });
+
+    actualizarResumen();
+})();

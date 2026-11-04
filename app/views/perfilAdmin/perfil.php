@@ -280,7 +280,7 @@
                 </div>
                 
                 <?php if (($_GET['success'] ?? '') === 'configuracion_guardada'): ?>
-                    <p class="modal-mensaje" style="color: #2ecc72">Configuración guardada</p>
+                    <p class="modal-mensaje" id="mensajeConfiguracionGuardada" style="color: #2ecc72">Configuración guardada</p>
                 <?php endif; ?>
                 <?php if (($_GET['error'] ?? '') === 'dia_invalido'): ?>
                     <p class="modal-mesaje modal-mensaje-error">Elige und ia de cobro válido.</p>
@@ -455,20 +455,15 @@
                 </div>
             </div>
         </div>
-
-
-
     </div>
 
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="/streepsoft/public/js/navbar/script.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/perfilAdmin/perfilAdmin.js"></script>
     <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 
     <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>

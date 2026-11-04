@@ -27,6 +27,8 @@ class HistorialDeuda extends Model
                 h.mes,
                 h.anio,
                 h.concepto,
+                h.matricula,
+                h.mensualidad,
                 h.totalidad,
                 h.valor_pagado,
                 h.fecha_limite_pago,
@@ -50,10 +52,10 @@ class HistorialDeuda extends Model
     {
         $sql = "
             INSERT INTO historial_deuda (
-                id_jugadores, id_deuda_original, mes, anio, matricula,
+                id_jugadores, id_deuda_original, mes, anio, matricula, mensualidad,
                 totalidad, fecha_limite_pago, fecha_pago, id_metodo_pago,
                 id_tipo_becas, concepto, descuento_porcentaje, valor_pagado
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         return $this->execute($sql, [
@@ -62,6 +64,7 @@ class HistorialDeuda extends Model
             $deuda['mes'],
             $deuda['anio'],
             $deuda['matricula'] ?? 0,
+            $deuda['mensualidad'] ?? max(0, (float) ($deuda['totalidad'] ?? 0) - (float) ($deuda['matricula'] ?? 0)),
             $deuda['totalidad'],
             $deuda['fecha_limite_pago'],
             $deuda['fecha_pago'],
@@ -83,6 +86,7 @@ class HistorialDeuda extends Model
                 h.mes,
                 h.anio,
                 h.matricula,
+                h.mensualidad,
                 h.totalidad,
                 h.fecha_limite_pago,
                 h.fecha_pago,
@@ -133,6 +137,7 @@ class HistorialDeuda extends Model
             UPDATE historial_deuda
             SET
                 matricula = ?,
+                mensualidad = ?,
                 totalidad = ?,
                 fecha_limite_pago = ?,
                 fecha_pago = ?,
@@ -146,6 +151,7 @@ class HistorialDeuda extends Model
 
         return $this->execute($sql, [
             $datos['matricula'],
+            $datos['mensualidad'],
             $datos['totalidad'],
             $datos['fecha_limite_pago'],
             $datos['fecha_pago'],

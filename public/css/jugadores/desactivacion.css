@@ -149,7 +149,7 @@ body {
     border-left: 10px solid #D09E10;
     border-right: 5px solid #D09E10;
     border-radius: 10px;
-    padding: 18px 20px;
+    padding: 0px 0px;
     margin-top: 20px;
     position: relative; /* ancla para la barra flotante */
 }
@@ -163,14 +163,14 @@ body {
 }
 
 .panel-resultados-header h2 {
-    margin: 0;
+    margin: 12px;
     font-family: "Poppins", sans-serif;
     font-weight: bold;
     font-size: 1.2rem;
 }
 
 .panel-resultados-header span{
-    margin: 0;
+    margin: 8px;
     font-family: "Poppins", sans-serif;
     font-weight: 300;
     font-size: 0.8rem;
@@ -197,13 +197,12 @@ body {
     font-family: "Poppins", sans-serif;
     font-weight: 300;
     font-size: 0.8rem;
-    padding: 10px 8px;
+    padding: 13px 18px;
     border-bottom: 1px solid #2b2b2b;
 }
 
 #tablaDesactivacion td {
-    padding: 12px 8px;
-    border-bottom: 1px solid #2b2b2b;
+    padding: 12px 18px;
     font-size: 0.9rem;
 }
 
@@ -312,20 +311,22 @@ body {
     border-left: 10px solid #D09E10;
     border-right: 5px solid #D09E10;
     border-radius: 10px;
-    padding: 18px 20px;
+    padding: 0px 0px;
     margin-top: 20px;
     position: relative;
 }
 
-.panel-historial h2 {
-    margin: 0;
+.panel-historial-text h2 {
     font-family: "Poppins", sans-serif;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.2rem;    
+    position: relative;
+    top: 12px;
+    left: 12px;
 }
 
 .panel-historial span {
-    margin: 0;
+    margin: 8px;
     font-family: "Poppins", sans-serif;
     font-weight: bold;
     font-size: 0.9rem;
@@ -341,13 +342,12 @@ body {
     color: #999;
     font-weight: 500;
     font-size: 0.8rem;
-    padding: 10px 8px;
+    padding: 13px 18px;
     border-bottom: 1px solid #2b2b2b;
 }
 
 #tablaHistorial td {
-    padding: 12px 8px;
-    border-bottom: 1px solid #2b2b2b;
+    padding: 12px 17px;
     font-size: 0.9rem;
 }
 
@@ -883,3 +883,118 @@ color: #999;
   mask-size: 100% 100%;
 }
 
+
+
+/* Paginación independiente para Jugadores registrados e Historial de cambios */
+.card-paginacion {
+    width: 100%;
+    min-height: 50px;
+    background: #222222;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.card-paginacion .info-registros p {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    color: #c1bdbd;
+    white-space: nowrap;
+}
+
+.card-paginacion .paginacion {
+    display: flex;
+    align-items: center;
+}
+
+.card-paginacion .Pagina {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.card-paginacion .pagina-btn {
+    min-height: 30px;
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    color: #c1bdbd;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.card-paginacion .pagina-btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+.card-paginacion [id^="numerosPaginas"] {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.card-paginacion .pagina-numero {
+    height: 30px;
+    min-width: 30px;
+    padding: 0 6px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.card-paginacion .pagina-numero.activo {
+    color: #D09E10;
+    font-weight: 700;
+}
+
+.card-paginacion .pagina-puntos {
+    color: #999;
+    padding: 0 2px;
+}
+
+.card-paginacion .registros {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-paginacion .registros label,
+.card-paginacion .registros span {
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    color: #c1bdbd;
+}
+
+.card-paginacion .registros select {
+    color: #c1bdbd;
+    border: 1px solid #444;
+    background: #111;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+@media (max-width: 760px) {
+    .card-paginacion {
+        flex-direction: column;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px;
+    }
+    .card-paginacion .info-registros,
+    .card-paginacion .paginacion,
+    .card-paginacion .cantidad-registros {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

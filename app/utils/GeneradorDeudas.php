@@ -119,9 +119,12 @@ class GeneradorDeudas
                     continue;
                 }
 
-                $totalAnterior = (float) ($ultimo['totalidad'] ?? 0);
-                $matriculaAnterior = (float) ($ultimo['matricula'] ?? 0);
-                $mensualidad = max(0, $totalAnterior - $matriculaAnterior);
+                // La mensualidad ya está guardada por separado.
+                // El fallback sirve para historiales antiguos aún no migrados.
+                $mensualidad = max(
+                    0,
+                    (float) ($ultimo['mensualidad'] ?? ((float) ($ultimo['totalidad'] ?? 0) - (float) ($ultimo['matricula'] ?? 0)))
+                );
 
                 $fechaLimite = $this->generarFechaLimite(
                     $mesSiguiente,
@@ -133,6 +136,7 @@ class GeneradorDeudas
                     "INSERT INTO deudas (
                         id_jugadores,
                         matricula,
+                        mensualidad,
                         mes,
                         anio,
                         totalidad,
@@ -140,11 +144,12 @@ class GeneradorDeudas
                         id_tipo_becas,
                         pago,
                         concepto
-                    ) VALUES (?, 0, ?, ?, ?, ?, ?, 'pendiente', ?)"
+                    ) VALUES (?, 0, ?, ?, ?, ?, ?, ?, 'pendiente', ?)"
                 );
 
                 $insert->execute([
                     $idJugador,
+                    $mensualidad,
                     $nombreMes,
                     $anioSiguiente,
                     $mensualidad,
