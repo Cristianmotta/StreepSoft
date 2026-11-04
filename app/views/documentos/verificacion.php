@@ -203,7 +203,8 @@ $totalDocumentos = 4;
         </section>
 
     </div>
-
+    
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/documentos/documentos.js"></script>
 </body>

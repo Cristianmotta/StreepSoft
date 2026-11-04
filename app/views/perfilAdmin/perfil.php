@@ -468,5 +468,4 @@
     <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514195634-UH0HGKBC.js" defer></script>
 </body>
-
 </html>

@@ -422,7 +422,7 @@
         </div>
     </div>
 
-
+    <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/cierreAnio/cierreAnio.js"></script>
 </body>
