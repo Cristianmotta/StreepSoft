@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2026 a las 21:19:42
+-- Tiempo de generación: 11-11-2026 a las 22:27:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.35
 
@@ -76,7 +76,8 @@ INSERT INTO `cambios_masivos_estado` (`id_cambio`, `id_usuario`, `estado_aplicad
 (17, 5, 'activo', 'Reactivación de jugador', 'Reactivación individual desde el detalle del historial.', 1, '2026-11-07 03:48:40'),
 (18, 5, 'activo', 'Reactivación de jugador', 'Reactivación individual desde el detalle del historial.', 1, '2026-11-10 20:01:13'),
 (19, 5, 'inactivo', 'Ajuste administrativo', NULL, 2, '2026-11-10 20:26:16'),
-(20, 5, 'activo', 'Reactivación de jugador', 'Reactivación individual desde el detalle del historial.', 1, '2026-11-10 20:30:28');
+(20, 5, 'activo', 'Reactivación de jugador', 'Reactivación individual desde el detalle del historial.', 1, '2026-11-10 20:30:28'),
+(21, 5, 'activo', 'Reactivación de jugador', 'Reactivación individual desde el detalle del historial.', 1, '2026-11-11 20:39:41');
 
 -- --------------------------------------------------------
 
@@ -110,7 +111,8 @@ INSERT INTO `cambios_masivos_jugadores` (`id`, `id_cambio`, `id_jugadores`, `est
 (20, 18, 34, 'inactivo'),
 (21, 19, 34, 'activo'),
 (22, 19, 35, 'activo'),
-(23, 20, 35, 'inactivo');
+(23, 20, 35, 'inactivo'),
+(24, 21, 34, 'inactivo');
 
 -- --------------------------------------------------------
 
@@ -219,6 +221,7 @@ CREATE TABLE `deudas` (
 
 INSERT INTO `deudas` (`id_deudas`, `id_jugadores`, `matricula`, `mensualidad`, `mes`, `anio`, `totalidad`, `fecha_limite_pago`, `fecha_pago`, `id_metodo_pago`, `concepto`, `descuento_porcentaje`, `valor_pagado`, `pago`, `id_tipo_becas`) VALUES
 (35, 32, 0.00, 80000.00, 'Abril', '2027', 80000.00, '2027-04-02', NULL, NULL, 'Mensualidad Abril 2027', 0, NULL, 'pendiente', 1),
+(39, 34, 0.00, 800000.00, 'Noviembre', '2026', 800000.00, '2026-11-02', NULL, NULL, 'Mensualidad Noviembre 2026', 0, NULL, 'mora', 1),
 (41, 35, 0.00, 80000.00, 'Noviembre', '2026', 80000.00, '2026-11-02', NULL, NULL, 'Mensualidad Noviembre 2026', 0, NULL, 'mora', 2),
 (44, 36, 0.00, 80000.00, 'Diciembre', '2026', 80000.00, '2026-12-02', NULL, NULL, 'Mensualidad Diciembre 2026', 0, NULL, 'pendiente', 1),
 (45, 33, 0.00, 80000.00, 'Diciembre', '2026', 80000.00, '2026-12-02', NULL, NULL, 'Mensualidad Diciembre 2026', 0, NULL, 'pendiente', 1);
@@ -246,13 +249,6 @@ CREATE TABLE `deuda_inactivos` (
   `pago` enum('pagado','pendiente','mora') DEFAULT 'pendiente',
   `id_tipo_becas` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `deuda_inactivos`
---
-
-INSERT INTO `deuda_inactivos` (`id_deudas`, `id_jugadores`, `matricula`, `mensualidad`, `mes`, `anio`, `totalidad`, `fecha_limite_pago`, `fecha_pago`, `id_metodo_pago`, `concepto`, `descuento_porcentaje`, `valor_pagado`, `pago`, `id_tipo_becas`) VALUES
-(39, 34, 0.00, 800000.00, 'Noviembre', '2026', 800000.00, '2026-11-02', NULL, NULL, 'Mensualidad Noviembre 2026', 0, NULL, 'mora', 1);
 
 -- --------------------------------------------------------
 
@@ -461,7 +457,7 @@ CREATE TABLE `jugadores` (
 INSERT INTO `jugadores` (`id_jugadores`, `foto`, `nombres`, `apellidos`, `fecha_nacimiento`, `iniciales`, `id_responsable`, `id_categorias`, `created_at`, `id_eps`, `id_instructor`, `estado`) VALUES
 (32, '39058e57d119768de3a5c6e60d27fae0.jpg', 'Cristian', 'Motta', '2000-02-01', 'CMT', 18, 6, '2026-10-20 21:10:57', 6, 3, 'activo'),
 (33, '2be90d1c7973712705645fd38662af21.jpg', 'Santiago', 'Rua', '2013-10-31', 'RSA', 20, 4, '2026-10-31 22:54:19', 9, 2, 'activo'),
-(34, 'a2ceb372676e791a951da58334116ee3.jpg', 'Mariana', 'Gil', '2011-10-31', 'GMA', 21, 5, '2026-10-31 23:03:38', 2, 6, 'inactivo'),
+(34, 'a2ceb372676e791a951da58334116ee3.jpg', 'Mariana', 'Gil', '2011-10-31', 'GMA', 21, 5, '2026-10-31 23:03:38', 2, 6, 'activo'),
 (35, '5684ba5dae6bf96dbb2d8c64b4fabcae.jpg', 'Ana', 'Franco', '2011-07-06', 'FAn', 22, 4, '2026-10-31 23:18:10', 10, 4, 'activo'),
 (36, '6cc1677bd166b8a36dc3de959575e023.jpg', 'Andres', 'Castaño', '2010-09-08', 'CAD', 23, 5, '2026-10-31 23:21:32', 2, 2, 'activo');
 
@@ -488,13 +484,6 @@ CREATE TABLE `jugadores_inactivos` (
   `descripcion_inactivacion` text DEFAULT NULL,
   `id_usuario_inactivacion` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `jugadores_inactivos`
---
-
-INSERT INTO `jugadores_inactivos` (`id_jugadores`, `foto`, `nombres`, `apellidos`, `fecha_nacimiento`, `iniciales`, `id_responsable`, `id_categorias`, `created_at`, `id_eps`, `id_instructor`, `fecha_inactivacion`, `motivo_inactivacion`, `descripcion_inactivacion`, `id_usuario_inactivacion`) VALUES
-(34, 'a2ceb372676e791a951da58334116ee3.jpg', 'Mariana', 'Gil', '2011-10-31', 'GMA', 21, 5, '2026-10-31 23:03:38', 2, 6, '2026-11-10 15:26:16', 'Ajuste administrativo', NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -526,13 +515,14 @@ CREATE TABLE `notificaciones` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `clave_unica` varchar(190) NOT NULL,
   `tipo` varchar(40) NOT NULL,
-  `prioridad` enum('alta','seguimiento') NOT NULL DEFAULT 'seguimiento',
+  `prioridad` enum('alta','media','baja') NOT NULL DEFAULT 'media',
   `id_jugadores` int(11) DEFAULT NULL,
   `titulo` varchar(180) NOT NULL,
   `mensaje` text NOT NULL,
   `url` varchar(255) DEFAULT NULL,
   `fecha_evento` datetime NOT NULL,
   `estado` enum('nueva','revisada','resuelta') NOT NULL DEFAULT 'nueva',
+  `resolucion` enum('manual','auto') DEFAULT NULL,
   `creada_en` datetime NOT NULL,
   `actualizada_en` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -541,16 +531,17 @@ CREATE TABLE `notificaciones` (
 -- Volcado de datos para la tabla `notificaciones`
 --
 
-INSERT INTO `notificaciones` (`id`, `clave_unica`, `tipo`, `prioridad`, `id_jugadores`, `titulo`, `mensaje`, `url`, `fecha_evento`, `estado`, `creada_en`, `actualizada_en`) VALUES
-(1, 'mora:37', 'mora', 'alta', 33, 'Jugador en mora', 'Santiago Rua · Noviembre 2026 · 80.000 · 8 días desde el vencimiento', '/streepsoft/jugadores/deudas', '2026-11-10 14:41:10', 'resuelta', '2026-11-10 14:41:10', '2026-11-10 16:31:18'),
-(2, 'mora:41', 'mora', 'alta', 35, 'Jugador en mora', 'Ana Franco · Noviembre 2026 · 80.000 · 8 días desde el vencimiento', '/streepsoft/jugadores/deudas', '2026-11-10 14:41:10', 'resuelta', '2026-11-10 14:41:10', '2026-11-10 16:33:45'),
-(3, 'inactivo:34', 'inactivo', 'alta', 34, 'Jugador inactivo', 'Mariana Gil · Desactivado el 10/11/2026', '/streepsoft/jugadores/desactivacion', '2026-11-10 14:41:10', 'resuelta', '2026-11-10 14:41:10', '2026-11-10 15:11:46'),
-(4, 'docs_pendientes:32', 'documento_pendiente', 'seguimiento', 32, 'Documentos pendientes', 'Cristian Motta · Documentos faltantes o por reemplazar: consentimiento, eps, idrd', '/streepsoft/documentos', '2026-11-10 14:41:10', 'nueva', '2026-11-10 14:41:10', '2026-11-10 14:41:10'),
-(5, 'docs_pendientes:33', 'documento_pendiente', 'seguimiento', 33, 'Documentos pendientes', 'Santiago Rua · Documentos faltantes o por reemplazar: consentimiento, eps, idrd', '/streepsoft/documentos', '2026-11-10 14:41:10', 'nueva', '2026-11-10 14:41:10', '2026-11-10 14:41:10'),
-(6, 'docs_pendientes:35', 'documento_pendiente', 'seguimiento', 35, 'Documentos pendientes', 'Ana Franco · Documentos faltantes o por reemplazar: consentimiento, idrd', '/streepsoft/documentos', '2026-11-10 14:41:10', 'nueva', '2026-11-10 14:41:10', '2026-11-10 14:41:10'),
-(7, 'mora:39', 'mora', 'alta', 34, 'Jugador en mora', 'Mariana Gil · Noviembre 2026 · 800.000 · 8 días desde el vencimiento', '/streepsoft/jugadores/deudas', '2026-11-10 15:11:46', 'resuelta', '2026-11-10 15:11:46', '2026-11-10 16:31:18'),
-(8, 'docs_pendientes:34', 'documento_pendiente', 'seguimiento', 34, 'Documentos pendientes', 'Mariana Gil · Documentos faltantes o por reemplazar: consentimiento, eps, idrd', '/streepsoft/documentos', '2026-11-10 15:11:46', 'resuelta', '2026-11-10 15:11:46', '2026-11-10 16:31:18'),
-(9, 'pago:19', 'pago_registrado', 'seguimiento', 33, 'Pago registrado', 'Santiago Rua · Noviembre 2026 · $80.000 · 10/11/2026', '/streepsoft/jugadores/deudas', '2026-11-10 16:31:18', 'nueva', '2026-11-10 16:31:18', '2026-11-10 16:31:18');
+INSERT INTO `notificaciones` (`id`, `clave_unica`, `tipo`, `prioridad`, `id_jugadores`, `titulo`, `mensaje`, `url`, `fecha_evento`, `estado`, `resolucion`, `creada_en`, `actualizada_en`) VALUES
+(2, 'mora:41', 'mora', 'alta', 35, 'En mora', 'Ana Franco · Noviembre 2026 · 80.000 · 9 días desde el vencimiento', 'jugadores/deudas', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-10 14:41:10', '2026-11-11 16:17:00'),
+(4, 'docs_pendientes:32', 'documento_pendiente', 'media', 32, 'Documentos pendientes', 'Cristian Motta · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/32', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-10 14:41:10', '2026-11-11 16:17:00'),
+(5, 'docs_pendientes:33', 'documento_pendiente', 'media', 33, 'Documentos pendientes', 'Santiago Rua · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/33', '2026-11-10 14:41:10', 'nueva', NULL, '2026-11-10 14:41:10', '2026-11-10 14:41:10'),
+(6, 'docs_pendientes:35', 'documento_pendiente', 'media', 35, 'Documentos pendientes', 'Ana Franco · Falta: Consentimiento informado, Ficha IDRD', 'documentos/gestionar/35', '2026-11-10 14:41:10', 'revisada', NULL, '2026-11-10 14:41:10', '2026-11-11 15:36:52'),
+(7, 'mora:39', 'mora', 'alta', 34, 'En mora', 'Mariana Gil · Noviembre 2026 · 800.000 · 9 días desde el vencimiento', 'jugadores/deudas', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-10 15:11:46', '2026-11-11 16:17:00'),
+(8, 'docs_pendientes:34', 'documento_pendiente', 'media', 34, 'Documentos pendientes', 'Mariana Gil · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/34', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-10 15:11:46', '2026-11-11 16:17:00'),
+(9, 'pago:19', 'pago_registrado', 'baja', 33, 'Pago registrado', 'Santiago Rua · Noviembre 2026 · $80.000 · 10/11/2026', 'jugadores/deudas', '2026-11-10 16:31:18', 'nueva', NULL, '2026-11-10 16:31:18', '2026-11-10 16:31:18'),
+(11, 'mora:35', 'mora', 'alta', 32, 'Deuda pendiente', 'Cristian Motta · Abril 2027 · 80.000', 'jugadores/deudas', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-11 16:17:00', '2026-11-11 16:17:00'),
+(12, 'mora:44', 'mora', 'alta', 36, 'Deuda pendiente', 'Andres Castaño · Diciembre 2026 · 80.000', 'jugadores/deudas', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-11 16:17:00', '2026-11-11 16:17:00'),
+(13, 'mora:45', 'mora', 'alta', 33, 'Deuda pendiente', 'Santiago Rua · Diciembre 2026 · 80.000', 'jugadores/deudas', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-11 16:17:00', '2026-11-11 16:17:00');
 
 -- --------------------------------------------------------
 
@@ -574,10 +565,12 @@ INSERT INTO `notificaciones_configuracion` (`clave`, `valor`) VALUES
 ('activar_mora', '1'),
 ('activar_pagos', '1'),
 ('activar_vencimientos', '1'),
-('dias_anticipacion', '3'),
-('frecuencia_documentos', '7'),
-('frecuencia_inactivos', '15'),
-('frecuencia_mora', '7');
+('dias_anticipacion', '1'),
+('frecuencia_documentos', '1'),
+('frecuencia_inactivos', '1'),
+('frecuencia_mora', '1'),
+('monto_pago_importante', '0'),
+('ultima_generacion', '2026-11-11 16:18:50');
 
 -- --------------------------------------------------------
 
@@ -917,13 +910,13 @@ ALTER TABLE `actividad`
 -- AUTO_INCREMENT de la tabla `cambios_masivos_estado`
 --
 ALTER TABLE `cambios_masivos_estado`
-  MODIFY `id_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_cambio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `cambios_masivos_jugadores`
 --
 ALTER TABLE `cambios_masivos_jugadores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -1001,7 +994,7 @@ ALTER TABLE `metodo_pago`
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `responsables`
