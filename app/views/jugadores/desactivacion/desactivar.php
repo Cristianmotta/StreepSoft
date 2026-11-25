@@ -71,6 +71,6 @@
             <button type="button" class="btn-primario" id="btnWizardSiguiente">Continuar</button>
         </div>
     </main>
-    <script src="/streepsoft/public/js/Jugadores/desactivacion.js"></script> 
+    <script src="/streepsoft/public/js/jugadores/desactivacion.js"></script> 
 </body>
 </html>

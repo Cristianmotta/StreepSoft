@@ -6,17 +6,27 @@ declare(strict_types=1);
  *
  * Tipos de aviso y prioridad (alta / media / baja = "no importante"):
  *
- *   mora                 -> alta
- *   proximo_vencer       -> alta (vence hoy/mañana o ya venció y está en gracia),
- *                           media (2 a 3 días), baja (más de 3 días)
+ *   mora                 -> alta (SOLO deudas en mora)
+ *   proximo_vencer       -> media (el día límite o dentro de los días de gracia,
+ *                           antes de que la deuda entre en mora)
  *   documento_rechazado  -> media
  *   documento_pendiente  -> media (jugador con más de 7 días de inscrito), baja (recién inscrito)
  *   inactivo             -> baja
  *   pago_registrado      -> baja
  *
+ * Una deuda "vigente" (antes de su fecha límite) NO genera ningún aviso:
+ * todavía no debe nada. La clasificación sale de Deuda::calcularEstadoVisual(),
+ * la misma regla que usa la tabla de deudas, para que ambas pantallas siempre
+ * coincidan (vigente / pendiente / mora) y respeten día de cobro y días de gracia.
+ *
  * Los avisos son "idempotentes": cada uno tiene una clave única, así que
  * ejecutar la generación muchas veces no duplica nada.
  */
+// calcularEstadoVisual() vive en Deuda; los scripts de cron solo cargan Notificacion.
+if (!class_exists('Deuda', false)) {
+    require_once __DIR__ . '/Deuda.php';
+}
+
 class Notificacion extends Model
 {
     public const TIPOS = [
@@ -530,15 +540,21 @@ class Notificacion extends Model
      * ------------------------------------------------------------------ */
 
     /**
-     * Deudas pendientes o en mora. Se consultan tanto las deudas activas como
-     * las trasladadas a deuda_inactivos para no dejar jugadores fuera del aviso.
-     * Cualquier deuda con pago pendiente/mora se considera prioridad alta.
+     * Deudas EN MORA (únicas con prioridad alta). Se consultan tanto las deudas
+     * activas como las trasladadas a deuda_inactivos para no dejar jugadores fuera.
+     *
+     * Una deuda está en mora si la BD la marca como 'mora' o si ya pasó la fecha
+     * límite + los días de gracia (aunque el cron todavía no haya actualizado la
+     * BD). Las deudas 'pendiente' que siguen vigentes o en gracia NO entran aquí.
      */
     private function avisosMora(): array
     {
+        $deuda = new Deuda($this->pdo);
+        $config = (new Configuracion($this->pdo))->obtenerConfiguracionPagos();
+
         $filas = $this->query(
             "SELECT d.id_deudas, d.id_jugadores, d.mes, d.anio, d.totalidad, d.pago,
-                    j.nombres, j.apellidos, d.fecha_limite_pago,
+                    j.nombres, j.apellidos, d.fecha_limite_pago, d.fecha_pago,
                     DATEDIFF(CURDATE(), d.fecha_limite_pago) AS dias_vencida
                FROM deudas d
                JOIN jugadores j ON j.id_jugadores = d.id_jugadores
@@ -547,7 +563,7 @@ class Notificacion extends Model
               UNION ALL
 
              SELECT di.id_deudas, di.id_jugadores, di.mes, di.anio, di.totalidad, di.pago,
-                    ji.nombres, ji.apellidos, di.fecha_limite_pago,
+                    ji.nombres, ji.apellidos, di.fecha_limite_pago, di.fecha_pago,
                     DATEDIFF(CURDATE(), di.fecha_limite_pago) AS dias_vencida
                FROM deuda_inactivos di
                JOIN jugadores_inactivos ji ON ji.id_jugadores = di.id_jugadores
@@ -556,7 +572,10 @@ class Notificacion extends Model
 
         $avisos = [];
         foreach ($filas as $r) {
-            $estadoDeuda = $r['pago'] === 'mora' ? 'En mora' : 'Deuda pendiente';
+            if ($deuda->calcularEstadoVisual($r, $config)['estado_visual'] !== 'mora') {
+                continue;
+            }
+
             $dias = (int) $r['dias_vencida'];
             $detalleDias = $dias > 0
                 ? ' · ' . $this->dias($dias) . ' desde el vencimiento'
@@ -564,7 +583,7 @@ class Notificacion extends Model
 
             $avisos[] = $this->aviso(
                 'mora:' . $r['id_deudas'], 'mora', 'alta', (int) $r['id_jugadores'],
-                $estadoDeuda,
+                'En mora',
                 $this->nombre($r) . " · {$r['mes']} {$r['anio']} · "
                     . $this->moneda($r['totalidad']) . $detalleDias,
                 'jugadores/deudas'
@@ -575,48 +594,49 @@ class Notificacion extends Model
     }
 
     /**
-     * Mensualidades pendientes que todavía NO están en mora y que vencen dentro
-     * de "días de anticipación" (incluye las ya vencidas que siguen en gracia).
+     * Deudas que YA llegaron a su fecha límite pero todavía NO están en mora:
+     * el día límite y los días de gracia. Prioridad media (alta es solo mora).
+     * Las deudas vigentes (antes de la fecha límite) no avisan nada.
      */
     private function avisosPorVencer(array $cfg): array
     {
-        $gracia = (new Configuracion($this->pdo))->obtenerDiasGracia();
-        $anticipacion = max(1, min(60, (int) $cfg['dias_anticipacion']));
+        $deuda = new Deuda($this->pdo);
+        $config = (new Configuracion($this->pdo))->obtenerConfiguracionPagos();
+        $gracia = (int) $config['dias_gracia'];
 
         $filas = $this->query(
-            "SELECT d.id_deudas, d.id_jugadores, d.mes, d.anio, d.fecha_limite_pago, j.nombres, j.apellidos,
+            "SELECT d.id_deudas, d.id_jugadores, d.mes, d.anio, d.pago, d.fecha_limite_pago, d.fecha_pago,
+                    j.nombres, j.apellidos,
                     DATEDIFF(CURDATE(), d.fecha_limite_pago) AS dias_vencida
                FROM deudas d
                JOIN jugadores j ON j.id_jugadores = d.id_jugadores
               WHERE d.pago = 'pendiente'
                 AND j.estado = 'activo'
-                AND DATEDIFF(CURDATE(), d.fecha_limite_pago) <= ?
-                AND d.fecha_limite_pago <= DATE_ADD(CURDATE(), INTERVAL ? DAY)",
-            [$gracia, $anticipacion]
+                AND d.fecha_limite_pago <= CURDATE()"
         );
 
         $avisos = [];
         foreach ($filas as $r) {
-            $vencida = (int) $r['dias_vencida'];   // > 0: ya venció; <= 0: faltan -N días
+            // 'pendiente' visual = día límite o periodo de gracia. Mora la cubre avisosMora().
+            if ($deuda->calcularEstadoVisual($r, $config)['estado_visual'] !== 'pendiente') {
+                continue;
+            }
+
+            $vencida = (int) $r['dias_vencida'];   // 0: vence hoy; > 0: ya venció y está en gracia
             $limite = $this->fecha($r['fecha_limite_pago']);
 
             if ($vencida > 0) {
-                $prioridad = 'alta';
-                $entraMora = $gracia + 1 - $vencida;
+                $entraMora = max(1, $gracia + 1 - $vencida);
                 $detalle = "venció el {$limite} · entra en mora en " . $this->dias($entraMora);
             } else {
-                $faltan = -$vencida;
-                $prioridad = $faltan <= 1 ? 'alta' : ($faltan <= 3 ? 'media' : 'baja');
-                $detalle = match ($faltan) {
-                    0       => 'vence hoy',
-                    1       => 'vence mañana',
-                    default => "vence el {$limite} (en {$faltan} días)",
-                };
+                $detalle = $gracia > 0
+                    ? 'vence hoy · ' . $this->dias($gracia) . ' de gracia antes de la mora'
+                    : 'vence hoy · sin días de gracia';
             }
 
             $avisos[] = $this->aviso(
-                'vence:' . $r['id_deudas'], 'proximo_vencer', $prioridad, (int) $r['id_jugadores'],
-                'Pago próximo a vencer',
+                'vence:' . $r['id_deudas'], 'proximo_vencer', 'media', (int) $r['id_jugadores'],
+                'Pago en periodo de gracia',
                 $this->nombre($r) . " · {$r['mes']} {$r['anio']} · {$detalle}",
                 'jugadores/deudas'
             );

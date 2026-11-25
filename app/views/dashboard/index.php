@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadistica | Streepsoft</title>
-    <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dash.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dash.css?v=20261123-1">
     <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
 </head>
 
@@ -139,7 +139,7 @@
                 <div class="card-dos">
                     <div class="card-jugadores">
                         <div class="text-jugadores">
-                            <h3>Jugadores</h3>
+                            <h3>Instructores</h3>
                         </div>
 
                         <div class="grafica">
@@ -251,15 +251,15 @@
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE
             ) ?: '{}' ?>;
 
-            // Distribución real de jugadores activos por categoría,
-            // consultada por DashboardController desde Estadistica.
-            window.DASHBOARD_CATEGORIAS = <?= json_encode(
-                $jugadoresPorCategoria ?? [],
+            // Jugadores activos por instructor y categoría (tarjeta "Instructores"),
+            // consultados por DashboardController desde Estadistica.
+            window.DASHBOARD_INSTRUCTORES = <?= json_encode(
+                $jugadoresPorInstructor ?? [],
                 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE
             ) ?: '[]' ?>;
         </script>
         <script src="/streepsoft/public/js/dashboard/estadistica.js?v=20261030-2"></script>
-        <script src="/streepsoft/public/js/dashboard/grafica.js?v=20261031-1"></script>
+        <script src="/streepsoft/public/js/dashboard/grafica.js?v=20261123-1"></script>
         <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
         <script src="/streepsoft/public/js/timer/time.js"></script>
         <script>

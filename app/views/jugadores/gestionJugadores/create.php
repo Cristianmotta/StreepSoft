@@ -240,7 +240,7 @@
                             <select name="id_categorias" required>
                                 <option value="">Seleccione</option>
                                 <?php foreach (($categorias ?? []) as $categoria): ?>
-                                    <option value="<?= (int)$categoria['id_categorias'] ?>">
+                                    <option value="<?= (int)$categoria['id_categorias'] ?>" data-instructor="<?= (($categoria['instructor_estado'] ?? '') === 'activo') ? (int) $categoria['id_instructor'] : '' ?>">
                                         <?= htmlspecialchars($categoria['nombre']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -253,31 +253,45 @@
             <section class="paso-formulario">
                 <div class="titulo-seccion">
                     <div class="fluent--shirt-20-filled"></div>
-                    <span>Informacion del Uniforme</span>
+                    <span>Información del uniforme (opcional)</span>
                 </div>
 
                 <div class="grid-3">
-
                     <div class="grupo">
-                        <label>Talla de camiseta</label>
-                        <input type="text" name="numero_camisa" inputmode="numeric" placeholder="Ej: 10" pattern="[0-9]*" maxlength="3">
+                        <label for="numero_camisa">Número de camiseta</label>
+                        <input
+                            type="text"
+                            id="numero_camisa"
+                            name="numero_camisa"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            maxlength="3"
+                            placeholder="Ej: 10"
+                            value=""
+                        >
                     </div>
 
-                    <div class="grupo">
-                        <label>Talla de camiseta</label>
-                        <input type="text" name="talla_camisa" placeholder="Ej: XL" maxlength="3">
+                  <div class="grupo">
+                        <label for="talla_camisa">Talla de uniforme</label>
+                        <input
+                            type="text"
+                            id="talla_camisa"
+                            name="talla_camisa"
+                            maxlength="10"
+                            placeholder="Ej: XL"
+                            value="<?= htmlspecialchars($jugador['talla_camisa'] ?? '') ?>"
+                        >
                     </div>
 
 
                     <div class="grupo">
-                        <label>Talla de pantaloneta</label>
-                        <input type="text" name="talla_pantalon" placeholder="Ej: L" maxlength="3">
-                    </div>
-
-
-                    <div class="grupo">
-                        <label>Talla de media</label>
-                        <input type="number" name="talla_media" placeholder="Ej: 35" maxlength="2">
+                        <label for="talla_media">Talla de medias</label>
+                        <select id="talla_media" name="talla_media">
+                            <option value="">Seleccione</option>
+                            <option value="Niño" <?= (($jugador['talla_media'] ?? '') === 'Niño') ? 'selected' : '' ?>>Niño</option>
+                            <option value="Adolescente" <?= (($jugador['talla_media'] ?? '') === 'Adolescente') ? 'selected' : '' ?>>Adolescente</option>
+                            <option value="Adulto" <?= (($jugador['talla_media'] ?? '') === 'Adulto') ? 'selected' : '' ?>>Adulto</option>
+                        </select>
                     </div>
                 </div>
             </section> 
@@ -478,6 +492,7 @@
 
 
     <script src="/streepsoft/public/js/nuevo/formularioJugador.js"></script>
+    <script src="/streepsoft/public/js/jugadores/asignacionInstructor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
 
 </body>

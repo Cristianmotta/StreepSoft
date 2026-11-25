@@ -57,7 +57,7 @@ class DashboardController extends Controller
         $sinFoto = $consultar('jugadores sin foto', fn() => $this->estadisticaModel->jugadoresSinFoto(), 0);
         $sinResponsable = $consultar('jugadores sin responsable', fn() => $this->estadisticaModel->jugadoresSinResponsable(), 0);
         $deudasRecientes = $consultar('deudas recientes', fn() => $this->estadisticaModel->deudasRecientes(4), []);
-        $jugadoresPorCategoria = $consultar('jugadores por categoría', fn() => $this->estadisticaModel->jugadoresPorCategoria(), []);
+        $jugadoresPorInstructor = $consultar('jugadores por instructor y categoría', fn() => $this->estadisticaModel->jugadoresPorInstructorCategoria(), []);
         $recaudacionTotal = $consultar('recaudación anual', fn() => $this->estadisticaModel->recaudacionTotal($anioActual), 0.0);
 
         if ($pagosMesAnterior > 0) {
@@ -103,7 +103,7 @@ class DashboardController extends Controller
             'sinFoto' => $sinFoto,
             'sinResponsable' => $sinResponsable,
             'deudasRecientes' => $deudasRecientes,
-            'jugadoresPorCategoria' => $jugadoresPorCategoria,
+            'jugadoresPorInstructor' => $jugadoresPorInstructor,
             'recaudacionTotal' => $recaudacionTotal,
             'anioActual' => $anioActual,
             'anioAnterior' => $anioAnterior,

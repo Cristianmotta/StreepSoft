@@ -137,15 +137,82 @@ class Estadistica extends Model
         return (int) ($resultado['total'] ?? 0);
     }
 
-    public function jugadoresPorCategoria(): array
+    /**
+     * Distribución de instructores por la categoría que tienen asignada.
+     * Incluye instructores activos e inactivos y agrupa los que no tienen
+     * categoría asignada bajo "Sin categoría".
+     */
+    public function instructoresPorCategoria(): array
     {
         $sql = "
-            SELECT c.nombre AS categoria, COUNT(j.id_jugadores) AS total
-            FROM categorias c
-            INNER JOIN jugadores j ON j.id_categorias = c.id_categorias
-            WHERE j.estado = 'activo'
+            SELECT
+                COALESCE(c.nombre, 'Sin categoría') AS categoria,
+                COUNT(DISTINCT i.id_instructor) AS total
+            FROM instructor i
+            LEFT JOIN categorias c
+                ON c.id_instructor = i.id_instructor
             GROUP BY c.id_categorias, c.nombre
-            ORDER BY c.nombre
+            ORDER BY c.nombre IS NULL, c.nombre
+        ";
+        return $this->query($sql);
+    }
+
+    /**
+     * Tarjeta "Instructores" del dashboard: UNA fila por categoría, de la menor a la mayor
+     * (Sub-6, Sub-10, ... Sub-20), con la cantidad de jugadores activos de esa categoría y
+     * el instructor que los tiene a cargo.
+     *
+     *  - Se listan todas las categorías, aunque no tengan jugadores (total_jugadores = 0).
+     *  - instructor: el/los instructores de los jugadores activos de la categoría (lo normal
+     *    es uno solo; si hubiera más de uno se muestran todos separados por " / ").
+     *    Si la categoría no tiene jugadores activos, se usa el instructor al que está asignada
+     *    la categoría (categorias.id_instructor) siempre que esté activo; si no hay, 'Sin instructor'.
+     *  - porcentaje: parte de los jugadores activos con categoría que tiene cada una.
+     */
+    public function jugadoresPorInstructorCategoria(): array
+    {
+        $sql = "
+            SELECT
+                c.id_categorias,
+                c.nombre AS categoria,
+                COALESCE(
+                    (
+                        SELECT GROUP_CONCAT(
+                            DISTINCT TRIM(CONCAT(COALESCE(ij.nombres, '')))
+                            ORDER BY ij.nombres
+                            SEPARATOR ' / '
+                        )
+                        FROM jugadores jc
+                        INNER JOIN instructor ij
+                            ON ij.id_instructor = jc.id_instructor
+                        WHERE jc.id_categorias = c.id_categorias
+                          AND jc.estado = 'activo'
+                    ),
+                    (
+                        SELECT TRIM(CONCAT(COALESCE(ic.nombres, '')))
+                        FROM instructor ic
+                        WHERE ic.id_instructor = c.id_instructor
+                          AND ic.estado = 'activo'
+                    ),
+                    'Sin instructor'
+                ) AS instructor,
+                COUNT(j.id_jugadores) AS total_jugadores,
+                ROUND(
+                    COUNT(j.id_jugadores) * 100.0 /
+                    NULLIF((
+                        SELECT COUNT(*)
+                        FROM jugadores
+                        WHERE estado = 'activo'
+                          AND id_categorias IS NOT NULL
+                    ), 0),
+                    1
+                ) AS porcentaje
+            FROM categorias c
+            LEFT JOIN jugadores j
+                ON j.id_categorias = c.id_categorias
+               AND j.estado = 'activo'
+            GROUP BY c.id_categorias, c.nombre, c.id_instructor
+            ORDER BY CAST(SUBSTRING_INDEX(c.nombre, '-', -1) AS UNSIGNED), c.nombre
         ";
         return $this->query($sql);
     }

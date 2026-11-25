@@ -37,11 +37,28 @@ if (!empty($proximaDeuda['fecha_limite_pago'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($titulo ?? 'Historial de pagos', ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="/streepsoft/public/css/jugadores/historial.css" />
+    <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 </head>
 <body>
     <div id="nav-card"></div>
 
     <div class="main-content">
+
+        <div class="ges-navegacion">
+            <a href="/streepsoft/jugadores/deudas" class="ges-btn-volver">
+                <i class="fi fi-rr-arrow-left"></i>
+                Volver al listado
+            </a>
+
+            <nav class="ges-migas" aria-label="Ruta de navegacion">
+                <a href="/streepsoft/jugadores/deudas">Deudas</a>
+                <span class="ges-migas-separador">&gt;</span>
+                <span class="ges-migas-actual"><?= htmlspecialchars($nombreCompleto, ENT_QUOTES, 'UTF-8') ?></span>
+            </nav>
+        </div>
+
+
         <div class="card-body">
             <div class="text-card">
                 <h1>Historial de Pagos</h1>
@@ -64,17 +81,26 @@ if (!empty($proximaDeuda['fecha_limite_pago'])) {
                                     <?= htmlspecialchars($iniciales !== '' ? $iniciales : 'J', ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </div>
+                            
+                            <div class="card-información">
+                                <div class="informacion">
+                                    <h3>
+                                        <?= htmlspecialchars($nombreCompleto, ENT_QUOTES, 'UTF-8') ?>
+                                        <?= $categoria !== '' ? ' - ' . htmlspecialchars($categoria, ENT_QUOTES, 'UTF-8') : '' ?>
+                                    </h3>
+                                    <p><?= htmlspecialchars($textoSiguienteDeuda, ENT_QUOTES, 'UTF-8') ?></p>
+                                </div>
 
-                            <div class="informacion">
-                                <h3>
-                                    <?= htmlspecialchars($nombreCompleto, ENT_QUOTES, 'UTF-8') ?>
-                                    <?= $categoria !== '' ? ' - ' . htmlspecialchars($categoria, ENT_QUOTES, 'UTF-8') : '' ?>
-                                </h3>
-                                <p><?= htmlspecialchars($textoSiguienteDeuda, ENT_QUOTES, 'UTF-8') ?></p>
+                                <div class="boton-pdf" >
+                                    <form method="get" action="/streepsoft/jugadores/deudas/historial/<?= (int) $jugador['id_jugadores'] ?>/pdf">
+                                        <button type="submit" title="Descargar PDF de Jugador">
+                                            <p>Descargar PDF</p>
+                                            <span class="meteor-icons--download"></span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-
-
                     </div>
 
                     <div class="card-two">
@@ -261,7 +287,7 @@ if (!empty($proximaDeuda['fecha_limite_pago'])) {
         </div>
     </div>
 
-    <script src="/streepsoft/public/js/Jugadores/historialJugador.js"></script>
+    <script src="/streepsoft/public/js/jugadores/historialJugador.js"></script>
     <script type="module" src="/streepsoft/public/js/nav/export.js"></script>
     <script src="/streepsoft/public/js/dashboard/dashboard.js"></script>
 </body>

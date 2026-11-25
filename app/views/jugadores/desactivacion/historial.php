@@ -65,6 +65,6 @@ $estado = strtolower((string) ($cambio['estado_aplicado'] ?? 'inactivo'));
             <button type="button" class="btn-primario" id="btnCerrarDetalle">Cerrar</button>
         </div>
     </main>
-    <script src="/streepsoft/public/js/Jugadores/desactivacion.js"></script>
+    <script src="/streepsoft/public/js/jugadores/desactivacion.js"></script>
 </body>
 </html>

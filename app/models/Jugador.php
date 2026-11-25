@@ -31,10 +31,11 @@ class Jugador extends Model
     public function obtenerVisiblesGestion(): array
     {
         $sql = "
-            SELECT *
-            FROM vista_jugadores
-            WHERE CAST(LOWER(estado) AS BINARY) <> CAST('inactivo' AS BINARY)
-            ORDER BY apellidos, nombres
+            SELECT v.*, r.numero_celular AS numero_acudiente
+            FROM vista_jugadores v
+            LEFT JOIN responsables r ON r.id_responsable = v.id_responsable
+            WHERE CAST(LOWER(v.estado) AS BINARY) <> CAST('inactivo' AS BINARY)
+            ORDER BY v.apellidos, v.nombres
         ";
 
         return $this->query($sql);
@@ -47,9 +48,15 @@ class Jugador extends Model
     public function obtenerPorId(int $id): ?array
     {
         $sql = "
-            SELECT * 
-            FROM vista_jugadores
-            WHERE id_jugadores = ?
+            SELECT
+                v.*,
+                u.numero_camisa,
+                u.talla_camisa,
+                u.talla_media
+            FROM vista_jugadores v
+            LEFT JOIN jugadores j ON j.id_jugadores = v.id_jugadores
+            LEFT JOIN uniformes_tallas u ON u.id_uniforme = j.id_uniforme
+            WHERE v.id_jugadores = ?
             LIMIT 1
         ";
         
@@ -127,8 +134,9 @@ class Jugador extends Model
                 id_eps,
                 id_instructor,
                 foto,
-                iniciales
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                iniciales,
+                id_uniforme
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
         $exito = $this->execute($sql, [
@@ -141,6 +149,7 @@ class Jugador extends Model
             $datos['id_instructor'],
             $datos['foto'] ?? null,
             $datos['iniciales'] ?? null,
+            $datos['id_uniforme'] ?? null,
         ]);
 
         // Si el INSERT no funcionó, no hay id que devolver
@@ -163,8 +172,12 @@ class Jugador extends Model
                 r.apellidos AS responsable_apellidos,
                 r.id_tipo_documento AS responsable_id_tipo_documento,
                 r.identificacion AS responsable_identificacion,
-                r.numero_celular AS responsable_numero_celular
+                r.numero_celular AS responsable_numero_celular,
+                u.numero_camisa,
+                u.talla_camisa,
+                u.talla_media
             FROM jugadores j
+            LEFT JOIN uniformes_tallas u ON u.id_uniforme = j.id_uniforme
             LEFT JOIN documentos doc ON doc.id_jugadores = j.id_jugadores
             LEFT JOIN responsables r ON r.id_responsable = j.id_responsable
             WHERE j.id_jugadores = ?
@@ -194,7 +207,8 @@ class Jugador extends Model
                 id_eps = ?,
                 id_instructor = ?,
                 iniciales = ?,
-                foto = COALESCE(?, foto)
+                foto = COALESCE(?, foto),
+                id_uniforme = ?
             WHERE id_jugadores = ?
         ";
 
@@ -208,6 +222,7 @@ class Jugador extends Model
             $datos['id_instructor'] ?? null,
             $datos['iniciales'] ?? null,
             $datos['foto'] ?? null,
+            $datos['id_uniforme'] ?? null,
             $id
         ]);
     }

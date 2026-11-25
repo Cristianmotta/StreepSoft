@@ -293,3 +293,60 @@ body {
     background: #7a1a1a;
     color: #fff;
 }
+
+.ges-navegacion {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.ges-btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--gold-main);
+    border-radius: 6px;
+    padding: 6px 15px;
+    color: var(--gold-main);
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.ges-btn-volver:hover {
+    background: var(--gold-main);
+    color: #000;
+}
+
+
+.ges-migas {
+    font-size: 0.9rem;
+    color: var(--text-white);
+}
+
+.ges-migas a {
+    color: var(--text-white);
+    text-decoration: none;
+}
+
+.ges-migas a:hover {
+    color: var(--gold-main);
+}
+
+.ges-migas-separador {
+    margin: 0 6px;
+}
+
+.ges-migas-actual {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.ges-titulo {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 20px 0 16px;
+}
