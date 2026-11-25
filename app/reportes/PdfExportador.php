@@ -1,148 +1,98 @@
 <?php
 declare(strict_types=1);
 
-
-/**PdfExportador
- * Implementa FormatoExportador para generar archivos .pdf usando dompdf.*/
+/** Genera los reportes generales con la misma identidad visual del historial de pagos. */
 class PdfExportador implements FormatoExportador
 {
     public function exportar(string $titulo, array $columnas, array $filas): void
     {
-        // Crear el HTML inicial: aquí solo va HTML y CSS.
-        $html = <<<'HTML'
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    color: #222222;
-                    font-size: 10px;
-                }
+        $e = static fn ($valor): string => htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
+        $logo = $this->logoEmbebido();
 
-                .encabezado {
-                    background-color: #000000;
-                    color: #FFD700;
-                    text-align: center;
-                    padding: 22px;
-                    border-bottom: 4px solid #FFD700;
-                    flex-direction: row;
-                    display: flex;
-                    gap: 15px;
-                }
+        $html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><style>'
+            . '@page { margin: 28px 32px 44px 32px; }'
+            . 'body { font-family: "DejaVu Sans", sans-serif; font-size: 9px; color: #222222; }'
+            . 'table { border-collapse: collapse; }'
+            . '.encabezado { width: 100%; background-color: #000000; border-bottom: 4px solid #FFD700; }'
+            . '.encabezado td { padding: 12px 16px; vertical-align: middle; }'
+            . '.encabezado h1 { margin: 0; font-size: 18px; color: #FFD700; }'
+            . '.encabezado p { margin: 3px 0 0; font-size: 10px; color: #E8E8E8; }'
+            . '.titulo { margin: 16px 0 4px; font-size: 15px; color: #222222; }'
+            . '.generado { margin: 0 0 12px; font-size: 8px; color: #666666; }'
+            . '.resumen { width: 100%; margin-top: 10px; }'
+            . '.resumen td { padding: 8px 10px; border: 1px solid #D4AF37; background: #FAF6E8; }'
+            . '.etiqueta { font-size: 7.5px; color: #7A6410; text-transform: uppercase; }'
+            . '.valor { margin-top: 2px; font-size: 11px; font-weight: bold; color: #111111; }'
+            . '.reporte { width: 100%; margin-top: 12px; }'
+            . '.reporte thead { display: table-header-group; }'
+            . '.reporte th { background: #000000; color: #FFD700; border: 1px solid #D4AF37; padding: 7px 6px; text-align: left; font-size: 8px; }'
+            . '.reporte td { border: 1px solid #CCCCCC; padding: 6px; vertical-align: top; overflow-wrap: break-word; }'
+            . '.reporte tr { page-break-inside: avoid; }'
+            . '.reporte tbody tr:nth-child(even) td { background: #F2F2F2; }'
+            . '.vacio { text-align: center; padding: 18px; color: #666666; }'
+            . '</style></head><body>';
 
-                .Logo{
-                    background-image: url('/streepsoft/public/Image/logo.png');
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    width: 30px;
-                    height: 25px;
-                }
+        $html .= '<table class="encabezado"><tr>';
+        if ($logo !== '') {
+            $html .= '<td style="width:64px;"><img src="' . $logo . '" style="height:84px;" alt=""></td>';
+        }
+        $html .= '<td><h1>COP COLOMBIA INTERNATIONAL</h1><p>Reportes administrativos</p></td></tr></table>';
+        $html .= '<h2 class="titulo">' . $e($titulo) . '</h2>'
+            . '<p class="generado">Generado el ' . $e(date('d-m-Y H:i')) . ' · Registros: ' . count($filas) . '</p>';
 
-                .encabezado h1 {
-                    font-size: 22px;
-                    margin: 0;
-                }
-
-                h2 {
-                    color: #222222;
-                    margin-top: 20px;
-                }
-
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 15px;
-                }
-
-                thead th {
-                    background-color: #000000;
-                    color: #FFD700;
-                    border: 1px solid #D4AF37;
-                    padding: 8px;
-                    text-align: left;
-                }
-
-                tbody td {
-                    border: 1px solid #CCCCCC;
-                    padding: 7px;
-                }
-
-                tbody tr:nth-child(even) {
-                    background-color: #F2F2F2;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="encabezado">
-                <h1>COP COLOMBIA INTERNATIONAL</h1>
-            </div>
-        HTML;
-        // Agregar el título del reporte.
-        $html .= '<h2>' .
-            htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') .
-            '</h2>';
-
-        // Construir la tabla con los encabezados.
-        $html .= '<table><thead><tr>';
-
+        $html .= '<table class="reporte"><thead><tr>';
         foreach ($columnas as $columna) {
-            $html .= '<th>' .
-                htmlspecialchars((string) $columna, ENT_QUOTES, 'UTF-8') .
-                '</th>';
+            $html .= '<th>' . $e($columna) . '</th>';
         }
-
         $html .= '</tr></thead><tbody>';
-        
 
-        // Agregar las filas de datos.
-        foreach ($filas as $fila) {
-            $html .= '<tr>';
-
-            foreach ($columnas as $indice => $columna) {
-                // Compatible con filas asociativas o indexadas.
-                $valor = $fila[$columna] ?? $fila[$indice] ?? '';
-
-                if (is_array($valor) || is_object($valor)) {
-                    $valor = '';
+        if ($filas === []) {
+            $html .= '<tr><td class="vacio" colspan="' . max(1, count($columnas)) . '">No hay registros para mostrar.</td></tr>';
+        } else {
+            foreach ($filas as $fila) {
+                $html .= '<tr>';
+                foreach ($columnas as $indice => $columna) {
+                    $valor = is_array($fila) ? ($fila[$columna] ?? $fila[$indice] ?? '') : '';
+                    if (is_array($valor) || is_object($valor)) $valor = '';
+                    $html .= '<td>' . $e($valor) . '</td>';
                 }
-
-                $html .= '<td>' .
-                    htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8') .
-                    '</td>';
+                $html .= '</tr>';
             }
-
-            $html .= '</tr>';
         }
-
         $html .= '</tbody></table></body></html>';
 
-        // Generar y descargar el PDF una sola vez.
-        // Configurar Dompdf para cargar imágenes locales.
         $opciones = new \Dompdf\Options();
-        $opciones->set('isRemoteEnabled', true);
+        $opciones->set('isRemoteEnabled', false);
+        $opciones->set('defaultFont', 'DejaVu Sans');
         $opciones->set('chroot', realpath(__DIR__ . '/../..'));
-
-        // Crear el PDF.
         $dompdf = new \Dompdf\Dompdf($opciones);
+        $dompdf->addInfo('Title', $titulo);
+        $dompdf->addInfo('Author', 'COP COLOMBIA INTERNATIONAL');
         $dompdf->loadHtml($html, 'UTF-8');
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
-        $dompdf->stream($this->nombreArchivo($titulo), [
-            'Attachment' => true
-        ]);
-
+        $canvas = $dompdf->getCanvas();
+        $fuente = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
+        $canvas->page_text($canvas->get_width() - 120, $canvas->get_height() - 28,
+            'Página {PAGE_NUM} de {PAGE_COUNT}', $fuente, 8, [0.4, 0.4, 0.4]);
+        $dompdf->stream($this->nombreArchivo($titulo), ['Attachment' => true]);
         exit;
     }
 
-    /** Convierte el título en un nombre de archivo seguro. */
+    private function logoEmbebido(): string
+    {
+        $ruta = __DIR__ . '/../../public/Image/logo.png';
+        if (!is_file($ruta) || !is_readable($ruta)) return '';
+        $contenido = @file_get_contents($ruta);
+        return $contenido === false ? '' : 'data:image/png;base64,' . base64_encode($contenido);
+    }
+
     private function nombreArchivo(string $titulo): string
     {
-        $slug = strtolower(str_replace(' ', '_', $titulo));
-        $slug = preg_replace('/[^a-z0-9_]/', '', $slug);
-
+        $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $titulo);
+        $slug = strtolower((string) $slug);
+        $slug = trim((string) preg_replace('/[^a-z0-9]+/', '_', $slug), '_');
         return ($slug !== '' ? $slug : 'reporte') . '.pdf';
     }
 }

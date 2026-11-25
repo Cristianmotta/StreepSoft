@@ -455,7 +455,7 @@ body:not(.sidebar-open) .cerrar-sesion {
     left: 0;
     bottom: 23px;
     width: 3px;
-    height: 9%;
+    height: 8.9%;
     background-color: #b10000;
     transform: scaleY(0);
     transition: transform 0.25s ease;

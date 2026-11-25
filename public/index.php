@@ -148,6 +148,7 @@ if (Auth::check()) {
             '/jugadores/gestion' => ['controller' => 'JugadorController', 'method' => 'gestion'],
             '/jugadores/deudas' => ['controller' => 'DeudaController', 'method' => 'listar'],
             '/jugadores/deudas/historial/:id' => ['controller' => 'DeudaController', 'method' => 'historialJugador'],
+            '/jugadores/deudas/historial/:id/pdf' => ['controller' => 'DeudaController', 'method' => 'descargarHistorialPdf'],
             '/jugadores/deudas/historial/editar/:id' => ['controller' => 'DeudaController', 'method' => 'editarPagoHistorial'],
             '/deudas/:id/pago' => ['controller' => 'DeudaController', 'method' => 'mostrarPago'],
             '/jugadores/crear' => ['controller' => 'JugadorController', 'method' => 'crear'],

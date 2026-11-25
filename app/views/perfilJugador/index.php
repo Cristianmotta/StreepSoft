@@ -7,7 +7,8 @@
     <title>Perfil de Alumno | StreepSoft</title>
     <link rel="stylesheet" href="/streepsoft/public/css/dashboard/dashboard.css">
     <link rel="stylesheet" href="/streepsoft/public/css/perfil/perfil.css">
-
+    <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
@@ -16,6 +17,22 @@
     <div id="nav-card"></div>
 
     <div class="main-content">
+        
+        <div class="ges-navegacion">
+            <a href="/streepsoft/jugadores/gestion" class="ges-btn-volver">
+                <i class="fi fi-rr-arrow-left"></i>
+                Volver al listado
+            </a>
+
+            <nav class="ges-migas" aria-label="Ruta de navegacion">
+                <a href="/streepsoft/jugadores/gestion">Perfiles</a>
+                <span class="ges-migas-separador">&gt;</span>
+                <span class="ges-migas-actual"><?= htmlspecialchars($jugador['nombres'] . ' ' . $jugador['apellidos']) ?></span>
+            </nav>
+        </div>
+
+
+
         <section class="perfil-page">
 
             <div class="perfil-header">
@@ -72,10 +89,6 @@
                         <span class="campo-valor"><?= htmlspecialchars($jugador['instructor'] ?? 'No asignado') ?></span>
                     </div>
                     <div class="campo">
-                        <span class="campo-label">Iniciales</span>
-                        <span class="campo-valor"><?= htmlspecialchars($jugador['iniciales'] ?? 'N/A') ?></span>
-                    </div>
-                    <div class="campo">
                         <span class="campo-label">Fecha Nacimiento</span>
                         <span class="campo-valor"><?= htmlspecialchars($jugador['fecha_nacimiento'] ?? 'N/A') ?></span>
                     </div>
@@ -98,20 +111,20 @@
                 <h2 class="seccion-titulo"><span>TALLA Y UNIFORMES</span></h2>
                 <div class="campos-grid">
                     <div class="campo">
-                        <span class="campo-label">N de camisa</span>
-                        <span class="campo-valor">10</span>
+                        <span class="campo-label">Iniciales</span>
+                        <span class="campo-valor"><?= htmlspecialchars($jugador['iniciales'] ?? 'N/A') ?></span>
                     </div>
                     <div class="campo">
-                        <span class="campo-label">Talla Camisa</span>
-                        <span class="campo-valor">L</span>
+                        <span class="campo-label">N.º de camiseta</span>
+                        <span class="campo-valor"><?= htmlspecialchars((string) ($jugador['numero_camisa'] ?? 'No registrado')) ?></span>
                     </div>
                     <div class="campo">
-                        <span class="campo-label">Talla Pantaloneta</span>
-                        <span class="campo-valor">L</span>
+                        <span class="campo-label">Talla de Uniforme</span>
+                        <span class="campo-valor"><?= htmlspecialchars((string) ($jugador['talla_camisa'] ?? 'No registrada')) ?></span>
                     </div>
                     <div class="campo">
-                        <span class="campo-label">Talla Media</span>
-                        <span class="campo-valor">L</span>
+                        <span class="campo-label">Talla de medias</span>
+                        <span class="campo-valor"><?= htmlspecialchars((string) ($jugador['talla_media'] ?? 'No registrada')) ?></span>
                     </div>
                 </div>
             </div>

@@ -860,3 +860,188 @@ body {
     font-size: 14px;
 }
 }
+
+
+/* Categorías del instructor (casillas) */
+/* La cuadrícula tenía alto fijo (200px): con la fila de categorías hay que dejarla crecer */
+.grid-2{
+    height: auto;
+    min-height: 200px;
+}
+
+.grupo.grupo-categorias{
+    margin-top: 12px;
+    grid-column: 1 / -1; /* ocupa las dos columnas del .grid-2 */
+}
+
+.grupo .categorias-checks{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 8px 12px;
+
+    background: #c3c1c1;
+    border: 1px solid #777;
+    border-radius: 4px;
+}
+
+.grupo .categoria-check{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1f1f1f;
+    cursor: pointer;
+}
+
+.grupo .categoria-check input{
+    width: auto;
+    height: auto;
+    margin: 0;
+    accent-color: #D09E10;
+}
+
+.grupo .categoria-check small{
+    color: #444;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.grupo .ayuda-categorias{
+    margin: 6px 0 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 10px;
+    color: #999;
+}
+
+
+/* Desplegable de selección múltiple de categorías para instructores */
+.grupo.grupo-categorias {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+
+.grupo-categorias .categorias-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.categorias-dropdown-resumen {
+    min-height: 46px;
+    padding: 11px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: #000000;
+    background: #cdcdcd;
+    border: 1px solid #66521b;
+    border-radius: 8px;
+    cursor: pointer;
+    list-style: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.categorias-dropdown-resumen::-webkit-details-marker {
+    display: none;
+}
+
+.categorias-dropdown-resumen::marker {
+    content: "";
+}
+
+.categorias-dropdown-resumen:hover,
+.categorias-dropdown[open] .categorias-dropdown-resumen {
+    background: #828282;
+    border-color: #D09E10;
+    box-shadow: 0 0 0 3px rgba(208, 158, 16, .12);
+}
+
+.categorias-resumen-texto {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.categorias-chevron {
+    flex: 0 0 9px;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid #D09E10;
+    border-bottom: 2px solid #D09E10;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform .2s ease;
+}
+
+.categorias-dropdown[open] .categorias-chevron {
+    transform: rotate(225deg) translate(-2px, -1px);
+}
+
+.categorias-dropdown-opciones {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 230px;
+    overflow-y: auto;
+    padding: 7px;
+    background: #191919;
+    border: 1px solid #D09E10;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .4);
+}
+
+.grupo-categorias .categoria-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    margin: 0;
+    padding: 8px 10px;
+    color: #f2f2f2;
+    border-radius: 5px;
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.grupo-categorias .categoria-check:hover {
+    background: rgba(208, 158, 16, .12);
+}
+
+.grupo-categorias .categoria-check input {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #D09E10;
+    cursor: pointer;
+}
+
+.grupo-categorias .categoria-nombre {
+    flex: 1;
+}
+
+.grupo-categorias .categoria-check small {
+    padding: 2px 6px;
+    color: #e5c76d;
+    background: rgba(208, 158, 16, .1);
+    border: 1px solid rgba(208, 158, 16, .25);
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+.grupo-categorias .ayuda-categorias {
+    margin: 7px 0 0;
+    color: #a5a5a5;
+    font-size: 10px;
+    line-height: 1.5;
+}

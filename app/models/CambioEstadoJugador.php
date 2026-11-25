@@ -79,6 +79,47 @@ class CambioEstadoJugador extends Model
         return $this->obtenerTodosLosJugadores();
     }
 
+    /**
+     * Elimina únicamente los movimientos de reactivación con más de 24 horas.
+     * Los jugadores y sus datos no se modifican; solo se limpian las dos tablas
+     * que forman el registro del movimiento (cabecera y detalle).
+     *
+     * @return int Número de movimientos eliminados.
+     */
+    public function limpiarReactivacionesVencidas(): int
+    {
+        $this->pdo->beginTransaction();
+
+        try {
+            // Primero se eliminan los detalles para respetar instalaciones donde
+            // la relación no tenga ON DELETE CASCADE.
+            $sqlDetalles = "
+                DELETE cj
+                FROM cambios_masivos_jugadores cj
+                INNER JOIN cambios_masivos_estado c ON c.id_cambio = cj.id_cambio
+                WHERE c.estado_aplicado = 'activo'
+                  AND c.creado_en <= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            ";
+            $this->pdo->exec($sqlDetalles);
+
+            $sqlCambios = "
+                DELETE FROM cambios_masivos_estado
+                WHERE estado_aplicado = 'activo'
+                  AND creado_en <= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            ";
+            $this->pdo->exec($sqlCambios);
+            $eliminados = $this->pdo->query('SELECT ROW_COUNT()')->fetchColumn();
+
+            $this->pdo->commit();
+            return (int) $eliminados;
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     /** Historial de cambios masivos, del más reciente al más antiguo. */
     public function obtenerHistorialCambios(): array
     {

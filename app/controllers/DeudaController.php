@@ -85,6 +85,56 @@ class DeudaController extends Controller
 
 
 
+    /**
+     * Descarga en PDF el historial COMPLETO de pagos de un jugador
+     * (todos los pagos registrados, sin el filtro de fechas de la pantalla).
+     */
+    public function descargarHistorialPdf(int $id): void
+    {
+        if ($id <= 0) {
+            http_response_code(400);
+            echo 'Identificador de jugador inválido.';
+            return;
+        }
+
+        try {
+            $jugador = $this->jugadorModel->obtenerParaHistorial($id);
+
+            if (!$jugador) {
+                http_response_code(404);
+                echo 'No se encontró el jugador solicitado.';
+                return;
+            }
+
+            $historial = $this->historialModel->obtenerPorJugador($id);
+
+            // Dompdf se carga solo cuando se pide un PDF (igual que ReporteController).
+            require_once __DIR__ . '/../../vendor/autoload.php';
+            require_once __DIR__ . '/../reportes/HistorialJugadorPdf.php';
+
+            $generador = new HistorialJugadorPdf();
+            $pdf = $generador->generar($jugador, $historial);
+            $nombreArchivo = $generador->nombreArchivo($jugador);
+
+            // Se descartan salidas previas para que nada corrompa el archivo.
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . $nombreArchivo . '"');
+            header('Content-Length: ' . strlen($pdf));
+            header('Cache-Control: private, no-store, max-age=0');
+            echo $pdf;
+            exit;
+        } catch (Throwable $e) {
+            error_log('DeudaController::descargarHistorialPdf - ID jugador ' . $id . ' - ' . $e->getMessage());
+            http_response_code(500);
+            echo 'No se pudo generar el PDF del historial de pagos.';
+        }
+    }
+
+
     /** Abre el formulario con los datos existentes de un pago histórico. */
     public function editarPagoHistorial(int $id): void
     {

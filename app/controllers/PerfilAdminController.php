@@ -128,7 +128,18 @@ class PerfilAdminController extends Controller
             return;
         }
 
+        // Se declara fuera del try para poder limpiarla en el catch si algo falla
+        $nombreFoto = null;
+        $fotoGuardadaEnBD = false;
+
         try {
+            $usuarioModel = new Usuario($this->pdo);
+
+            // 1) Leer la foto actual ANTES de subir la nueva (para poder borrarla después)
+            $adminActual = $usuarioModel->obtenerPorId(Auth::id());
+            $fotoAnterior = $adminActual['foto'] ?? null;
+
+            // 2) Subir la nueva foto al disco
             $nombreFoto = $this->subirFotoAdmin($_FILES['foto'] ?? null);
 
             if ($nombreFoto === null) {
@@ -136,15 +147,44 @@ class PerfilAdminController extends Controller
                 return;
             }
 
-            $usuarioModel = new Usuario($this->pdo);
+            // 3) Apuntar la BD a la nueva foto
+            $fotoGuardadaEnBD = $usuarioModel->actualizarFoto(Auth::id(), $nombreFoto);
 
-            if ($usuarioModel->actualizarFoto(Auth::id(), $nombreFoto)) {
+            if ($fotoGuardadaEnBD) {
+                // 4) La BD ya usa la nueva: la anterior quedó huérfana, se elimina del disco
+                if (!empty($fotoAnterior) && $fotoAnterior !== $nombreFoto) {
+                    $this->eliminarFotoAdmin($fotoAnterior);
+                }
                 $this->redirect('/streepsoft/perfil/administrador?success=foto_actualizada');
             } else {
+                // La BD no se actualizó: se borra la nueva para no dejarla huérfana
+                $this->eliminarFotoAdmin($nombreFoto);
                 $this->redirect('/streepsoft/perfil/administrador?error=foto_no_guardada');
             }
         } catch (Exception $e) {
+            error_log('PerfilAdminController::cambiarFoto - ' . $e->getMessage());
+
+            // Si la foto nueva alcanzó a guardarse en disco pero la BD no la usa, se borra
+            if ($nombreFoto !== null && !$fotoGuardadaEnBD) {
+                $this->eliminarFotoAdmin($nombreFoto);
+            }
+
             $this->redirect('/streepsoft/perfil/administrador?error=foto_invalida');
+        }
+    }
+
+    /* Elimina del disco una foto de administrador (solo dentro de public/Image/admins) */
+    private function eliminarFotoAdmin(?string $nombreFoto): void
+    {
+        if (empty($nombreFoto)) {
+            return;
+        }
+
+        // basename() evita que un valor raro de la BD (ej. "../../algo") borre archivos fuera de la carpeta
+        $ruta = __DIR__ . '/../../public/Image/admins/' . basename($nombreFoto);
+
+        if (is_file($ruta) && !unlink($ruta)) {
+            error_log('PerfilAdminController::eliminarFotoAdmin - No se pudo eliminar: ' . $ruta);
         }
     }
 

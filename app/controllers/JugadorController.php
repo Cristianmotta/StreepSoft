@@ -88,6 +88,10 @@ class JugadorController extends Controller
     public function desactivacion(): void
     {
         try {
+            // Limpieza de reactivaciones cumplidas (24 h). No afecta jugadores ni
+            // los registros de desactivación; solo elimina el movimiento de reactivación.
+            $this->cambioEstadoModel->limpiarReactivacionesVencidas();
+
             $jugadores = $this->cambioEstadoModel->obtenerTodosLosJugadores();
             $historialCambios = $this->cambioEstadoModel->obtenerHistorialCambios();
         } catch (Throwable $e) {
@@ -236,7 +240,7 @@ class JugadorController extends Controller
     public function crear(): void
     {
         try {
-            $categorias = $this->categoriaModel->obtenerTodas();
+            $categorias = $this->categoriaModel->obtenerConInstructor();
             $instructores = $this->instructorModel->obtenerTodos();
             $epsList = $this->epsModel->obtenerTodas();
             $tiposDocumento = $this->tipoDocumentoModel->obtenerTodos();
@@ -275,7 +279,7 @@ class JugadorController extends Controller
         }
 
         try{
-            $categorias = $this->categoriaModel->obtenerTodas();
+            $categorias = $this->categoriaModel->obtenerConInstructor();
             $instructores = $this->instructorModel->obtenerTodos();
             $epsList = $this->epsModel->obtenerTodas();
             $tiposDocumento = $this->tipoDocumentoModel->obtenerTodos();
@@ -350,9 +354,20 @@ class JugadorController extends Controller
                 $this->redirect('/streepsoft/jugadores/editar/' . $idJugador . '?error=campos_vacios');
             }
         }
+        // La categoría manda: si tiene un instructor activo asignado, ese es el instructor
+        // del jugador (aunque el formulario haya mandado otro o ninguno).
+        $idInstructorCategoria = $this->categoriaModel->obtenerInstructorActivo($datos['id_categorias']);
+        if ($idInstructorCategoria !== null) {
+            $datos['id_instructor'] = $idInstructorCategoria;
+        }
+
         if ($datos['id_categorias'] <= 0 || $datos['id_eps'] <= 0 || $datos['id_instructor'] <= 0) {
             $this->redirect('/streepsoft/jugadores/editar/' . $idJugador . '?error=campos_vacios');
         }
+
+        // Foto actual del jugador: se necesita para borrarla del disco si se reemplaza por una nueva
+        $jugadorActual = $this->jugadorModel->obtenerParaEditar($idJugador);
+        $fotoAnterior = $jugadorActual['foto'] ?? null;
 
         // La foto es opcional al editar: si no se tocó, se conserva la que ya tenía
         try {
@@ -364,6 +379,11 @@ class JugadorController extends Controller
 
         try {
             $this->pdo->beginTransaction();
+
+            // Guardar/actualizar las tallas opcionales antes de actualizar el jugador.
+            $datos['id_uniforme'] = $this->guardarTallasUniforme(
+                !empty($jugadorActual['id_uniforme']) ? (int) $jugadorActual['id_uniforme'] : null
+            );
 
             $responsableNombres = trim($_POST['responsable_nombres'] ?? '');
             $responsableApellidos = trim($_POST['responsable_apellidos'] ?? '');
@@ -400,6 +420,12 @@ class JugadorController extends Controller
                 }
             }
 
+            // Sin responsable el formulario envía 0; la FK fk_jugadores_responsable
+            // solo acepta un id existente o NULL, así que 0 se guarda como NULL.
+            if (empty($datos['id_responsable'])) {
+                $datos['id_responsable'] = null;
+            }
+
             // 2) ACTUALIZAR JUGADOR
             if (!$this->jugadorModel->actualizar($idJugador, $datos)) {
                 throw new Exception('No se pudo actualizar el jugador');
@@ -408,10 +434,20 @@ class JugadorController extends Controller
             $this->documentoModel->guardarOActualizar($idJugador, $documentoNumero ?: null, $idTipoDocumento ?: null);
 
             $this->pdo->commit();
+
+            // La BD ya usa la foto nueva: la anterior quedó huérfana, se elimina del disco
+            if (!empty($datos['foto']) && !empty($fotoAnterior) && $fotoAnterior !== $datos['foto']) {
+                $this->eliminarFotoJugador($fotoAnterior);
+            }
+
             $this->redirect('/streepsoft/jugadores/gestion?success=actualizado');
         } catch (Exception $e) {
             $this->pdo->rollBack();
             error_log('Actualizar jugador: ' . $e->getMessage());
+
+            // Se revirtió la transacción: la foto nueva (si se subió) quedó sin uso, se elimina
+            $this->eliminarFotoJugador($datos['foto'] ?? null);
+
             $this->redirect('/streepsoft/jugadores/editar/' . $idJugador . '?error=actualizacion_fallida');
         }
     }
@@ -472,6 +508,13 @@ class JugadorController extends Controller
             }
         }
 
+        // La categoría manda: si tiene un instructor activo asignado, ese es el instructor
+        // del jugador (aunque el formulario haya mandado otro o ninguno).
+        $idInstructorCategoria = $this->categoriaModel->obtenerInstructorActivo($datos['id_categorias']);
+        if ($idInstructorCategoria !== null) {
+            $datos['id_instructor'] = $idInstructorCategoria;
+        }
+
         if ($datos['id_categorias'] <= 0 || $datos['id_eps'] <= 0 || $datos['id_instructor'] <= 0) {
             $this->redirect('/streepsoft/jugadores/crear?error=campos_vacios');
         }
@@ -522,6 +565,9 @@ class JugadorController extends Controller
         // 4) Guardar en la base de datos DENTRO de una transacción:
         try {
             $this->pdo->beginTransaction();
+
+            // Crear el registro de tallas solo si se diligenció algún campo.
+            $datos['id_uniforme'] = $this->guardarTallasUniforme();
 
             $responsableModel = new Responsable($this->pdo);
             $idResponsable = $responsableModel->crear([
@@ -578,8 +624,82 @@ class JugadorController extends Controller
         } catch (Exception $e) {
             $this->pdo->rollBack();
             error_log("Guardar jugador: " . $e->getMessage());
+
+            // No se creó el jugador: la foto que se alcanzó a subir queda sin uso, se elimina
+            $this->eliminarFotoJugador($nombreFoto);
+
             $this->redirect('/streepsoft/jugadores/gestion?error=creacion_fallida');
         }
+    }
+
+    /**
+     * Guarda las tallas del uniforme opcional en su tabla independiente.
+     * Devuelve el id del registro o null si todos los campos están vacíos.
+     */
+    private function guardarTallasUniforme(?int $idUniforme = null): ?int
+    {
+        $numero = trim((string) ($_POST['numero_camisa'] ?? ''));
+        $camisa = trim((string) ($_POST['talla_camisa'] ?? ''));
+        $media = trim((string) ($_POST['talla_media'] ?? ''));
+
+        $opcionesMedias = ['Niño', 'Adolescente', 'Adulto'];
+        if ($media !== '' && !in_array($media, $opcionesMedias, true)) {
+            // Permite conservar un valor histórico que ya estuviera guardado,
+            // pero no permite introducir valores nuevos fuera de las opciones.
+            $valorHistorico = null;
+            if ($idUniforme !== null && $idUniforme > 0) {
+                $consultaHistorico = $this->pdo->prepare(
+                    'SELECT talla_media FROM uniformes_tallas WHERE id_uniforme = ?'
+                );
+                $consultaHistorico->execute([$idUniforme]);
+                $valorHistorico = $consultaHistorico->fetchColumn();
+            }
+            if ($valorHistorico === false || $valorHistorico === null || (string) $valorHistorico !== $media) {
+                throw new InvalidArgumentException('La talla de medias seleccionada no es válida.');
+            }
+        }
+
+        $hayDatos = ($numero !== '' || $camisa !== '' || $media !== '');
+
+        if (!$hayDatos) {
+            if ($idUniforme !== null && $idUniforme > 0) {
+                $stmt = $this->pdo->prepare('DELETE FROM uniformes_tallas WHERE id_uniforme = ?');
+                $stmt->execute([$idUniforme]);
+            }
+            return null;
+        }
+
+        if ($idUniforme !== null && $idUniforme > 0) {
+            $stmt = $this->pdo->prepare(
+                'UPDATE uniformes_tallas
+                 SET numero_camisa = ?, talla_camisa = ?, talla_media = ?
+                 WHERE id_uniforme = ?'
+            );
+            $stmt->execute([
+                $numero !== '' ? $numero : null,
+                $camisa !== '' ? $camisa : null,
+                $media !== '' ? $media : null,
+                $idUniforme,
+            ]);
+
+            $check = $this->pdo->prepare('SELECT id_uniforme FROM uniformes_tallas WHERE id_uniforme = ?');
+            $check->execute([$idUniforme]);
+            if ($check->fetchColumn()) {
+                return $idUniforme;
+            }
+        }
+
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO uniformes_tallas (numero_camisa, talla_camisa, talla_media)
+             VALUES (?, ?, ?)'
+        );
+        $stmt->execute([
+            $numero !== '' ? $numero : null,
+            $camisa !== '' ? $camisa : null,
+            $media !== '' ? $media : null,
+        ]);
+
+        return (int) $this->pdo->lastInsertId();
     }
 
     /**
@@ -645,6 +765,42 @@ class JugadorController extends Controller
     }
 
     /**
+     * Elimina del disco una foto de jugador (solo dentro de public/Image/jugadores).
+     * No la borra si otro registro (jugadores o jugadores_inactivos) todavía la usa:
+     * al inactivar un jugador su foto se copia a jugadores_inactivos.
+     */
+    private function eliminarFotoJugador(?string $nombreFoto): void
+    {
+        if (empty($nombreFoto)) {
+            return;
+        }
+
+        try {
+            // basename() evita borrar archivos fuera de la carpeta si la BD trae un valor raro
+            $nombreFoto = basename($nombreFoto);
+
+            $stmt = $this->pdo->prepare(
+                'SELECT (SELECT COUNT(*) FROM jugadores WHERE foto = ?)
+                      + (SELECT COUNT(*) FROM jugadores_inactivos WHERE foto = ?)'
+            );
+            $stmt->execute([$nombreFoto, $nombreFoto]);
+
+            if ((int) $stmt->fetchColumn() > 0) {
+                return;
+            }
+
+            $ruta = __DIR__ . '/../../public/Image/jugadores/' . $nombreFoto;
+
+            if (is_file($ruta) && !unlink($ruta)) {
+                error_log('JugadorController::eliminarFotoJugador - No se pudo eliminar: ' . $ruta);
+            }
+        } catch (Throwable $e) {
+            // Limpiar una foto nunca debe romper la operación principal (crear, editar o eliminar)
+            error_log('JugadorController::eliminarFotoJugador - ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Eliminar un jugador
      */
     public function eliminar(int $id): void
@@ -659,8 +815,13 @@ class JugadorController extends Controller
             $this->redirect('/streepsoft/jugadores/gestion?error=csrf');
         }
 
+        // Se lee la foto ANTES de borrar el registro, porque después ya no se podría consultar
+        $jugadorAEliminar = $this->jugadorModel->obtenerParaEditar($id);
+        $fotoJugador = $jugadorAEliminar['foto'] ?? null;
+
         // Eliminar el jugador
         if ($this->jugadorModel->eliminar($id)) {
+            $this->eliminarFotoJugador($fotoJugador);
             $this->redirect('/streepsoft/jugadores/gestion?success=eliminado');
         } else {
             $this->redirect('/streepsoft/jugadores/gestion?error=eliminacion_fallida');

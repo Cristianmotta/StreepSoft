@@ -742,6 +742,37 @@ select option::checkmark {
     transform: translateX(5px);
 }
 
+@media screen and (max-width: 1577px){
+    
+    .card-jugadores {
+        width: 100%;
+        height: 55%;
+        background: #212020;
+        border-radius: 12px;
+    }
+
+    .grafica-categorias {
+        width: 100%;
+        height: auto;
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(15px, 3vw, 19px);
+        flex-wrap: wrap;
+        border-radius: 12px;
+        background: #212020;
+        margin-top: 4px;
+    }
+
+
+    .leyenda-categorias {
+        flex: 0 1 340px;
+        min-width: 0;
+        max-height: 260px;
+        margin-bottom: 14px;
+    }
+}
 /* =========================================
    MEDIA QUERIES PARA RESPONSIVIDAD
 ========================================= */
@@ -822,4 +853,42 @@ select option::checkmark {
         height: 60px;
         margin-top: 20px;
     }
+}
+
+/* Tarjeta Instructores: si hay muchas combinaciones instructor/categoría, la leyenda hace scroll
+   en lugar de salirse de la tarjeta. */
+.leyenda-categorias{
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* Tarjeta Instructores: una fila por categoría -> "Sub-6 · Instructor · 4 alumnos" */
+.leyenda-categorias{
+    flex: 0 1 340px;      /* ancho propio: la dona se queda con su espacio y todo va centrado */
+    min-width: 0;
+    max-height: 260px;    /* caben las 6 categorías; si hubiera más, hace scroll */
+}
+
+.item-categoria .nombre-categoria{
+    flex: 0 0 58px;       /* "Sub-10" / "Sub-20" en una sola línea */
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.item-categoria .instructor-categoria{
+    flex: 1 1 auto;
+    min-width: 0;
+    color: #c9c9c9;
+    font-size: clamp(11px, 2vw, 13px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-categoria .cantidad-categoria{
+    flex: none;
+    color: #9a9a9a;
+    font-size: clamp(11px, 2vw, 13px);
+    white-space: nowrap;
 }

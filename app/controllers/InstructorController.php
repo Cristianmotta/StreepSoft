@@ -48,7 +48,7 @@ class InstructorController extends Controller
     
     public function crearForm(): void
     {
-        $categorias = $this->categoriaModel->obtenerTodas();
+        $categorias = $this->categoriaModel->obtenerConInstructor();
 
         $this->view('instructores/agregar', [
             'categorias' => $categorias,
@@ -84,33 +84,37 @@ class InstructorController extends Controller
             'apellidos' => trim($_POST['apellidos'] ?? ''),
             'edad' => (int) ($_POST['edad'] ?? 0) ?: null,
             'numero_celular' => trim($_POST['numero_celular'] ?? ''),
-            'id_categorias' => (int) ($_POST['id_categorias'] ?? 0),
+            'categorias' => $this->categoriasDelFormulario(),
             'descripcion' => trim($_POST['descripcion'] ?? ''),
             'estado'         => $estado,
         ];
 
-        try {
-            // ✅ PROCESAR FOTO SI SE ENVIÓ
-            $fotoBase64 = $_POST['foto_base64'] ?? null;
-            if (!empty($fotoBase64)) {
-                $nombreFoto = $this->procesarFotoInstructor($fotoBase64);
-                $datos['foto'] = $nombreFoto;  // ✅ AGREGAR A LOS DATOS
-            }
-            if ($this->instructorModel->crear($datos)) {
-                $this->redirect('/streepsoft/instructores/listar?success=creado');
-            }
-        } catch (Exception $e) {
-            error_log("Guardar instructor (foto): " . $e->getMessage());
-            $this->redirect('/streepsoft/instructores/crear?error=creacion_fallida');
-        }
-
-        if ($datos['nombres'] === '' || $datos['apellidos'] === '' || $datos['id_categorias'] <= 0) {
+        // Se valida ANTES de guardar (antes esta validación quedaba después de guardar y nunca se aplicaba)
+        if ($datos['nombres'] === '' || $datos['apellidos'] === '') {
             $this->redirect('/streepsoft/instructores/crear?error=campos_vacios');
         }
 
-        if ($this->instructorModel->crear($datos)) {
-            $this->redirect('/streepsoft/instructores/listar?success=creado');
-        } else {
+        // Se declara fuera del try para poder eliminar la foto si algo falla
+        $nombreFoto = null;
+
+        try {
+            // Procesar la foto si se envió
+            $fotoBase64 = $_POST['foto_base64'] ?? null;
+            if (!empty($fotoBase64)) {
+                $nombreFoto = $this->procesarFotoInstructor($fotoBase64);
+                $datos['foto'] = $nombreFoto;
+            }
+
+            if ($this->instructorModel->crear($datos)) {
+                $this->redirect('/streepsoft/instructores/listar?success=creado');
+            }
+
+            // crear() no guardó nada: la foto que se alcanzó a subir queda sin uso, se elimina
+            $this->eliminarArchivoFotoInstructor($nombreFoto);
+            $this->redirect('/streepsoft/instructores/crear?error=creacion_fallida');
+        } catch (Exception $e) {
+            error_log("Guardar instructor: " . $e->getMessage());
+            $this->eliminarArchivoFotoInstructor($nombreFoto);
             $this->redirect('/streepsoft/instructores/crear?error=creacion_fallida');
         }
     }
@@ -126,11 +130,13 @@ class InstructorController extends Controller
             $this->redirect('/streepsoft/instructores/listar?error=instructor_invalido');
         }
 
-        $categorias = $this->categoriaModel->obtenerTodas();
+        $categorias = $this->categoriaModel->obtenerConInstructor();
 
         $this->view('instructores/editar', [
             'instructor' => $instructor,
             'categorias' => $categorias,
+            'idsSeleccionados' => $this->instructorModel->obtenerIdsCategorias($id),
+            'idInstructorActual' => $id,
             'titulo' => 'Editar Instructor'
         ]);
     }
@@ -163,42 +169,41 @@ class InstructorController extends Controller
             'apellidos' => trim($_POST['apellidos'] ?? ''),
             'edad' => (int) ($_POST['edad'] ?? 0) ?: null,
             'numero_celular' => trim($_POST['numero_celular'] ?? ''),
-            'id_categorias' => (int) ($_POST['id_categorias'] ?? 0),
+            'categorias' => $this->categoriasDelFormulario(),
             'descripcion' => trim($_POST['descripcion'] ?? ''),
             'estado'         => $estado,
         ];
 
-        try {
-            $fotoBase64 = $_POST['foto_base64'] ?? null;
-            if (!empty($fotoBase64)) {
-                
-                if (!empty($instructor['foto']) && $instructor['foto'] !== 'default.jpg') {
-                    $rutaAnterior = __DIR__ . '/../../public/Image/instructores/' . $instructor['foto'];
-                    if (file_exists($rutaAnterior)) {
-                        unlink($rutaAnterior);
-                    }
-                }
-                
-                $nombreFoto = $this->procesarFotoInstructor($fotoBase64);
-                $datos['foto'] = $nombreFoto;  
-            }
-
-            if ($this->instructorModel->actualizar($id, $datos)) {
-                $this->redirect('/streepsoft/instructores/listar?success=actualizado');
-            }
-
-        } catch (Exception $e) {
-            error_log("Actualizar instructor (foto): " . $e->getMessage());
-            $this->redirect('/streepsoft/instructores/editar/' . $id . '?error=actualizacion_fallida');
-        }
-
-        if ($datos['nombres'] === '' || $datos['apellidos'] === '' || $datos['id_categorias'] <= 0) {
+        // Se valida ANTES de guardar (antes esta validación quedaba después de guardar y nunca se aplicaba)
+        if ($datos['nombres'] === '' || $datos['apellidos'] === '') {
             $this->redirect('/streepsoft/instructores/editar/' . $id . '?error=campos_vacios');
         }
 
-        if ($this->instructorModel->actualizar($id, $datos)) {
-            $this->redirect('/streepsoft/instructores/listar?success=actualizado');
-        } else {
+        // Se declara fuera del try para poder eliminar la foto nueva si algo falla
+        $nombreFoto = null;
+
+        try {
+            $fotoBase64 = $_POST['foto_base64'] ?? null;
+            if (!empty($fotoBase64)) {
+                // 1) Primero se guarda la foto nueva: si falla, la foto actual no se toca
+                $nombreFoto = $this->procesarFotoInstructor($fotoBase64);
+                $datos['foto'] = $nombreFoto;
+            }
+
+            if ($this->instructorModel->actualizar($id, $datos)) {
+                // 2) La BD ya usa la foto nueva: ahora sí se elimina la anterior
+                if ($nombreFoto !== null) {
+                    $this->eliminarArchivoFotoInstructor($instructor['foto'] ?? null);
+                }
+                $this->redirect('/streepsoft/instructores/listar?success=actualizado');
+            }
+
+            // actualizar() no guardó nada: la foto nueva queda sin uso, se elimina
+            $this->eliminarArchivoFotoInstructor($nombreFoto);
+            $this->redirect('/streepsoft/instructores/editar/' . $id . '?error=actualizacion_fallida');
+        } catch (Exception $e) {
+            error_log("Actualizar instructor: " . $e->getMessage());
+            $this->eliminarArchivoFotoInstructor($nombreFoto);
             $this->redirect('/streepsoft/instructores/editar/' . $id . '?error=actualizacion_fallida');
         }
     }
@@ -241,6 +246,9 @@ class InstructorController extends Controller
             return;
         }
 
+        // Se declara fuera del try para poder eliminar la foto nueva si algo falla
+        $nombreFoto = null;
+
         try {
             // Obtener instructor actual para ver si ya tiene foto
             $instructor = $this->instructorModel->obtenerPorId($idInstructor);
@@ -248,19 +256,16 @@ class InstructorController extends Controller
                 throw new Exception('Instructor no encontrado');
             }
 
-            // Procesar la foto
+            // Procesar la foto nueva (si falla, la foto actual no se toca)
             $nombreFoto = $this->procesarFotoInstructor($fotoBase64);
 
-            // Eliminar foto anterior si existe
-            if (!empty($instructor['foto']) && $instructor['foto'] !== 'default.jpg') {
-                $rutaAnterior = __DIR__ . '/../../public/Image/instructores/' . $instructor['foto'];
-                if (file_exists($rutaAnterior)) {
-                    unlink($rutaAnterior);
-                }
+            // Actualizar en BD
+            if (!$this->instructorModel->actualizarFoto($idInstructor, $nombreFoto)) {
+                throw new Exception('No se pudo guardar la foto en la base de datos');
             }
 
-            // Actualizar en BD
-            $this->instructorModel->actualizarFoto($idInstructor, $nombreFoto);
+            // La BD ya usa la foto nueva: ahora sí se elimina la anterior
+            $this->eliminarArchivoFotoInstructor($instructor['foto'] ?? null);
 
             http_response_code(200);
             echo json_encode([
@@ -270,9 +275,30 @@ class InstructorController extends Controller
             ]);
         } catch (Exception $e) {
             error_log('Subir foto instructor: ' . $e->getMessage());
+            // Si la foto nueva alcanzó a guardarse pero no quedó en la BD, se elimina
+            $this->eliminarArchivoFotoInstructor($nombreFoto);
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Ids de las categorías marcadas en el formulario (checkboxes id_categorias[]).
+     * Puede venir vacío: un instructor puede quedarse sin categorías.
+     *
+     * @return int[]
+     */
+    private function categoriasDelFormulario(): array
+    {
+        $ids = $_POST['id_categorias'] ?? [];
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        return array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            fn (int $v): bool => $v > 0
+        )));
     }
 
     private function procesarFotoInstructor(?string $dataUrl): ?string
@@ -326,6 +352,23 @@ class InstructorController extends Controller
     }
 
     /**
+     * Elimina del disco una foto de instructor (solo dentro de public/Image/instructores).
+     */
+    private function eliminarArchivoFotoInstructor(?string $nombreFoto): void
+    {
+        if (empty($nombreFoto) || $nombreFoto === 'default.jpg') {
+            return;
+        }
+
+        // basename() evita borrar archivos fuera de la carpeta si la BD trae un valor raro
+        $ruta = __DIR__ . '/../../public/Image/instructores/' . basename($nombreFoto);
+
+        if (is_file($ruta) && !unlink($ruta)) {
+            error_log('InstructorController::eliminarArchivoFotoInstructor - No se pudo eliminar: ' . $ruta);
+        }
+    }
+
+    /**
      * Eliminar foto del instructor
      */
     public function eliminarFoto(): void
@@ -350,16 +393,13 @@ class InstructorController extends Controller
                 throw new Exception('Instructor no encontrado');
             }
 
-            // Eliminar archivo físico si existe
-            if (!empty($instructor['foto']) && $instructor['foto'] !== 'default.jpg') {
-                $rutaFoto = __DIR__ . '/../../public/Image/instructores/' . $instructor['foto'];
-                if (file_exists($rutaFoto)) {
-                    unlink($rutaFoto);
-                }
+            // Primero se actualiza la BD: si falla, el archivo sigue existiendo y no queda una referencia rota
+            if (!$this->instructorModel->actualizarFoto($idInstructor, null)) {
+                throw new Exception('No se pudo actualizar la foto en la base de datos');
             }
 
-            // Actualizar BD (guardar null o 'default.jpg')
-            $this->instructorModel->actualizarFoto($idInstructor, null);
+            // Ahora sí se elimina el archivo físico
+            $this->eliminarArchivoFotoInstructor($instructor['foto'] ?? null);
 
             http_response_code(200);
             echo json_encode(['success' => true, 'mensaje' => 'Foto eliminada correctamente']);
