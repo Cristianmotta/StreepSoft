@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2026 a las 18:41:40
+-- Tiempo de generación: 25-11-2026 a las 22:01:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.35
 
@@ -114,20 +114,21 @@ INSERT INTO `cambios_masivos_jugadores` (`id`, `id_cambio`, `id_jugadores`, `est
 
 CREATE TABLE `categorias` (
   `id_categorias` int(11) NOT NULL,
-  `nombre` varchar(30) NOT NULL
+  `nombre` varchar(30) NOT NULL,
+  `id_instructor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `categorias`
 --
 
-INSERT INTO `categorias` (`id_categorias`, `nombre`) VALUES
-(2, 'Sub-10'),
-(3, 'Sub-13'),
-(4, 'Sub-15'),
-(5, 'Sub-17'),
-(6, 'Sub-20'),
-(1, 'Sub-6');
+INSERT INTO `categorias` (`id_categorias`, `nombre`, `id_instructor`) VALUES
+(1, 'Sub-6', 6),
+(2, 'Sub-10', 2),
+(3, 'Sub-13', 1),
+(4, 'Sub-15', 3),
+(5, 'Sub-17', 4),
+(6, 'Sub-20', 6);
 
 -- --------------------------------------------------------
 
@@ -420,11 +421,11 @@ CREATE TABLE `instructor` (
 --
 
 INSERT INTO `instructor` (`id_instructor`, `foto`, `nombres`, `apellidos`, `edad`, `numero_celular`, `id_categorias`, `descripcion`, `estado`) VALUES
-(1, '034123d83ab0e2a2ac54502288581907.jpg', 'Crisitan Ivan', 'Saenz', 20, '+57 3000000000', 3, '-', 'inactivo'),
+(1, '034123d83ab0e2a2ac54502288581907.jpg', 'Crisitan Ivan', 'Saenz', 20, '+57 3000000000', 3, 'Estadio la Aurora', 'activo'),
 (2, '4c454c45b18eb3ddf68c827f2cb9ae9d.jpg', 'Julian David', 'Munevar', 20, '+57 3000000000', 2, 'Estadio la Aurora', 'activo'),
-(3, 'f4c569340c3f3d5edd08d4e6a59e4c3e.jpg', 'Esteban', 'Moreno Rojas', 25, '+57 3000000000', 4, 'INSTRUCTOR', 'activo'),
-(4, 'cc2c8f2c01ee635baf88b3a342680b37.jpg', 'Luis Camilo', 'Beltran', 25, '+57 3000000000', 2, 'Estadio la Aurora', 'activo'),
-(6, 'e7e5d5cd2b831c8a8d1c6f70a6524fee.jpg', 'Yonatan Javier', 'verga', 20, '+57 3000000000', 1, 'Estadio la Aurora', 'activo');
+(3, 'f4c569340c3f3d5edd08d4e6a59e4c3e.jpg', 'Esteban', 'Moreno Rojas', 25, '+57 3000000000', 4, 'Estadio la Aurora', 'activo'),
+(4, 'cc2c8f2c01ee635baf88b3a342680b37.jpg', 'Luis Camilo', 'Beltran', 25, '+57 3000000000', 5, 'Estadio la Aurora', 'activo'),
+(6, 'e7e5d5cd2b831c8a8d1c6f70a6524fee.jpg', 'Yonatan Javier', 'verga', 20, '+57 3000000000', 6, 'Estadio la Aurora', 'activo');
 
 -- --------------------------------------------------------
 
@@ -453,12 +454,12 @@ CREATE TABLE `jugadores` (
 --
 
 INSERT INTO `jugadores` (`id_jugadores`, `foto`, `nombres`, `apellidos`, `fecha_nacimiento`, `iniciales`, `id_responsable`, `id_categorias`, `created_at`, `id_eps`, `id_instructor`, `id_uniforme`, `estado`) VALUES
-(32, '39058e57d119768de3a5c6e60d27fae0.jpg', 'Cristian', 'Motta', '2000-02-01', 'CMT', 18, 6, '2026-10-20 21:10:57', 6, 3, NULL, 'activo'),
-(33, '2be90d1c7973712705645fd38662af21.jpg', 'Santiago', 'Rua', '2013-10-31', 'RSA', 20, 4, '2026-10-31 22:54:19', 9, 2, NULL, 'activo'),
+(32, '39058e57d119768de3a5c6e60d27fae0.jpg', 'Cristian', 'Motta', '2000-02-01', 'CMT', 18, 6, '2026-10-20 21:10:57', 6, 6, 3, 'activo'),
+(33, '2be90d1c7973712705645fd38662af21.jpg', 'Santiago', 'Rua', '2013-10-31', 'RSA', 20, 4, '2026-10-31 22:54:19', 9, 3, NULL, 'activo'),
 (34, 'a2ceb372676e791a951da58334116ee3.jpg', 'Mariana', 'Gil', '2011-10-31', 'GMA', 21, 5, '2026-10-31 23:03:38', 2, 6, NULL, 'activo'),
-(35, '5684ba5dae6bf96dbb2d8c64b4fabcae.jpg', 'Ana', 'Franco', '2011-07-06', 'FAn', 22, 4, '2026-10-31 23:18:10', 10, 4, NULL, 'activo'),
+(35, '5684ba5dae6bf96dbb2d8c64b4fabcae.jpg', 'Ana', 'Franco', '2011-07-06', 'FAn', 22, 3, '2026-10-31 23:18:10', 10, 1, 4, 'activo'),
 (36, '6cc1677bd166b8a36dc3de959575e023.jpg', 'Andres', 'Castaño', '2010-09-08', 'CAD', 23, 5, '2026-10-31 23:21:32', 2, 2, 1, 'activo'),
-(37, NULL, 'Tiago', 'Rodriguez Aguirre', '2014-11-06', 'TRA', 24, 3, '2026-11-14 15:41:53', 4, 3, 2, 'activo');
+(37, NULL, 'Tiago', 'Rodriguez Aguirre', '2014-11-06', 'TRA', 24, 2, '2026-11-14 15:41:53', 4, 2, 2, 'activo');
 
 -- --------------------------------------------------------
 
@@ -531,15 +532,11 @@ CREATE TABLE `notificaciones` (
 --
 
 INSERT INTO `notificaciones` (`id`, `clave_unica`, `tipo`, `prioridad`, `id_jugadores`, `titulo`, `mensaje`, `url`, `fecha_evento`, `estado`, `resolucion`, `creada_en`, `actualizada_en`) VALUES
-(4, 'docs_pendientes:32', 'documento_pendiente', 'media', 32, 'Documentos pendientes', 'Cristian Motta · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/32', '2026-11-11 16:17:00', 'nueva', NULL, '2026-11-10 14:41:10', '2026-11-11 16:17:00'),
-(5, 'docs_pendientes:33', 'documento_pendiente', 'media', 33, 'Documentos pendientes', 'Santiago Rua · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/33', '2026-11-10 14:41:10', 'nueva', NULL, '2026-11-10 14:41:10', '2026-11-10 14:41:10'),
-(9, 'pago:19', 'pago_registrado', 'baja', 33, 'Pago registrado', 'Santiago Rua · Noviembre 2026 · $80.000 · 10/11/2026', 'jugadores/deudas', '2026-11-10 16:31:18', 'nueva', NULL, '2026-11-10 16:31:18', '2026-11-10 16:31:18'),
-(14, 'docs_pendientes:37', 'documento_pendiente', 'baja', 37, 'Documentos pendientes', 'Tiago Rodriguez Aguirre · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/37', '2026-11-14 10:41:54', 'nueva', NULL, '2026-11-14 10:41:54', '2026-11-14 10:41:54'),
-(15, 'pago:20', 'pago_registrado', 'baja', 37, 'Pago registrado', 'Tiago Rodriguez Aguirre · Noviembre 2026 · $175.000 · 14/11/2026', 'jugadores/deudas', '2026-11-14 00:00:00', 'nueva', NULL, '2026-11-14 10:41:54', '2026-11-14 10:41:54'),
-(17, 'docs_pendientes:35', 'documento_pendiente', 'media', 35, 'Documentos pendientes', 'Ana Franco · Falta: Consentimiento informado, Ficha IDRD', 'documentos/gestionar/35', '2026-11-14 10:52:36', 'nueva', NULL, '2026-11-14 10:52:36', '2026-11-14 10:52:36'),
-(18, 'pago:21', 'pago_registrado', 'baja', 35, 'Pago registrado', 'Ana Franco · Noviembre 2026 · $64.000 · 14/11/2026', 'jugadores/deudas', '2026-11-14 00:00:00', 'nueva', NULL, '2026-11-14 10:53:19', '2026-11-14 10:53:19'),
-(20, 'docs_pendientes:34', 'documento_pendiente', 'media', 34, 'Documentos pendientes', 'Mariana Gil · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/34', '2026-11-14 11:15:30', 'nueva', NULL, '2026-11-14 11:15:30', '2026-11-14 11:15:30'),
-(21, 'pago:22', 'pago_registrado', 'baja', 34, 'Pago registrado', 'Mariana Gil · Noviembre 2026 · $800.000 · 14/11/2026', 'jugadores/deudas', '2026-11-14 00:00:00', 'nueva', NULL, '2026-11-14 11:15:53', '2026-11-14 11:15:53');
+(4, 'docs_pendientes:32', 'documento_pendiente', 'media', 32, 'Documentos pendientes', 'Cristian Motta · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/32', '2026-11-11 16:17:00', 'revisada', NULL, '2026-11-10 14:41:10', '2026-11-24 16:01:49'),
+(5, 'docs_pendientes:33', 'documento_pendiente', 'media', 33, 'Documentos pendientes', 'Santiago Rua · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/33', '2026-11-10 14:41:10', 'revisada', NULL, '2026-11-10 14:41:10', '2026-11-24 16:01:50'),
+(14, 'docs_pendientes:37', 'documento_pendiente', 'media', 37, 'Documentos pendientes', 'Tiago Rodriguez Aguirre · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/37', '2026-11-14 10:41:54', 'revisada', NULL, '2026-11-14 10:41:54', '2026-11-24 16:01:48'),
+(17, 'docs_pendientes:35', 'documento_pendiente', 'media', 35, 'Documentos pendientes', 'Ana Franco · Falta: Consentimiento informado, Ficha IDRD', 'documentos/gestionar/35', '2026-11-14 10:52:36', 'revisada', NULL, '2026-11-14 10:52:36', '2026-11-24 16:01:51'),
+(20, 'docs_pendientes:34', 'documento_pendiente', 'media', 34, 'Documentos pendientes', 'Mariana Gil · Falta: Certificado EPS, Consentimiento informado, Ficha IDRD', 'documentos/gestionar/34', '2026-11-21 15:47:26', 'revisada', NULL, '2026-11-14 11:15:30', '2026-11-24 16:01:46');
 
 -- --------------------------------------------------------
 
@@ -568,7 +565,7 @@ INSERT INTO `notificaciones_configuracion` (`clave`, `valor`) VALUES
 ('frecuencia_inactivos', '1'),
 ('frecuencia_mora', '1'),
 ('monto_pago_importante', '0'),
-('ultima_generacion', '2026-11-16 01:28:00');
+('ultima_generacion', '2026-11-25 16:00:14');
 
 -- --------------------------------------------------------
 
@@ -661,7 +658,9 @@ CREATE TABLE `uniformes_tallas` (
 
 INSERT INTO `uniformes_tallas` (`id_uniforme`, `numero_camisa`, `talla_camisa`, `talla_pantalon`, `talla_media`, `created_at`) VALUES
 (1, '10', '36', '36', '32', '2026-11-13 02:01:22'),
-(2, '6', '16', NULL, NULL, '2026-11-14 15:41:53');
+(2, '6', '16', NULL, NULL, '2026-11-14 15:41:53'),
+(3, '10', 'XL', NULL, 'Adolescente', '2026-11-17 17:17:31'),
+(4, '25', 'L', NULL, 'Adolescente', '2026-11-20 03:58:55');
 
 -- --------------------------------------------------------
 
@@ -734,7 +733,7 @@ CREATE TABLE `vista_jugadores` (
 --
 DROP TABLE IF EXISTS `vista_jugadores`;
 
-CREATE ALGORITHM SQL SECURITY DEFINER VIEW `vista_jugadores`  AS SELECT `j`.`id_jugadores` AS `id_jugadores`, `j`.`foto` AS `foto`, `j`.`apellidos` AS `apellidos`, `j`.`nombres` AS `nombres`, `j`.`iniciales` AS `iniciales`, `j`.`id_categorias` AS `id_categorias`, `j`.`id_eps` AS `id_eps`, `j`.`id_instructor` AS `id_instructor`, `j`.`id_responsable` AS `id_responsable`, concat(coalesce(`r`.`nombres`,''),' ',coalesce(`r`.`apellidos`,'')) AS `responsable_nombre`, `dc`.`id_tipo_documento` AS `id_tipo_documento`, `dc`.`documento` AS `documentos`, `td`.`nombre` AS `tipo_documento`, `j`.`fecha_nacimiento` AS `fecha_nacimiento`, timestampdiff(YEAR,`j`.`fecha_nacimiento`,curdate()) AS `edad`, `c`.`nombre` AS `categoria`, `tb`.`nombre` AS `tipo_beca`, `i`.`nombres` AS `instructor`, CASE `j`.`estado` WHEN 'activo' THEN 'Activo' WHEN 'inactivo' THEN 'Inactivo' WHEN 'retirado' THEN 'Retirado' ELSE 'Activo' END AS `estado`, `d`.`fecha_pago` AS `fecha_pago`, `d`.`fecha_limite_pago` AS `fecha_limite_pago`, `d`.`pago` AS `pago` FROM (((((((`jugadores` `j` join `categorias` `c` on(`j`.`id_categorias` = `c`.`id_categorias`)) left join `deudas` `d` on(`d`.`id_jugadores` = `j`.`id_jugadores` and `d`.`pago` in ('pendiente','mora'))) left join `tipos_beca` `tb` on(`tb`.`id_tipo_beca` = `d`.`id_tipo_becas`)) left join `documentos` `dc` on(`dc`.`id_jugadores` = `j`.`id_jugadores`)) left join `tipo_documento` `td` on(`td`.`id_tipo_documento` = `dc`.`id_tipo_documento`)) left join `instructor` `i` on(`i`.`id_instructor` = `j`.`id_instructor`)) left join `responsables` `r` on(`r`.`id_responsable` = `j`.`id_responsable`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_jugadores`  AS SELECT `j`.`id_jugadores` AS `id_jugadores`, `j`.`foto` AS `foto`, `j`.`apellidos` AS `apellidos`, `j`.`nombres` AS `nombres`, `j`.`iniciales` AS `iniciales`, `j`.`id_categorias` AS `id_categorias`, `j`.`id_eps` AS `id_eps`, `j`.`id_instructor` AS `id_instructor`, `j`.`id_responsable` AS `id_responsable`, concat(coalesce(`r`.`nombres`,''),' ',coalesce(`r`.`apellidos`,'')) AS `responsable_nombre`, `dc`.`id_tipo_documento` AS `id_tipo_documento`, `dc`.`documento` AS `documentos`, `td`.`nombre` AS `tipo_documento`, `j`.`fecha_nacimiento` AS `fecha_nacimiento`, timestampdiff(YEAR,`j`.`fecha_nacimiento`,curdate()) AS `edad`, `c`.`nombre` AS `categoria`, `tb`.`nombre` AS `tipo_beca`, `i`.`nombres` AS `instructor`, CASE `j`.`estado` WHEN 'activo' THEN 'Activo' WHEN 'inactivo' THEN 'Inactivo' WHEN 'retirado' THEN 'Retirado' ELSE 'Activo' END AS `estado`, `d`.`fecha_pago` AS `fecha_pago`, `d`.`fecha_limite_pago` AS `fecha_limite_pago`, `d`.`pago` AS `pago` FROM (((((((`jugadores` `j` join `categorias` `c` on(`j`.`id_categorias` = `c`.`id_categorias`)) left join `deudas` `d` on(`d`.`id_jugadores` = `j`.`id_jugadores` and `d`.`pago` in ('pendiente','mora'))) left join `tipos_beca` `tb` on(`tb`.`id_tipo_beca` = `d`.`id_tipo_becas`)) left join `documentos` `dc` on(`dc`.`id_jugadores` = `j`.`id_jugadores`)) left join `tipo_documento` `td` on(`td`.`id_tipo_documento` = `dc`.`id_tipo_documento`)) left join `instructor` `i` on(`i`.`id_instructor` = `j`.`id_instructor`)) left join `responsables` `r` on(`r`.`id_responsable` = `j`.`id_responsable`)) ;
 
 --
 -- Índices para tablas volcadas
@@ -767,7 +766,8 @@ ALTER TABLE `cambios_masivos_jugadores`
 --
 ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id_categorias`),
-  ADD UNIQUE KEY `nombre` (`nombre`);
+  ADD UNIQUE KEY `nombre` (`nombre`),
+  ADD KEY `fk_categorias_instructor` (`id_instructor`);
 
 --
 -- Indices de la tabla `ciclos_anio`
@@ -1047,7 +1047,7 @@ ALTER TABLE `tipo_documento`
 -- AUTO_INCREMENT de la tabla `uniformes_tallas`
 --
 ALTER TABLE `uniformes_tallas`
-  MODIFY `id_uniforme` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_uniforme` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -1077,6 +1077,12 @@ ALTER TABLE `cambios_masivos_estado`
 ALTER TABLE `cambios_masivos_jugadores`
   ADD CONSTRAINT `fk_detalle_cambio` FOREIGN KEY (`id_cambio`) REFERENCES `cambios_masivos_estado` (`id_cambio`),
   ADD CONSTRAINT `fk_detalle_jugador` FOREIGN KEY (`id_jugadores`) REFERENCES `jugadores` (`id_jugadores`);
+
+--
+-- Filtros para la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD CONSTRAINT `fk_categorias_instructor` FOREIGN KEY (`id_instructor`) REFERENCES `instructor` (`id_instructor`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `configuracion_ciclos`
