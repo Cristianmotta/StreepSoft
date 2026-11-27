@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/streepsoft/public/css/hamburguesa/hamburguer.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="/streepsoft/public/css/notificaciones/notificaciones.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/ayuda/ayuda.css">
 </head>
 
 <body>
@@ -42,6 +43,9 @@
             </div>
         </nav>
     </div>
+
+    <!-- Ayuda del módulo (esquina superior derecha): ayuda.js lo muestra solo si la pantalla tiene guía -->
+    <button type="button" class="ayuda-btn ayuda-modulo" id="ayuda-btn" title="Ayuda" aria-label="Abrir ayuda de este módulo" hidden>?</button>
 
     <aside id="side-menu" class="sidebar">
 

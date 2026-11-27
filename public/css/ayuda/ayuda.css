@@ -1,0 +1,238 @@
+/* Módulo de ayuda: botón "?" y ventana con la guía de cada pantalla */
+
+.ayuda-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    flex-shrink: 0;
+    border: 2px solid #d09e10;
+    border-radius: 50%;
+    background: transparent;
+    color: #f5c400;
+    font: 600 17px/1 "Poppins", sans-serif;
+    cursor: pointer;
+    transition: background .2s, color .2s, box-shadow .2s;
+}
+
+.ayuda-btn:hover,
+.ayuda-btn:focus-visible {
+    background: #f5c400;
+    color: #141414;
+    box-shadow: 0 0 8px #d09e10;
+    outline: none;
+}
+
+/* El atributo hidden debe ganar sobre display:flex */
+.ayuda-btn[hidden] {
+    display: none;
+}
+
+/* El botón flota en la esquina superior derecha:
+   .ayuda-modulo queda debajo del menú y .ayuda-flotante en el inicio de sesión */
+.ayuda-btn.ayuda-modulo,
+.ayuda-btn.ayuda-flotante {
+    position: fixed;
+    right: 20px;
+    width: 38px;
+    height: 38px;
+    background: rgba(20, 20, 20, .9);
+}
+
+.ayuda-btn.ayuda-modulo {
+    top: calc(var(--navbar-height, 75px) + 12px);
+    /* Por debajo del fondo del menú lateral (500) y de las ventanas emergentes */
+    z-index: 450;
+}
+
+.ayuda-btn.ayuda-flotante {
+    top: 20px;
+    z-index: 50;
+}
+
+.ayuda-btn.ayuda-modulo:hover,
+.ayuda-btn.ayuda-modulo:focus-visible,
+.ayuda-btn.ayuda-flotante:hover,
+.ayuda-btn.ayuda-flotante:focus-visible {
+    background: #f5c400;
+}
+
+.ayuda-fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 10200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(0, 0, 0, .7);
+    font-family: "Poppins", sans-serif;
+    text-align: left;
+}
+
+.ayuda-card {
+    display: flex;
+    flex-direction: column;
+    width: min(560px, 100%);
+    max-height: 90vh;
+    overflow: hidden;
+    border: 1px solid #d09e10;
+    border-radius: 14px;
+    background: #141414;
+    color: #ffffff;
+    animation: ayuda-entrada .2s ease-out;
+}
+
+@keyframes ayuda-entrada {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ayuda-card { animation: none; }
+}
+
+.ayuda-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #2e2a1c;
+}
+
+.ayuda-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #f5c400;
+    color: #141414;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.ayuda-titulos {
+    flex: 1;
+}
+
+.ayuda-titulos h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.ayuda-titulos h2 span {
+    color: #f5c400;
+}
+
+.ayuda-titulos p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #bdbdbd;
+}
+
+.ayuda-cerrar {
+    border: 0;
+    background: none;
+    color: #bdbdbd;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ayuda-cerrar:hover,
+.ayuda-cerrar:focus-visible {
+    color: #ffffff;
+}
+
+.ayuda-cuerpo {
+    overflow-y: auto;
+    padding: 6px 22px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #d09e10 #141414;
+}
+
+/* Evita que los estilos de cada pantalla cambien el color del texto */
+.ayuda-cuerpo li span {
+    color: #e0e0e0;
+    font-family: "Poppins", sans-serif;
+}
+
+.ayuda-cuerpo h3 {
+    margin: 14px 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #f5c400;
+}
+
+.ayuda-cuerpo ol,
+.ayuda-cuerpo ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: ayuda-paso;
+}
+
+.ayuda-cuerpo li {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #212020;
+    color: #e0e0e0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.ayuda-cuerpo ol li::before {
+    counter-increment: ayuda-paso;
+    content: counter(ayuda-paso);
+    color: #f5c400;
+    font-weight: 600;
+}
+
+.ayuda-cuerpo ul li::before {
+    content: "•";
+    color: #f5c400;
+    font-weight: 600;
+}
+
+.ayuda-consejo {
+    margin: 14px 0 4px;
+    padding: 10px 12px;
+    border: 1px dashed #d09e10;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.ayuda-pie {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 22px 18px;
+}
+
+.ayuda-entendido {
+    padding: 9px 24px;
+    border: 0;
+    border-radius: 8px;
+    background: #f5c400;
+    color: #141414;
+    font: 600 13px "Poppins", sans-serif;
+    cursor: pointer;
+}
+
+.ayuda-entendido:hover,
+.ayuda-entendido:focus-visible {
+    background: #d4a900;
+}

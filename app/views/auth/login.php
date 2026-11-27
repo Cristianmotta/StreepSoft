@@ -54,6 +54,7 @@ if (isset($_GET['success'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/streepsoft/public/css/login/login.css">
     <link rel="stylesheet" href="/streepsoft/public/css/login/login-alert.css">
+    <link rel="stylesheet" href="/streepsoft/public/css/ayuda/ayuda.css">
     <link rel="shortcut icon" href="/streepsoft/public/assets/img/logofavi.ico" type="image/x-icon">
 </head>
 <body class="background-login">
@@ -143,6 +144,13 @@ if (isset($_GET['success'])) {
             </form>
         </div>
     </div>
+
+    <!-- Ayuda de la pantalla de inicio de sesión -->
+    <button type="button" class="ayuda-btn ayuda-flotante" id="ayuda-btn" title="Ayuda" aria-label="Abrir ayuda de este módulo" hidden>?</button>
+    <script type="module">
+        import { initAyuda } from '/streepsoft/public/js/ayuda/ayuda.js';
+        initAyuda();
+    </script>
 
     <script src="/streepsoft/public/js/login/login.js"></script>
     <script src="/streepsoft/public/js/login/recover.js"></script>
