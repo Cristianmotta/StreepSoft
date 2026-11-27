@@ -1,5 +1,6 @@
 import loadSection from "./loader.js";
 import "../notificaciones/notificaciones.js";
+import { initAyuda } from "../ayuda/ayuda.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -10,6 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (typeof window.initStreepNotifications === 'function') {
             window.initStreepNotifications();
         }
+
+        // Botón "?" con la guía del módulo actual
+        initAyuda();
     } catch (error) {
         console.error('No se pudo inicializar la navegación:', error);
     }
